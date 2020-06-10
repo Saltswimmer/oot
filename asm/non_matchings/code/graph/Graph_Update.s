@@ -519,7 +519,7 @@ glabel Graph_Update
 /* B3D958 800C67B8 3C018016 */   lui   $at, %hi(gSaveContext+0x135c) # $at, 0x8016
 /* B3D95C 800C67BC AC20F9BC */  sw    $zero, %lo(gSaveContext+0x135c)($at)
 /* B3D960 800C67C0 258C1E44 */  addiu $t4, %lo(Select_Init) # addiu $t4, $t4, 0x1e44
-/* B3D964 800C67C4 240D0240 */  li    $t5, 576
+/* B3D964 800C67C4 240D0240 */  li    $t5, 580
 /* B3D968 800C67C8 AC4D0010 */  sw    $t5, 0x10($v0)
 /* B3D96C 800C67CC AC4C000C */  sw    $t4, 0xc($v0)
 /* B3D970 800C67D0 AC400098 */  sw    $zero, 0x98($v0)

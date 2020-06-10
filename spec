@@ -559,8 +559,8 @@ endseg
 beginseg
     name "ovl_select"
     include "build/src/overlays/gamestates/ovl_select/z_select.o"
-    include "build/data/overlays/gamestates/z_select.reloc.o"
-    //include "build/src/overlays/gamestates/ovl_select/ovl_select_reloc.o"
+    //include "build/data/overlays/gamestates/z_select.reloc.o"
+    include "build/src/overlays/gamestates/ovl_select/ovl_select_reloc.o"
 endseg
 
 beginseg

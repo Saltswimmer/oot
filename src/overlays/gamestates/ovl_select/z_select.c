@@ -9,6 +9,18 @@
 #include <vt.h>
 #include <alloca.h>
 
+typedef enum {
+    /* 0x00 */ SELECT_MORNING,
+    /* 0x01 */ SELECT_NOON,
+    /* 0x02 */ SELECT_DUSK,
+    /* 0x02 */ SELECT_MIDNIGHT,
+} SelectTime;
+
+#define SELECT_CS_0 0
+#define SELECT_CS_NONE 16
+
+
+
 void Select_LoadTitle(SelectContext* this) {
     this->state.running = false;
     SET_NEXT_GAMESTATE(&this->state, Title_Init, TitleContext);
@@ -43,8 +55,22 @@ void Select_LoadGame(SelectContext* this, s32 entranceIndex) {
     SET_NEXT_GAMESTATE(&this->state, Gameplay_Init, GlobalContext)
 }
 
+static MapEntry sDungeons[] = {
+    { "deku tree", Select_LoadGame, 0x00000000 },
+    { "dodongo's cavern", Select_LoadGame, 0x00000004 },
+    { "jabu jabu", Select_LoadGame, 0x00000028 },
+    { "forest temple", Select_LoadGame, 0x00000169 },
+    { "fire temple", Select_LoadGame, 0x00000165 },
+    { "water temple", Select_LoadGame, 0x00000010 },
+    { "shadow temple", Select_LoadGame, 0x00000037 },
+    { "spirit temple", Select_LoadGame, 0x00000082 },
+    { "ice cavern", Select_LoadGame, 0x00000088 },
+    { "bottom of the well", Select_LoadGame, 0x00000098 },
+    { "ganon's castle", Select_LoadGame, 0x00000467 },
+};
+
 static MapEntry sMaps[] = {
-    { " 1:SPOT00", Select_LoadGame, 0x000000CD },
+    { "hyrule field", Select_LoadGame, 0x000000CD },
     { " 2:SPOT01", Select_LoadGame, 0x000000DB },
     { " 3:SPOT02", Select_LoadGame, 0x000000E4 },
     { " 4:SPOT03", Select_LoadGame, 0x000000EA },
@@ -172,8 +198,6 @@ static MapEntry sMaps[] = {
     { "title", Select_LoadTitle, 0x00000000 },
 };
 
-//mostly regalloc, a good amount of instruction ordering. confirmed equivalent in game.
-#ifdef NON_MATCHING
 void Select_UpdateMenu(SelectContext* this) {
     Input* pad1;
     s32 pad;
@@ -183,90 +207,48 @@ void Select_UpdateMenu(SelectContext* this) {
 
     if (this->unk_21C == 0) {
 
+        // select map
         if (CHECK_PAD(pad1->press, A_BUTTON) || CHECK_PAD(pad1->press, START_BUTTON)) {
             selectedMap = &this->maps[this->currentMap];
             if (selectedMap->loadFunc != NULL) {
                 selectedMap->loadFunc(this, selectedMap->entranceIndex);
             }
         }
+        
+        // cycle to next time option
+        if (CHECK_PAD(pad1->press, Z_TRIG)) {
+            if (this->time == SELECT_MIDNIGHT) {
+                this->time = SELECT_MORNING;
+            } else {
+                this->time++;
+            }
+        }
 
-        if (CHECK_PAD(pad1->press, B_BUTTON)) {
-            if (LINK_AGE_IN_YEARS == YEARS_ADULT) {
+        // increase cutscene number
+        if (CHECK_PAD(pad1->press, R_CBUTTONS)) {
+            if (this->cutscene == SELECT_CS_NONE) {
+                this->cutscene = SELECT_CS_0;
+            } else {
+                this->cutscene++;
+            }
+        }
+
+        // decrease cutscene number
+        if (CHECK_PAD(pad1->press, L_CBUTTONS)) {
+            if (this->cutscene == SELECT_CS_0) {
+                this->cutscene = SELECT_CS_NONE;
+            } else {
+                this->cutscene--;
+            }
+        }
+
+        // change age
+        if (CHECK_PAD(pad1->press, R_TRIG)) {
+            if (LINK_IS_ADULT) {
                 gSaveContext.linkAge = 1;
             } else {
                 gSaveContext.linkAge = 0;
             }
-        }
-
-        if (CHECK_PAD(pad1->press, Z_TRIG)) {
-            if (gSaveContext.cutsceneIndex == 0x8000) {
-                gSaveContext.cutsceneIndex = 0;
-            } else if (gSaveContext.cutsceneIndex == 0) {
-                gSaveContext.cutsceneIndex = 0xFFF0;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF0) {
-                gSaveContext.cutsceneIndex = 0xFFF1;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF1) {
-                gSaveContext.cutsceneIndex = 0xFFF2;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF2) {
-                gSaveContext.cutsceneIndex = 0xFFF3;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF3) {
-                gSaveContext.cutsceneIndex = 0xFFF4;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF4) {
-                gSaveContext.cutsceneIndex = 0xFFF5;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF5) {
-                gSaveContext.cutsceneIndex = 0xFFF6;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF6) {
-                gSaveContext.cutsceneIndex = 0xFFF7;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF7) {
-                gSaveContext.cutsceneIndex = 0xFFF8;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF8) {
-                gSaveContext.cutsceneIndex = 0xFFF9;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF9) {
-                gSaveContext.cutsceneIndex = 0xFFFA;
-            } else if (gSaveContext.cutsceneIndex == 0xFFFA) {
-                gSaveContext.cutsceneIndex = 0x8000;
-            } 
-        } else if (CHECK_PAD(pad1->press, R_TRIG)) {
-            if (gSaveContext.cutsceneIndex == 0x8000) {
-                gSaveContext.cutsceneIndex = 0xFFFA;
-            } else if (gSaveContext.cutsceneIndex == 0) {
-                gSaveContext.cutsceneIndex = 0x8000;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF0) {
-                gSaveContext.cutsceneIndex = 0;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF1) {
-                gSaveContext.cutsceneIndex = 0xFFF0;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF2) {
-                gSaveContext.cutsceneIndex = 0xFFF1;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF3) {
-                gSaveContext.cutsceneIndex = 0xFFF2;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF4) {
-                gSaveContext.cutsceneIndex = 0xFFF3;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF5) {
-                gSaveContext.cutsceneIndex = 0xFFF4;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF6) {
-                gSaveContext.cutsceneIndex = 0xFFF5;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF7) {
-                gSaveContext.cutsceneIndex = 0xFFF6;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF8) {
-                gSaveContext.cutsceneIndex = 0xFFF7;
-            } else if (gSaveContext.cutsceneIndex == 0xFFF9) {
-                gSaveContext.cutsceneIndex = 0xFFF8;
-            } else if (gSaveContext.cutsceneIndex == 0xFFFA) {
-                gSaveContext.cutsceneIndex = 0xFFF9;
-            }
-        }
-
-        gSaveContext.nightFlag = 0;
-        if (gSaveContext.cutsceneIndex == 0) {
-            gSaveContext.nightFlag = 1;
-        }
-
-        // user can change "opt", but it doesn't do anything
-        if (CHECK_PAD(pad1->press, U_CBUTTONS)) {
-            this->opt--;
-        }
-        if (CHECK_PAD(pad1->press, D_CBUTTONS)) {
-            this->opt++;
         }
 
         if (CHECK_PAD(pad1->press, U_JPAD)) {
@@ -303,20 +285,6 @@ void Select_UpdateMenu(SelectContext* this) {
             this->unk_220 = -SREG(30) * 3;
         }
 
-        if (CHECK_PAD(pad1->press, L_JPAD) || CHECK_PAD(pad1->cur, L_JPAD)) {
-            Audio_PlaySoundGeneral(0x1800, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
-            this->unk_220 = SREG(30);
-        }
-
-        if (CHECK_PAD(pad1->press, R_JPAD) || CHECK_PAD(pad1->cur, R_JPAD)) {
-            Audio_PlaySoundGeneral(0x1800, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
-            this->unk_220 = -SREG(30);
-        }
-    }
-
-    if (CHECK_PAD(pad1->press, L_TRIG)) {
-        this->unk_1DC = (++this->unk_1DC + 7) % 7;
-        this->currentMap = this->unk_20C = this->unk_1E0[this->unk_1DC];
     }
 
     this->unk_21C += this->unk_220;
@@ -369,16 +337,21 @@ void Select_UpdateMenu(SelectContext* this) {
         this->unk_230 = 0;
     }
 }
-#else
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/gamestates/ovl_select/Select_UpdateMenu.s")
-#endif
+
+void Select_PrintLoadingMessage(SelectContext* this, GfxPrint* printer) {
+    s32 randomMsg;
+
+    GfxPrint_SetPos(printer, 0xA, 0xF);
+    GfxPrint_SetColor(printer, 255, 255, 255, 255);
+    GfxPrint_Printf(printer, "loading...");
+}
 
 void Select_PrintMenu(SelectContext* this, GfxPrint* printer) {
     s32 map;
     s32 i;
     char* name;
 
-    GfxPrint_SetColor(printer, 255, 155, 150, 255);
+    GfxPrint_SetColor(printer, 60, 185, 250, 255);
     GfxPrint_SetPos(printer, 12, 2);
     GfxPrint_Printf(printer, "ZELDA MAP SELECT");
     GfxPrint_SetColor(printer, 255, 255, 255, 255);
@@ -388,9 +361,9 @@ void Select_PrintMenu(SelectContext* this, GfxPrint* printer) {
 
         map = ((this->unk_20C + i) + this->count) % this->count;
         if (map == this->currentMap) {
-            GfxPrint_SetColor(printer, 255, 20, 20, 255);
+            GfxPrint_SetColor(printer, 50, 255, 50, 255);
         } else {
-            GfxPrint_SetColor(printer, 200, 200, 55, 255);
+            GfxPrint_SetColor(printer, 255, 255, 255, 255);
         }
 
         name = this->maps[map].name;
@@ -400,105 +373,72 @@ void Select_PrintMenu(SelectContext* this, GfxPrint* printer) {
 
         GfxPrint_Printf(printer, "%s", name);
     };
-
-    GfxPrint_SetColor(printer, 155, 55, 150, 255);
-    GfxPrint_SetPos(printer, 20, 26);
-    GfxPrint_Printf(printer, "OPT=%d", this->opt);
 }
 
-static char* sLoadingMessages[] = {
-    "\x8Dｼﾊﾞﾗｸｵﾏﾁｸﾀﾞｻｲ", // "Please wait a minute"
-    "\x8Dﾁｮｯﾄ ﾏｯﾃﾈ",     // "Hold on a sec"
-    "\x8Cｳｪｲﾄ ｱ ﾓｰﾒﾝﾄ",  // "Wait a moment"
-    "\x8Cﾛｰﾄﾞ\x8Dﾁｭｳ",   // "Loading"
-    "\x8Dﾅｳ ﾜｰｷﾝｸﾞ",     // "Now working"
-    "\x8Dｲﾏ ﾂｸｯﾃﾏｽ",     // "Now creating"
-    "\x8Dｺｼｮｳｼﾞｬﾅｲﾖ",    // "It's not broken"
-    "\x8Cｺｰﾋｰ ﾌﾞﾚｲｸ",    // "Coffee Break"
-    "\x8C"
-    "Bﾒﾝｦｾｯﾄｼﾃｸﾀﾞｻｲ",                      // "Please set B side"
-    "\x8Dｼﾞｯﾄ\x8Cｶﾞﾏﾝ\x8Dﾉ\x8Cｺ\x8Dﾃﾞｱｯﾀ", // "Be patient, now"
-    "\x8Dｲﾏｼﾊﾞﾗｸｵﾏﾁｸﾀﾞｻｲ",                 // "Please wait just a minute"
-    "\x8Dｱﾜﾃﾅｲｱﾜﾃﾅｲ｡ﾋﾄﾔｽﾐﾋﾄﾔｽﾐ｡",          // "Don't worry, don't worry. Take a break, take a break"
-};
-
-void Select_PrintLoadingMessage(SelectContext* this, GfxPrint* printer) {
-    s32 randomMsg;
-
-    GfxPrint_SetPos(printer, 0xA, 0xF);
+void Select_PrintControls(SelectContext* this, GfxPrint* printer) {
+    char* age;
+    s8 x = 20;
+    s8 y = 10;
+    GfxPrint_SetPos(printer, x, y);
     GfxPrint_SetColor(printer, 255, 255, 255, 255);
-    randomMsg = Math_Rand_ZeroOne() * ARRAY_COUNT(sLoadingMessages);
-    GfxPrint_Printf(printer, "%s", sLoadingMessages[randomMsg]);
+    GfxPrint_Printf(printer, "controls:");
+    GfxPrint_SetPos(printer, x, y+4);
 }
 
-static char* sAgeLabels[] = {
-    "\x8D"
-    "17(ﾜｶﾓﾉ)", // "17(young)"
-    "\x8D"
-    "5(ﾜｶｽｷﾞ)", // "5(very young)"
-};
-
-void Select_PrintAgeSetting(SelectContext* this, GfxPrint* printer, s32 age) {
-    GfxPrint_SetPos(printer, 4, 26);
-    GfxPrint_SetColor(printer, 255, 255, 55, 255);
-    GfxPrint_Printf(printer, "Age:%s", sAgeLabels[age]);
-}
-
-void Select_PrintCutsceneSetting(SelectContext* this, GfxPrint* printer, u16 csIndex) {
+void Select_PrintTimeSetting(SelectContext* this, GfxPrint* printer) {
     char* label;
 
-    GfxPrint_SetPos(printer, 4, 25);
-    GfxPrint_SetColor(printer, 255, 255, 55, 255);
-
-    switch (csIndex) {
-        case 0:
-            label = "\x8D ﾖﾙ \x8Cｺﾞﾛﾝ";
-            gSaveContext.dayTime = 0;
+    GfxPrint_SetPos(printer, 1, 26);
+    GfxPrint_SetColor(printer, 250, 255, 90, 255);
+    switch (this->time) {
+        case SELECT_MORNING:
+            gSaveContext.dayTime = 0x46E0;
+            label = "morning";
             break;
-        case 0x8000:
-            // clang-format off
-            gSaveContext.dayTime = 0x8000; label = "\x8Dｵﾋﾙ \x8Cｼﾞｬﾗ";
-            // clang-format on
+        case SELECT_NOON:
+            gSaveContext.dayTime = 0x8000;
+            label = "noon";
             break;
-        case 0xFFF0:
-            // clang-format off
-            gSaveContext.dayTime = 0x8000; label = "ﾃﾞﾓ00";
-            // clang-format on
+        case SELECT_DUSK:
+            gSaveContext.dayTime = 0xC0C0;
+            label = "dusk";
             break;
-        case 0xFFF1:
-            label = "ﾃﾞﾓ01";
+        case SELECT_MIDNIGHT:
+            gSaveContext.dayTime = 0x0000;
+            label = "midnight";
             break;
-        case 0xFFF2:
-            label = "ﾃﾞﾓ02";
-            break;
-        case 0xFFF3:
-            label = "ﾃﾞﾓ03";
-            break;
-        case 0xFFF4:
-            label = "ﾃﾞﾓ04";
-            break;
-        case 0xFFF5:
-            label = "ﾃﾞﾓ05";
-            break;
-        case 0xFFF6:
-            label = "ﾃﾞﾓ06";
-            break;
-        case 0xFFF7:
-            label = "ﾃﾞﾓ07";
-            break;
-        case 0xFFF8:
-            label = "ﾃﾞﾓ08";
-            break;
-        case 0xFFF9:
-            label = "ﾃﾞﾓ09";
-            break;
-        case 0xFFFA:
-            label = "ﾃﾞﾓ0A";
-            break;
-    };
-
+    }
     gSaveContext.environmentTime = gSaveContext.dayTime;
-    GfxPrint_Printf(printer, "Stage:\x8C%s", label);
+    GfxPrint_Printf(printer, "time: %s", label);
+}
+
+void Select_PrintCutsceneSetting(SelectContext* this, GfxPrint* printer) {
+    char* cs;
+    GfxPrint_SetPos(printer, 18, 26);
+    GfxPrint_SetColor(printer, 250, 255, 90, 255);
+    if (this->cutscene == SELECT_CS_NONE) {
+        gSaveContext.cutsceneIndex = 0;
+        GfxPrint_Printf(printer, "cs: none");
+    } else {
+        gSaveContext.cutsceneIndex = 0xFFF0 + this->cutscene;
+        if (this->cutscene < 10) {
+            GfxPrint_Printf(printer, "cs: 0%d", this->cutscene);
+        } else {
+            GfxPrint_Printf(printer, "cs: %d", this->cutscene);
+        }
+    }
+}
+
+void Select_PrintAgeSetting(SelectContext* this, GfxPrint* printer) {
+    char* age;
+    GfxPrint_SetPos(printer, 29, 26);
+    GfxPrint_SetColor(printer, 250, 255, 90, 255);
+    if (LINK_IS_ADULT) {
+        age = "adult";
+    } else {
+        age = "child";
+    }
+    GfxPrint_Printf(printer, "age: %s", age);
 }
 
 void Select_DrawMenu(SelectContext* this) {
@@ -518,15 +458,10 @@ void Select_DrawMenu(SelectContext* this) {
     GfxPrint_Init(printer);
     GfxPrint_Open(printer, gfxCtx->polyOpa.p);
     Select_PrintMenu(this, printer);
-    {
-        s32 arg;
-
-        arg = gSaveContext.linkAge;
-        Select_PrintAgeSetting(this, printer, arg);
-
-        arg = gSaveContext.cutsceneIndex & 0xFFFF;
-        Select_PrintCutsceneSetting(this, printer, arg);
-    }
+    Select_PrintAgeSetting(this, printer);
+    Select_PrintTimeSetting(this, printer);
+    Select_PrintCutsceneSetting(this, printer);
+    //Select_PrintControls(this, printer);
     gfxCtx->polyOpa.p = GfxPrint_Close(printer);
     GfxPrint_Destroy(printer);
 
@@ -562,7 +497,7 @@ void Select_Draw(SelectContext* this) {
 
     gfxCtx = this->state.gfxCtx;
     Graph_OpenDisps(dispRefs, gfxCtx, "../z_select.c", 1013);
-    
+
     gSPSegment(gfxCtx->polyOpa.p++, 0x00, 0x00000000);
     func_80095248(gfxCtx, 0, 0, 0);
     INIT_FULLSCREEN_VIEWPORT(&this->view)
@@ -594,7 +529,7 @@ void Select_Init(SelectContext* this) {
 
     this->state.main = Select_Main;
     this->state.destroy = Select_Destroy;
-    this->maps = sMaps;
+    this->maps = sDungeons;
     this->unk_20C = 0;
     this->currentMap = 0;
     this->unk_1E0[0] = 0;
@@ -605,7 +540,7 @@ void Select_Init(SelectContext* this) {
     this->unk_1E0[5] = 0x49;
     this->unk_1E0[6] = 0x5B;
     this->unk_1DC = 0;
-    this->opt = 0;
+    this->time = 0;
     this->count = 126;
     View_Init(&this->view, this->state.gfxCtx);
     this->view.flags = 0xA;
@@ -616,6 +551,9 @@ void Select_Init(SelectContext* this) {
     this->unk_22C = 0;
     this->unk_230 = 0;
     this->unk_234 = 0;
+    gSaveContext.linkAge = 0;
+    this->time = SELECT_MORNING;
+    this->cutscene = SELECT_CS_NONE;
 
     size = (u32)_z_select_staticSegmentRomEnd - (u32)_z_select_staticSegmentRomStart;
 
@@ -628,6 +566,5 @@ void Select_Init(SelectContext* this) {
 
     this->staticSegment = GameState_Alloc(this, size, "../z_select.c", 1114);
     DmaMgr_SendRequest1(this->staticSegment, _z_select_staticSegmentRomStart, size, "../z_select.c", 1115);
-    gSaveContext.cutsceneIndex = 0x8000;
-    gSaveContext.linkAge = 1;
+    
 }
