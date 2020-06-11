@@ -68,7 +68,7 @@ static MapEntry sDungeons[] = {
     { "bottom of the well", Select_LoadGame, 0x00000098 },
     { "ganon's castle", Select_LoadGame, 0x00000467 },
 };
-
+/*
 static MapEntry sMaps[] = {
     { "hyrule field", Select_LoadGame, 0x000000CD },
     { " 2:SPOT01", Select_LoadGame, 0x000000DB },
@@ -197,6 +197,7 @@ static MapEntry sMaps[] = {
     { "125:\x8Cﾊｲﾗﾙ\x8Dﾆﾜ\x8Cｹﾞｰﾑ2", Select_LoadGame, 0x00000076 },
     { "title", Select_LoadTitle, 0x00000000 },
 };
+*/
 
 void Select_UpdateMenu(SelectContext* this) {
     Input* pad1;
@@ -357,6 +358,9 @@ void Select_PrintMenu(SelectContext* this, GfxPrint* printer) {
     GfxPrint_SetColor(printer, 255, 255, 255, 255);
 
     for (i = 0; i < 20; i++) {
+        if (i == ARRAY_COUNT(sDungeons)) {
+            break;
+        }
         GfxPrint_SetPos(printer, 9, i + 4);
 
         map = ((this->unk_20C + i) + this->count) % this->count;
