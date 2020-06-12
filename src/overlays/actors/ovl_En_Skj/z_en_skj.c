@@ -22,6 +22,7 @@ typedef struct {
 unkSkjStruct D_80B01640 = { 0, NULL };
 unkSkjStruct D_80B01648[] = { { 0, NULL }, { 0, NULL } };
 
+
 /*
 const ActorInit En_Skj_InitVars = {
     ACTOR_EN_SKJ,
@@ -35,6 +36,7 @@ const ActorInit En_Skj_InitVars = {
     (ActorFunc)EnSkj_Draw,
 };
 */
+
 static ColliderCylinderInit_Set3 sCylinderInit = {
     { COLTYPE_UNK10, 0x11, 0x09, 0x00, COLSHAPE_CYLINDER },
     { 0x00, { 0xFFCFFFFF, 0x00, 0x08 }, { 0xFFCFFFFF, 0x00, 0x00 }, 0x01, 0x01, 0x01 },
@@ -54,6 +56,7 @@ static InitChainEntry sInitChain[] = {
 extern AnimationHeader D_06000E10;
 extern SkeletonHeader D_06005F40;
 
+
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE2B0.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE338.s")
@@ -63,19 +66,18 @@ extern SkeletonHeader D_06005F40;
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE428.s")
 
 //#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Init.s")
+
 void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
     s16 paramsType;
     EnSkj* this = THIS;
     Player* player;
-    unkSkjStruct* thing;
 
-    paramsType = ((this->actor.params >> 0xA) & 0x3F);
-    Actor_ProcessInitChain(&this->actor, &sInitChain);
-    thing = &D_80B01640;
+    paramsType = ((thisx->params >> 0xA) & 0x3F);
+    Actor_ProcessInitChain(thisx, &sInitChain);
     switch (paramsType) {
         case 5:
-            thing->unk0 = 1;
-            thing->unk4 = this;
+            D_80B01640.unk0 = 1;
+            D_80B01640.unk4 = THIS;
             this->actor.flags &= ~5;
             this->actor.destroy = NULL;
             this->actor.draw = NULL;
@@ -83,8 +85,8 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
             Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_PROP);
             break;
         case 6:
-            thing->unk0 = 1;
-            thing->unk4 = this;
+            D_80B01640.unk0 = 1;
+            D_80B01640.unk4 = THIS;
             this->actor.flags &= ~5;
             this->actor.destroy = NULL;
             this->actor.draw = NULL;
@@ -121,7 +123,7 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
                 this->posCopy = this->actor.posRot.pos;
                 // temp?
                 D_80B01648[paramsType].unk0 = 1;
-                D_80B01648[paramsType].unk4 = this;
+                D_80B01648[paramsType].unk4 = THIS;
                 this->unk_2D8 = 0;
                 this->unk_2DC = 0;
                 func_80B00514(this);
@@ -154,6 +156,7 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
             osSyncPrintf("Center_Z : %f\n\n", this->center.z);   
     }
 }
+
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Destroy.s")
 
