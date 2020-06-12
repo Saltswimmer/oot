@@ -245,10 +245,10 @@ void GfxPrint_PrintCharImpl(GfxPrint* this, u8 c) {
         gDPSetPrimColorMod(this->dlist++, 0, 0, this->color.rgba);
     }
 
-    gSPScisTextureRectangle(this->dlist++, this->posX, this->posY, this->posX + 32, this->posY + 32, G_TX_RENDERTILE,
-                            (s16)(cx % 2 * 8) * 0x20, (s16)(cx / 2 * 8) * 0x20, 1024, 1024);
+    gSPScisTextureRectangle(this->dlist++, this->posX, this->posY, this->posX + 24, this->posY + 24, G_TX_RENDERTILE,
+                            (s16)(cx % 2 * 8) * 0x20, (s16)(cx / 2 * 8) * 0x20, (1 / 0.75) * 1024, (1 / 0.75) * 1024);
 
-    this->posX += 32;
+    this->posX += 28;
 }
 
 void GfxPrint_PrintChar(GfxPrint* this, u8 c) {

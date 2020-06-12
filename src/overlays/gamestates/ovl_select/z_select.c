@@ -19,41 +19,34 @@ typedef enum {
 #define SELECT_CS_0 0
 #define SELECT_CS_NONE 16
 
+#define CURRENT_PAGE this->pages[this->currentPage]
+#define CURRENT_PAGE_COUNT ARRAY_COUNT(CURRENT_PAGE.scenes)
 
+void Select_LoadTitle(SelectContext* this);
+void Select_LoadGame(SelectContext* this, s32 entranceIndex);
 
-void Select_LoadTitle(SelectContext* this) {
-    this->state.running = false;
-    SET_NEXT_GAMESTATE(&this->state, Title_Init, TitleContext);
-}
-
-void Select_LoadGame(SelectContext* this, s32 entranceIndex) {
-    osSyncPrintf(VT_FGCOL(BLUE));
-    osSyncPrintf("\n\n\nＦＩＬＥ＿ＮＯ＝%x\n\n\n", gSaveContext.fileNum);
-    osSyncPrintf(VT_RST);
-    if (gSaveContext.fileNum == 0xFF) {
-        func_800A82C8();
-        gSaveContext.unk_13F6 = gSaveContext.magic;
-        gSaveContext.magic = 0;
-        gSaveContext.unk_13F4 = 0;
-        gSaveContext.magicLevel = gSaveContext.magic;
-    }
-    gSaveContext.buttonStatus[4] = BTN_ENABLED;
-    gSaveContext.buttonStatus[3] = BTN_ENABLED;
-    gSaveContext.buttonStatus[2] = BTN_ENABLED;
-    gSaveContext.buttonStatus[1] = BTN_ENABLED;
-    gSaveContext.buttonStatus[0] = BTN_ENABLED;
-    gSaveContext.unk_13E7 = gSaveContext.unk_13E8 = gSaveContext.unk_13EA = gSaveContext.unk_13EC = 0;
-    Audio_SetBGM(NA_BGM_STOP);
-    gSaveContext.entranceIndex = entranceIndex;
-    gSaveContext.respawnFlag = 0;
-    gSaveContext.respawn[0].entranceIndex = -1;
-    gSaveContext.seqIndex = 0xFF;
-    gSaveContext.nightSeqIndex = 0xFF;
-    gSaveContext.unk_13C7 = 1;
-    D_8011FB30 = 0;
-    this->state.running = false;
-    SET_NEXT_GAMESTATE(&this->state, Gameplay_Init, GlobalContext)
-}
+static MapEntry sOverworld[] = {
+    { "hyrule field", Select_LoadGame, 0x000000CD },
+    { "kokiri forest", Select_LoadGame, 0x000000EE },
+    { "kakariko village", Select_LoadGame, 0x000000DB },
+    { "goron city", Select_LoadGame, 0x0000014D },
+    { "zora's domain", Select_LoadGame, 0x00000108 },
+    { "lon lon ranch", Select_LoadGame, 0x00000157 },
+    { "temple of time", Select_LoadGame, 0x00000053 },
+    { "lost woods", Select_LoadGame, 0x0000011E },
+    { "sacred forest meadow", Select_LoadGame, 0x000000FC },
+    { "death mountain trail", Select_LoadGame, 0x0000013D },
+    { "death mountain crater", Select_LoadGame, 0x00000147 },
+    { "zora's river", Select_LoadGame, 0x000000EA },
+    { "zora's fountain", Select_LoadGame, 0x0000010E },
+    { "lake hylia", Select_LoadGame, 0x00000102 },
+    { "hyrule castle", Select_LoadGame, 0x00000138 },
+    { "gerudo valley", Select_LoadGame, 0x00000117 },
+    { "gerudo's fortress", Select_LoadGame, 0x00000129 },
+    { "haunted wasteland", Select_LoadGame, 0x00000130 },
+    { "desert colossus", Select_LoadGame, 0x00000123 },
+    { "graveyard", Select_LoadGame, 0x000000E4 },
+};
 
 static MapEntry sDungeons[] = {
     { "deku tree", Select_LoadGame, 0x00000000 },
@@ -66,30 +59,34 @@ static MapEntry sDungeons[] = {
     { "spirit temple", Select_LoadGame, 0x00000082 },
     { "ice cavern", Select_LoadGame, 0x00000088 },
     { "bottom of the well", Select_LoadGame, 0x00000098 },
+    { "gerudo training ground", Select_LoadGame, 0x00000008 },
+    { "thieves' hideout", Select_LoadGame, 0x00000486 },
     { "ganon's castle", Select_LoadGame, 0x00000467 },
+    { "castle collapse", Select_LoadGame, 0x00000179 },
 };
+
+static MapEntry sBosses[] = {
+    { "gohma", Select_LoadGame, 0x0000040F },
+    { "king dodongo", Select_LoadGame, 0x0000040B },
+    { "barinade", Select_LoadGame, 0x00000301 },
+    { "phantom ganon", Select_LoadGame, 0x0000000C },
+    { "volvagia", Select_LoadGame, 0x00000305 },
+    { "morpha", Select_LoadGame, 0x00000417 },
+    { "bongo bongo", Select_LoadGame, 0x00000413 },
+    { "twinrova", Select_LoadGame, 0x0000008D },
+    { "ganondorf", Select_LoadGame, 0x0000041F },
+    { "ganon", Select_LoadGame, 0x00000517 },
+};
+
+SelectPage sPages[] = {
+    { "overworld", &sOverworld },
+    { "dungeons", &sDungeons },
+    { "bosses", &sBosses },
+};
+
 /*
 static MapEntry sMaps[] = {
-    { "hyrule field", Select_LoadGame, 0x000000CD },
-    { " 2:SPOT01", Select_LoadGame, 0x000000DB },
-    { " 3:SPOT02", Select_LoadGame, 0x000000E4 },
-    { " 4:SPOT03", Select_LoadGame, 0x000000EA },
-    { " 5:SPOT04", Select_LoadGame, 0x000000EE },
-    { " 6:SPOT05", Select_LoadGame, 0x000000FC },
-    { " 7:SPOT06", Select_LoadGame, 0x00000102 },
-    { " 8:SPOT07", Select_LoadGame, 0x00000108 },
-    { " 9:SPOT08", Select_LoadGame, 0x0000010E },
-    { "10:SPOT09", Select_LoadGame, 0x00000117 },
-    { "11:SPOT10", Select_LoadGame, 0x0000011E },
-    { "12:SPOT11", Select_LoadGame, 0x00000123 },
-    { "13:SPOT12", Select_LoadGame, 0x00000129 },
-    { "14:SPOT13", Select_LoadGame, 0x00000130 },
-    { "15:SPOT15", Select_LoadGame, 0x00000138 },
-    { "16:SPOT16", Select_LoadGame, 0x0000013D },
-    { "17:SPOT17", Select_LoadGame, 0x00000147 },
-    { "18:SPOT18", Select_LoadGame, 0x0000014D },
-    { "19:SPOT20", Select_LoadGame, 0x00000157 },
-    { "20:\x8Dﾄｷﾉﾏ", Select_LoadGame, 0x00000053 },
+    { "temple of time", Select_LoadGame, 0x00000053 },
     { "21:\x8Dｹﾝｼﾞｬﾉﾏ", Select_LoadGame, 0x0000006B },
     { "22:\x8Dｼｬﾃｷｼﾞｮｳ", Select_LoadGame, 0x0000003B },
     { "23:\x8Cﾊｲﾗﾙ\x8Dﾆﾜ\x8Cｹﾞｰﾑ", Select_LoadGame, 0x0000007A },
@@ -136,29 +133,29 @@ static MapEntry sMaps[] = {
     { "64:\x8Dｵﾒﾝﾔ", Select_LoadGame, 0x00000530 },
     { "65:\x8Cｹﾞﾙﾄﾞ\x8Dﾉｼｭｳﾚﾝｼﾞｮｳ", Select_LoadGame, 0x00000008 },
     { "66:\x8Dﾖｳｾｲﾉｷﾉ \x8Cﾀﾞﾝｼﾞｮﾝ", Select_LoadGame, 0x00000000 },
-    { "67:\x8Dﾖｳｾｲﾉｷﾉ \x8Cﾀﾞﾝｼﾞｮﾝ ﾎﾞｽ", Select_LoadGame, 0x0000040F },
+    
     { "68:\x8Cﾄﾞﾄﾞﾝｺﾞ ﾀﾞﾝｼﾞｮﾝ", Select_LoadGame, 0x00000004 },
-    { "69:\x8Cﾄﾞﾄﾞﾝｺﾞ ﾀﾞﾝｼﾞｮﾝ ﾎﾞｽ", Select_LoadGame, 0x0000040B },
+    
     { "70:\x8Dｷｮﾀﾞｲｷﾞｮ \x8Cﾀﾞﾝｼﾞｮﾝ", Select_LoadGame, 0x00000028 },
-    { "71:\x8Dｷｮﾀﾞｲｷﾞｮ \x8Cﾀﾞﾝｼﾞｮﾝ ﾎﾞｽ", Select_LoadGame, 0x00000301 },
+    
     { "72:\x8Dﾓﾘﾉｼﾝﾃﾞﾝ", Select_LoadGame, 0x00000169 },
-    { "73:\x8Dﾓﾘﾉｼﾝﾃﾞﾝ \x8Cﾎﾞｽ", Select_LoadGame, 0x0000000C },
+    
     { "74:\x8Dｲﾄﾞｼﾀ \x8Cﾀﾞﾝｼﾞｮﾝ", Select_LoadGame, 0x00000098 },
     { "75:\x8Dﾊｶｼﾀ \x8Cﾀﾞﾝｼﾞｮﾝ", Select_LoadGame, 0x00000037 },
-    { "76:\x8Dﾊｶｼﾀ \x8Cﾀﾞﾝｼﾞｮﾝ ﾎﾞｽ", Select_LoadGame, 0x00000413 },
+    
     { "77:\x8Dﾋﾉｼﾝﾃﾞﾝ", Select_LoadGame, 0x00000165 },
-    { "78:\x8Dﾋﾉｼﾝﾃﾞﾝ \x8Cﾎﾞｽ", Select_LoadGame, 0x00000305 },
+    
     { "79:\x8Dﾐｽﾞﾉｼﾝﾃﾞﾝ", Select_LoadGame, 0x00000010 },
-    { "80:\x8Dﾐｽﾞﾉｼﾝﾃﾞﾝ \x8Cﾎﾞｽ", Select_LoadGame, 0x00000417 },
+    
     { "81:\x8Dｼﾞｬｼﾝｿﾞｳ \x8Cﾀﾞﾝｼﾞｮﾝ", Select_LoadGame, 0x00000082 },
-    { "82:\x8Dｼﾞｬｼﾝｿﾞｳ \x8Cﾀﾞﾝｼﾞｮﾝ ｱｲｱﾝﾅｯｸ", Select_LoadGame, 0x0000008D },
+    
     { "83:\x8Dｼﾞｬｼﾝｿﾞｳ \x8Cﾀﾞﾝｼﾞｮﾝ ﾎﾞｽ", Select_LoadGame, 0x000005EC },
     { "84:\x8Cｶﾞﾉﾝ\x8Dﾉﾄｳ", Select_LoadGame, 0x0000041B },
-    { "85:\x8Cｶﾞﾉﾝ\x8Dﾉﾄｳ\x8Cﾎﾞｽ", Select_LoadGame, 0x0000041F },
+    
     { "86:\x8Dｺｵﾘﾉﾄﾞｳｸﾂ", Select_LoadGame, 0x00000088 },
     { "87:\x8Dﾊｶｼﾀ\x8Cﾘﾚｰ", Select_LoadGame, 0x0000044F },
     { "88:\x8Cｶﾞﾉﾝ\x8Dﾁｶ \x8Cﾀﾞﾝｼﾞｮﾝ", Select_LoadGame, 0x00000467 },
-    { "89:\x8Cｶﾞﾉﾝ\x8Dｻｲｼｭｳｾﾝ \x8Cﾃﾞﾓ & ﾊﾞﾄﾙ", Select_LoadGame, 0x00000517 },
+    
     { "90:\x8Cｶﾞﾉﾝ\x8Dﾉﾄｳ ｿﾉｺﾞ 1", Select_LoadGame, 0x00000179 },
     { "91:\x8Cｶﾞﾉﾝ\x8Dﾉﾄｳ ｿﾉｺﾞ 2", Select_LoadGame, 0x000001B5 },
     { "92:\x8Cｶﾞﾉﾝ\x8Dﾉﾄｳ ｿﾉｺﾞ 3", Select_LoadGame, 0x000003DC },
@@ -199,6 +196,42 @@ static MapEntry sMaps[] = {
 };
 */
 
+void Select_LoadTitle(SelectContext* this) {
+    this->state.running = false;
+    SET_NEXT_GAMESTATE(&this->state, Title_Init, TitleContext);
+}
+
+void Select_LoadGame(SelectContext* this, s32 entranceIndex) {
+    osSyncPrintf(VT_FGCOL(BLUE));
+    osSyncPrintf("\n\n\nＦＩＬＥ＿ＮＯ＝%x\n\n\n", gSaveContext.fileNum);
+    osSyncPrintf(VT_RST);
+    if (gSaveContext.fileNum == 0xFF) {
+        func_800A82C8();
+        gSaveContext.unk_13F6 = gSaveContext.magic;
+        gSaveContext.magic = 0;
+        gSaveContext.unk_13F4 = 0;
+        gSaveContext.magicLevel = gSaveContext.magic;
+    }
+    gSaveContext.buttonStatus[4] = BTN_ENABLED;
+    gSaveContext.buttonStatus[3] = BTN_ENABLED;
+    gSaveContext.buttonStatus[2] = BTN_ENABLED;
+    gSaveContext.buttonStatus[1] = BTN_ENABLED;
+    gSaveContext.buttonStatus[0] = BTN_ENABLED;
+    gSaveContext.unk_13E7 = gSaveContext.unk_13E8 = gSaveContext.unk_13EA = gSaveContext.unk_13EC = 0;
+    Audio_SetBGM(NA_BGM_STOP);
+    gSaveContext.entranceIndex = entranceIndex;
+    gSaveContext.respawnFlag = 0;
+    gSaveContext.respawn[0].entranceIndex = -1;
+    gSaveContext.seqIndex = 0xFF;
+    gSaveContext.nightSeqIndex = 0xFF;
+    gSaveContext.unk_13C7 = 1;
+    D_8011FB30 = 0;
+    this->state.running = false;
+    SET_NEXT_GAMESTATE(&this->state, Gameplay_Init, GlobalContext)
+}
+
+
+
 void Select_UpdateMenu(SelectContext* this) {
     Input* pad1;
     s32 pad;
@@ -210,7 +243,7 @@ void Select_UpdateMenu(SelectContext* this) {
 
         // select map
         if (CHECK_PAD(pad1->press, A_BUTTON) || CHECK_PAD(pad1->press, START_BUTTON)) {
-            selectedMap = &this->maps[this->currentMap];
+            selectedMap = &CURRENT_PAGE.scenes[this->currentMap];
             if (selectedMap->loadFunc != NULL) {
                 selectedMap->loadFunc(this, selectedMap->entranceIndex);
             }
@@ -354,11 +387,11 @@ void Select_PrintMenu(SelectContext* this, GfxPrint* printer) {
 
     GfxPrint_SetColor(printer, 60, 185, 250, 255);
     GfxPrint_SetPos(printer, 12, 2);
-    GfxPrint_Printf(printer, "ZELDA MAP SELECT");
+    GfxPrint_Printf(printer, "SCENE SELECT");
     GfxPrint_SetColor(printer, 255, 255, 255, 255);
 
     for (i = 0; i < 20; i++) {
-        if (i == ARRAY_COUNT(sDungeons)) {
+        if (i == this->count) {
             break;
         }
         GfxPrint_SetPos(printer, 9, i + 4);
@@ -370,7 +403,7 @@ void Select_PrintMenu(SelectContext* this, GfxPrint* printer) {
             GfxPrint_SetColor(printer, 255, 255, 255, 255);
         }
 
-        name = this->maps[map].name;
+        name = &CURRENT_PAGE.scenes[this->currentMap].name;
         if (name == NULL) {
             name = "**Null**";
         }
@@ -426,9 +459,9 @@ void Select_PrintCutsceneSetting(SelectContext* this, GfxPrint* printer) {
     } else {
         gSaveContext.cutsceneIndex = 0xFFF0 + this->cutscene;
         if (this->cutscene < 10) {
-            GfxPrint_Printf(printer, "cs: 0%d", this->cutscene);
+            GfxPrint_Printf(printer, "cutscene: 0%d", this->cutscene);
         } else {
-            GfxPrint_Printf(printer, "cs: %d", this->cutscene);
+            GfxPrint_Printf(printer, "cutscene: %d", this->cutscene);
         }
     }
 }
@@ -533,9 +566,9 @@ void Select_Init(SelectContext* this) {
 
     this->state.main = Select_Main;
     this->state.destroy = Select_Destroy;
-    this->maps = sDungeons;
+    
     this->unk_20C = 0;
-    this->currentMap = 0;
+    
     this->unk_1E0[0] = 0;
     this->unk_1E0[1] = 0x13;
     this->unk_1E0[2] = 0x25;
@@ -544,8 +577,8 @@ void Select_Init(SelectContext* this) {
     this->unk_1E0[5] = 0x49;
     this->unk_1E0[6] = 0x5B;
     this->unk_1DC = 0;
-    this->time = 0;
-    this->count = 126;
+    
+    
     View_Init(&this->view, this->state.gfxCtx);
     this->view.flags = 0xA;
     this->unk_21C = 0;
@@ -555,6 +588,11 @@ void Select_Init(SelectContext* this) {
     this->unk_22C = 0;
     this->unk_230 = 0;
     this->unk_234 = 0;
+    this->pages = sPages;
+    this->currentPage = 0;
+    this->count = CURRENT_PAGE_COUNT;
+    this->maps = sDungeons;
+    this->currentMap = 0;
     gSaveContext.linkAge = 0;
     this->time = SELECT_MORNING;
     this->cutscene = SELECT_CS_NONE;

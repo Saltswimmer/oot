@@ -1143,6 +1143,11 @@ typedef struct {
 } MapEntry; // size = 0xC
 
 typedef struct {
+    char* name;
+    MapEntry* scenes;
+} SelectPage;
+
+typedef struct {
     /* 0x0000 */ GameState state;
     /* 0x00A4 */ s32 unk_A4;
     /* 0x00A8 */ View view;
@@ -1169,6 +1174,8 @@ typedef struct {
     /* 0x0238 */ void* staticSegment;
     /* 0x023C */ s32 unk_23C;
     /* 0x0240 */ s16 cutscene;
+    /* 0x0244 */ SelectPage* pages;
+    /* 0x0248 */ s32 currentPage;
 } SelectContext; // size = 0x242
 
 typedef struct {
