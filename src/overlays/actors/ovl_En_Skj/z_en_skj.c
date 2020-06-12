@@ -9,6 +9,19 @@ void EnSkj_Destroy(Actor* thisx, GlobalContext* globalCtx);
 void EnSkj_Update(Actor* thisx, GlobalContext* globalCtx);
 void EnSkj_Draw(Actor* thisx, GlobalContext* globalCtx);
 
+void func_80B00964(Actor* thisx, GlobalContext* globalCtx); // update for params 5
+void func_80B01244(Actor* thisx, GlobalContext* globalCtx); // update for params 6
+
+void func_80B00A54(EnSkj* this, GlobalContext* globalCtx);
+
+typedef struct {
+    s8 unk0;
+    EnSkj* unk4;
+} unkSkjStruct;
+
+unkSkjStruct D_80B01640 = { 0, NULL };
+unkSkjStruct D_80B01648[] = { { 0, NULL }, { 0, NULL } };
+
 /*
 const ActorInit En_Skj_InitVars = {
     ACTOR_EN_SKJ,
@@ -22,6 +35,25 @@ const ActorInit En_Skj_InitVars = {
     (ActorFunc)EnSkj_Draw,
 };
 */
+static ColliderCylinderInit_Set3 sCylinderInit = {
+    { COLTYPE_UNK10, 0x11, 0x09, 0x00, COLSHAPE_CYLINDER },
+    { 0x00, { 0xFFCFFFFF, 0x00, 0x08 }, { 0xFFCFFFFF, 0x00, 0x00 }, 0x01, 0x01, 0x01 },
+    { 8, 48, 0, { 0, 0, 0 } },
+};
+
+static DamageTable sDamageTable = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0xF1, 0xF2, 0xF4, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04, 0x02, 0x02, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00,
+};
+
+static InitChainEntry sInitChain[] = {
+    ICHAIN_U8(unk_1F, 2, ICHAIN_CONTINUE),
+    ICHAIN_F32(unk_4C, 30, ICHAIN_STOP),
+};
+
+extern AnimationHeader D_06000E10;
+extern SkeletonHeader D_06005F40;
+
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE2B0.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE338.s")
@@ -30,7 +62,98 @@ const ActorInit En_Skj_InitVars = {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE428.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Init.s")
+//#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Init.s")
+void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
+    s16 paramsType;
+    EnSkj* this = THIS;
+    Player* player;
+    unkSkjStruct* thing;
+
+    paramsType = ((this->actor.params >> 0xA) & 0x3F);
+    Actor_ProcessInitChain(&this->actor, &sInitChain);
+    thing = &D_80B01640;
+    switch (paramsType) {
+        case 5:
+            thing->unk0 = 1;
+            thing->unk4 = this;
+            this->actor.flags &= ~5;
+            this->actor.destroy = NULL;
+            this->actor.draw = NULL;
+            this->actor.update = func_80B00964;
+            Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_PROP);
+            break;
+        case 6:
+            thing->unk0 = 1;
+            thing->unk4 = this;
+            this->actor.flags &= ~5;
+            this->actor.destroy = NULL;
+            this->actor.draw = NULL;
+            this->actor.update = func_80B01244;
+            Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_PROP);
+            this->actor.posRot2.pos.x = 1230.0f;
+            this->actor.posRot2.pos.y = -90.0f;
+            this->actor.posRot2.pos.z = 450.0f;
+            this->actionFunc = func_80B00A54;
+            break;
+        default:
+            this->actor.params = paramsType;
+            // switch?
+            if ((this->actor.params != 0) && (this->actor.params != 1) && (this->actor.params != 2)) {
+                if (INV_CONTENT(ITEM_TRADE_ADULT) < ITEM_SAW) {
+                    Actor_Kill(&this->actor);
+                    return;
+                }
+            }
+            func_80AFE428(this);
+            SkelAnime_InitSV(globalCtx, &this->skelAnime, &D_06005F40, &D_06000E10, this->limbDrawTable,
+                             this->transitionDrawTable, 0x13);
+            if ((paramsType >= 0) && (paramsType < 3)) {
+                this->actor.flags &= ~5;
+                this->actor.flags |= 9;
+                Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_NPC);
+            }
+            if (((paramsType) < 0) || ((paramsType) >= 7)) {
+                this->actor.flags &= ~02000000;
+            } // empty else
+
+            if (((paramsType) > 0) && ((paramsType) < 3)) {
+                this->actor.unk_1F = 7;
+                this->posCopy = this->actor.posRot.pos;
+                // temp?
+                D_80B01648[paramsType].unk0 = 1;
+                D_80B01648[paramsType].unk4 = this;
+                this->unk_2D8 = 0;
+                this->unk_2DC = 0;
+                func_80B00514(this);
+            } else {
+                this->unk_2DC = 0xFF;
+                func_80AFF038(this);
+            }
+            this->actor.colChkInfo.damageTable = &sDamageTable;
+            this->actor.colChkInfo.health = 10;
+            Collider_InitCylinder(globalCtx, &this->collider);
+            Collider_SetCylinder_Set3(globalCtx, &this->collider, &this->actor, &sCylinderInit);
+            ActorShape_Init(&this->actor.shape, 0.0f, ActorShadow_DrawFunc_Circle, 40.0f);
+            Actor_SetScale(&this->actor, 0.01f);
+            this->unk_2C4 = 0;
+            this->actor.textId = 0;
+            this->unk_2CA = 0;
+            this->unk_2D2 = 0;
+            this->unk_2D4 = 3;
+            this->unk_2D5 = 3;
+            this->actor.speedXZ = 0.0f;
+            this->actor.velocity.y =  0.0f;
+            this->actor.gravity = -1.0f;
+            func_80AFE390(this);
+            player = PLAYER;
+            osSyncPrintf("Player_X : %f\n", player->actor.posRot.pos.x);
+            osSyncPrintf("Player_Z : %f\n", player->actor.posRot.pos.z);
+            osSyncPrintf("World_X  : %f\n", this->actor.posRot.pos.x);
+            osSyncPrintf("World_Z  : %f\n", this->actor.posRot.pos.z);
+            osSyncPrintf("Center_X : %f\n", this->center.x);
+            osSyncPrintf("Center_Z : %f\n\n", this->center.z);   
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Destroy.s")
 
