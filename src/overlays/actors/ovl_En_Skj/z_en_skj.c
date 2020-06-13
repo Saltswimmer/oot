@@ -22,8 +22,6 @@ typedef struct {
 unkSkjStruct D_80B01640 = { 0, NULL };
 unkSkjStruct D_80B01648[] = { { 0, NULL }, { 0, NULL } };
 
-
-/*
 const ActorInit En_Skj_InitVars = {
     ACTOR_EN_SKJ,
     ACTORTYPE_ENEMY,
@@ -35,7 +33,7 @@ const ActorInit En_Skj_InitVars = {
     (ActorFunc)EnSkj_Update,
     (ActorFunc)EnSkj_Draw,
 };
-*/
+
 
 static ColliderCylinderInit_Set3 sCylinderInit = {
     { COLTYPE_UNK10, 0x11, 0x09, 0x00, COLSHAPE_CYLINDER },
@@ -71,17 +69,22 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
     s16 paramsType;
     EnSkj* this = THIS;
     Player* player;
+    s32* flags;
+    //s32* flagsptr;
 
     paramsType = ((thisx->params >> 0xA) & 0x3F);
     Actor_ProcessInitChain(thisx, &sInitChain);
     switch (paramsType) {
         case 5:
+            *flags = this->actor.flags & ~5;
             D_80B01640.unk0 = 1;
             D_80B01640.unk4 = THIS;
-            this->actor.flags &= ~5;
+            
+            this->actor.flags = this->actor.flags & ~5;
             this->actor.destroy = NULL;
             this->actor.draw = NULL;
             this->actor.update = func_80B00964;
+            this->actor.flags = *flags;
             Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_PROP);
             break;
         case 6:
