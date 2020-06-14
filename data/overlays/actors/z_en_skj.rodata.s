@@ -53,36 +53,7 @@ glabel D_80B01870
     .asciz "../z_en_skj.c"
     .balign 4
 
-glabel jtbl_80B01880
-.word L80AFE378
-.word L80AFE380
-.word L80AFE380
-.word L80AFE378
-.word L80AFE378
-.word L80AFE380
-.word L80AFE380
-.word L80AFE380
-.word L80AFE380
-.word L80AFE378
-.word L80AFE380
-.word L80AFE380
-.word L80AFE380
-.word L80AFE380
-.word L80AFE380
-.word L80AFE380
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
-.word L80AFE378
+
 glabel D_80B018F4
     .float 3.14159274101
     .balign 4

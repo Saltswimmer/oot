@@ -1,3 +1,24 @@
+.late_rodata
+glabel jtbl_80B01880
+.word first case 0
+.word first case 3
+.word first case 4
+.word first case 9
+.word first case 16
+.word first case 17
+.word first case 18
+.word first case 19
+.word first case 20
+.word first case 21
+.word first case 22
+.word first case 23
+.word first case 24
+.word first case 25
+.word first case 26
+.word first case 27
+.word first case 28
+
+.text
 glabel func_80AFE338
 /* 00088 80AFE338 AFA50004 */  sw      $a1, 0x0004($sp)           
 /* 0008C 80AFE33C 30A500FF */  andi    $a1, $a1, 0x00FF           ## $a1 = 00000000
@@ -15,7 +36,7 @@ glabel func_80AFE338
 /* 000BC 80AFE36C 8C381880 */  lw      $t8, %lo(jtbl_80B01880)($at)  
 /* 000C0 80AFE370 03000008 */  jr      $t8                        
 /* 000C4 80AFE374 00000000 */  nop
-glabel L80AFE378
+glabel first
 /* 000C8 80AFE378 03E00008 */  jr      $ra                        
 /* 000CC 80AFE37C A08002D3 */  sb      $zero, 0x02D3($a0)         ## 000002D3
 glabel L80AFE380

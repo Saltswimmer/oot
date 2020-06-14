@@ -13,6 +13,39 @@ void func_80B00964(Actor* thisx, GlobalContext* globalCtx); // update for params
 void func_80B01244(Actor* thisx, GlobalContext* globalCtx); // update for params 6
 
 void func_80B00A54(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFE390(EnSkj* this);
+void func_80B00514(EnSkj* this);
+
+// actionFuncs
+void func_80AFEECC(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFEF98(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF07C(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF19C(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF220(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF2E0(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF380(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF424(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF620(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF688(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFF7D8(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFFA0C(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFFD14(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFFD84(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFFE44(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFFED4(EnSkj* this, GlobalContext* globalCtx);
+void func_80AFFF58(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00018(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00098(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00130(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00210(EnSkj* this, GlobalContext* globalCtx);
+void func_80B002D8(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00390(EnSkj* this, GlobalContext* globalCtx);
+void func_80B0042C(EnSkj* this, GlobalContext* globalCtx);
+void func_80B0049C(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00554(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00638(EnSkj* this, GlobalContext* globalCtx);
+void func_80B006B0(EnSkj* this, GlobalContext* globalCtx);
+void func_80B00740(EnSkj* this, GlobalContext* globalCtx);
 
 typedef struct {
     s8 unk0;
@@ -34,7 +67,6 @@ const ActorInit En_Skj_InitVars = {
     (ActorFunc)EnSkj_Draw,
 };
 
-
 static ColliderCylinderInit_Set3 sCylinderInit = {
     { COLTYPE_UNK10, 0x11, 0x09, 0x00, COLSHAPE_CYLINDER },
     { 0x00, { 0xFFCFFFFF, 0x00, 0x08 }, { 0xFFCFFFFF, 0x00, 0x00 }, 0x01, 0x01, 0x01 },
@@ -51,49 +83,151 @@ static InitChainEntry sInitChain[] = {
     ICHAIN_F32(unk_4C, 30, ICHAIN_STOP),
 };
 
+typedef struct {
+    AnimationHeader* header;
+    u8 unk1;
+    f32 transitionRate;
+} EnSkjAnim;
+
+EnSkjAnim sAnimations[] = {
+    { 0x0600051C, 0x02, 0.0f }, { 0x060007A4, 0x02, 0.0f }, { 0x06000E10, 0x00, 0.0f }, { 0x06006A98, 0x02, 0.0f },
+    { 0x06006D84, 0x02, 0.0f }, { 0x06007128, 0x02, 0.0f }, { 0x06008174, 0x00, 0.0f }, { 0x06008374, 0x00, 0.0f },
+    { 0x06008E14, 0x00, 0.0f }, { 0x06008B9C, 0x00, 0.0f },
+};
+
+EnSkjActionFunc sActionFuncs[] = {
+    func_80AFEECC,
+    func_80AFEF98,
+    func_80AFF07C,
+    func_80AFF19C,
+    func_80AFF220,
+    func_80AFF2E0,
+    func_80AFF380,
+    func_80AFF424,
+    func_80AFF620,
+    func_80AFF688,
+    func_80AFF7D8,
+    func_80AFFA0C,
+    func_80AFFD14,
+    func_80AFFD84,
+    func_80AFFE44,
+    func_80AFFED4,
+    func_80AFFF58,
+    func_80B00018,
+    func_80B00098,
+    func_80B00130,
+    func_80B00210,
+    func_80B002D8,
+    func_80B00390,
+    func_80B0042C,
+    func_80B0049C,
+    func_80B00554,
+    func_80B00638,
+    func_80B006B0,
+    func_80B00740,
+};
+
 extern AnimationHeader D_06000E10;
 extern SkeletonHeader D_06005F40;
 
+// EnSkj_ChangeAnimation
+void func_80AFE2B0(EnSkj* this, u8 animID) {
+    f32 frameCount;
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE2B0.s")
+    frameCount = SkelAnime_GetFrameCount(sAnimations[animID].header);
+    this->currentAnim = animID;
+    SkelAnime_ChangeAnim(&this->skelAnime, sAnimations[animID].header, 1.0f, 0.0f, frameCount, sAnimations[animID].unk1,
+                         sAnimations[animID].transitionRate);
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE338.s")
+// EnSkj_SetupAction
+void func_80AFE338(EnSkj* this, u8 action) {
+    this->action = action;
+    this->actionFunc = sActionFuncs[action];
+    switch (action) {
+        case 0:
+        case 3:
+        case 4:
+        case 9:
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+        case 21:
+        case 22:
+        case 23:
+        case 24:
+        case 25:
+        case 26:
+        case 27:
+        case 28:
+            this->unk_2D3 = 0;
+            break;
+        default:
+            this->unk_2D3 = 1;
+            break;
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE390.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFE428.s")
+// EnSkj_SetNaviEnemyID
+void func_80AFE428(EnSkj* this) {
+    switch (this->actor.params) {
+        case 0:
+            if ((gSaveContext.itemGetInf[3] & 0x200) != 0) {
+                this->actor.naviEnemyId = 0x41;
+                return;
+            } else {
+                if ((gSaveContext.itemGetInf[1] & 0x40) != 0) {
+                    this->actor.naviEnemyId = 0x40;
+                    return;
+                } else {
+                    this->actor.naviEnemyId = 0x3F;
+                    return;
+                }
+            }
+            break;
+        case 1:
+        case 2:
+            this->actor.naviEnemyId = 0x3F;
+            break;
+        default:
+            this->actor.naviEnemyId = 0x36;
+            break;
+    }
+}
 
 //#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Init.s")
-
 void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
     s16 paramsType;
     EnSkj* this = THIS;
+    s32 pad;
+    s32 pad1;
     Player* player;
-    s32* flags;
-    //s32* flagsptr;
 
     paramsType = ((thisx->params >> 0xA) & 0x3F);
     Actor_ProcessInitChain(thisx, &sInitChain);
     switch (paramsType) {
         case 5:
-            *flags = this->actor.flags & ~5;
             D_80B01640.unk0 = 1;
             D_80B01640.unk4 = THIS;
-            
-            this->actor.flags = this->actor.flags & ~5;
+
             this->actor.destroy = NULL;
             this->actor.draw = NULL;
             this->actor.update = func_80B00964;
-            this->actor.flags = *flags;
+            this->actor.flags = this->actor.flags &= ~5;
             Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_PROP);
             break;
         case 6:
             D_80B01640.unk0 = 1;
             D_80B01640.unk4 = THIS;
-            this->actor.flags &= ~5;
+
             this->actor.destroy = NULL;
             this->actor.draw = NULL;
             this->actor.update = func_80B01244;
+            this->actor.flags = this->actor.flags &= ~5;
             Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_PROP);
             this->actor.posRot2.pos.x = 1230.0f;
             this->actor.posRot2.pos.y = -90.0f;
@@ -102,13 +236,14 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
             break;
         default:
             this->actor.params = paramsType;
-            // switch?
+
             if ((this->actor.params != 0) && (this->actor.params != 1) && (this->actor.params != 2)) {
                 if (INV_CONTENT(ITEM_TRADE_ADULT) < ITEM_SAW) {
                     Actor_Kill(&this->actor);
                     return;
                 }
             }
+
             func_80AFE428(this);
             SkelAnime_InitSV(globalCtx, &this->skelAnime, &D_06005F40, &D_06000E10, this->limbDrawTable,
                              this->transitionDrawTable, 0x13);
@@ -117,16 +252,16 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
                 this->actor.flags |= 9;
                 Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_NPC);
             }
+
             if (((paramsType) < 0) || ((paramsType) >= 7)) {
-                this->actor.flags &= ~02000000;
-            } // empty else
+                this->actor.flags &= ~0x02000000;
+            }
 
             if (((paramsType) > 0) && ((paramsType) < 3)) {
                 this->actor.unk_1F = 7;
                 this->posCopy = this->actor.posRot.pos;
-                // temp?
-                D_80B01648[paramsType].unk0 = 1;
-                D_80B01648[paramsType].unk4 = THIS;
+                D_80B01648[paramsType - 1].unk0 = 1;
+                D_80B01648[paramsType - 1].unk4 = THIS;
                 this->unk_2D8 = 0;
                 this->unk_2DC = 0;
                 func_80B00514(this);
@@ -134,6 +269,7 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
                 this->unk_2DC = 0xFF;
                 func_80AFF038(this);
             }
+
             this->actor.colChkInfo.damageTable = &sDamageTable;
             this->actor.colChkInfo.health = 10;
             Collider_InitCylinder(globalCtx, &this->collider);
@@ -147,7 +283,7 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
             this->unk_2D4 = 3;
             this->unk_2D5 = 3;
             this->actor.speedXZ = 0.0f;
-            this->actor.velocity.y =  0.0f;
+            this->actor.velocity.y = 0.0f;
             this->actor.gravity = -1.0f;
             func_80AFE390(this);
             player = PLAYER;
@@ -156,10 +292,10 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
             osSyncPrintf("World_X  : %f\n", this->actor.posRot.pos.x);
             osSyncPrintf("World_Z  : %f\n", this->actor.posRot.pos.z);
             osSyncPrintf("Center_X : %f\n", this->center.x);
-            osSyncPrintf("Center_Z : %f\n\n", this->center.z);   
+            osSyncPrintf("Center_Z : %f\n\n", this->center.z);
+            break;
     }
 }
-
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Destroy.s")
 
@@ -277,7 +413,11 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B0049C.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00514.s")
+void func_80B00514(EnSkj* this) {
+    this->actor.flags &= ~1;
+    func_80AFE2B0(this, 9); // TODO: animation enum
+    func_80AFE338(this, 25); // TODO: action enum
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00554.s")
 

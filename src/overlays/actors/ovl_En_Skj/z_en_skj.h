@@ -21,8 +21,8 @@ typedef struct EnSkj {
     /* 0x02CA */ s16 unk_2CA;
     /* 0x02CC */ s16 unk_2CC;
     /* 0x02CE */ s16 unk_2CE;
-    /* 0x02D0 */ char unk_2D0[0x1];
-    /* 0x02D1 */ s8 unk_2D1;
+    /* 0x02D0 */ u8 currentAnim;
+    /* 0x02D1 */ u8 action;
     /* 0x02D2 */ s8 unk_2D2;
     /* 0x02D3 */ s8 unk_2D3;
     /* 0x02D4 */ s8 unk_2D4;
