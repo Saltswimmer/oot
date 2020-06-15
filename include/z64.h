@@ -116,6 +116,7 @@ typedef struct {
     /* 0x003C */ u8           doubleMagic;
     /* 0x003D */ u8           doubleDefense;
     /* 0x003E */ s8           bgsFlag;
+    /* 0x003F */ u8           ocarinaGameReward;
     /* 0x0040 */ ItemEquips   childEquips;
     /* 0x004A */ ItemEquips   adultEquips;
     /* 0x0054 */ char         unk_54[0x0014];

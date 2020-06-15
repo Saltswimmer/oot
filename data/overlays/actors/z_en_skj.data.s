@@ -11,12 +11,14 @@
 
 glabel D_80B01640
  .word 0x00000000
-glabel D_80B01644
+ glabel D_80B01644
  .word 0x00000000
+
 glabel D_80B01648
  .word 0x00000000
 glabel D_80B0164C
- .word 0x00000000, 0x00000000
+ .word 0x00000000, 
+ 0x00000000
 glabel D_80B01654
  .word 0x00000000
 glabel En_Skj_InitVars

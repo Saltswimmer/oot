@@ -67,7 +67,7 @@ glabel func_80B00C38
 /* 02A84 80B00D34 24010030 */  addiu   $at, $zero, 0x0030         ## $at = 00000030
 /* 02A88 80B00D38 1041003D */  beq     $v0, $at, .L80B00E30       
 /* 02A8C 80B00D3C 00000000 */  nop
-/* 02A90 80B00D40 10000054 */  beq     $zero, $zero, .L80B00E94   
+/* 02A90 80B00D40 10000054 */  beq     $zero, $zero, .RETURN   
 /* 02A94 80B00D44 8FBF001C */  lw      $ra, 0x001C($sp)           
 .L80B00D48:
 /* 02A98 80B00D48 3C1080B0 */  lui     $s0, %hi(D_80B01648)       ## $s0 = 80B00000
@@ -79,7 +79,7 @@ glabel func_80B00C38
 .L80B00D60:
 /* 02AB0 80B00D60 0C03E3FD */  jal     func_800F8FF4              
 /* 02AB4 80B00D64 24044836 */  addiu   $a0, $zero, 0x4836         ## $a0 = 00004836
-/* 02AB8 80B00D68 5440004A */  bnel    $v0, $zero, .L80B00E94     
+/* 02AB8 80B00D68 5440004A */  bnel    $v0, $zero, .RETURN     
 /* 02ABC 80B00D6C 8FBF001C */  lw      $ra, 0x001C($sp)           
 /* 02AC0 80B00D70 8E02000C */  lw      $v0, 0x000C($s0)           ## 80B01654
 /* 02AC4 80B00D74 240C0001 */  addiu   $t4, $zero, 0x0001         ## $t4 = 00000001
@@ -89,7 +89,7 @@ glabel func_80B00C38
 .L80B00D84:
 /* 02AD4 80B00D84 0C041AAA */  jal     func_80106AA8              
 /* 02AD8 80B00D88 02202025 */  or      $a0, $s1, $zero            ## $a0 = 00000000
-/* 02ADC 80B00D8C 10000041 */  beq     $zero, $zero, .L80B00E94   
+/* 02ADC 80B00D8C 10000041 */  beq     $zero, $zero, .RETURN   
 /* 02AE0 80B00D90 8FBF001C */  lw      $ra, 0x001C($sp)           
 .L80B00D94:
 /* 02AE4 80B00D94 3C0280B0 */  lui     $v0, %hi(D_80B01654)       ## $v0 = 80B00000
@@ -100,7 +100,7 @@ glabel func_80B00C38
 .L80B00DA8:
 /* 02AF8 80B00DA8 0C03E3FD */  jal     func_800F8FF4              
 /* 02AFC 80B00DAC 24044836 */  addiu   $a0, $zero, 0x4836         ## $a0 = 00004836
-/* 02B00 80B00DB0 54400038 */  bnel    $v0, $zero, .L80B00E94     
+/* 02B00 80B00DB0 54400038 */  bnel    $v0, $zero, .RETURN     
 /* 02B04 80B00DB4 8FBF001C */  lw      $ra, 0x001C($sp)           
 /* 02B08 80B00DB8 0C041AAA */  jal     func_80106AA8              
 /* 02B0C 80B00DBC 02202025 */  or      $a0, $s1, $zero            ## $a0 = 00000000
@@ -162,7 +162,7 @@ glabel func_80B00C38
 /* 02BDC 80B00E8C A02C04BF */  sb      $t4, 0x04BF($at)           ## 000104BF
 .L80B00E90:
 /* 02BE0 80B00E90 8FBF001C */  lw      $ra, 0x001C($sp)           
-.L80B00E94:
+.RETURN:
 /* 02BE4 80B00E94 8FB00014 */  lw      $s0, 0x0014($sp)           
 /* 02BE8 80B00E98 8FB10018 */  lw      $s1, 0x0018($sp)           
 /* 02BEC 80B00E9C 03E00008 */  jr      $ra                        
