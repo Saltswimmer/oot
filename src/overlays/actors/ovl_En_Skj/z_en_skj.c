@@ -15,6 +15,8 @@ void func_80B01244(Actor* thisx, GlobalContext* globalCtx); // update for params
 void func_80AFE390(EnSkj* this);
 void func_80B00514(EnSkj* this);
 void func_80AFF038(EnSkj* this);
+void func_80B006F8(EnSkj* this);
+void func_80B00680(EnSkj* this);
 
 void func_80B00F2C(EnSkj* this, GlobalContext* globalCtx);
 
@@ -120,11 +122,35 @@ EnSkjAnim sAnimations[] = {
 };
 
 EnSkjActionFunc sActionFuncs[] = {
-    func_80AFEECC, func_80AFEF98, func_80AFF07C, func_80AFF19C, func_80AFF220, func_80AFF2E0,
-    func_80AFF380, func_80AFF424, func_80AFF620, func_80AFF688, func_80AFF7D8, func_80AFFA0C,
-    func_80AFFD14, func_80AFFD84, func_80AFFE44, func_80AFFED4, func_80AFFF58, func_80B00018,
-    func_80B00098, func_80B00130, func_80B00210, func_80B002D8, func_80B00390, func_80B0042C,
-    func_80B0049C, func_80B00554, func_80B00638, func_80B006B0, func_80B00740,
+    func_80AFEECC, // 0
+    func_80AFEF98, // 1
+    func_80AFF07C, // 2
+    func_80AFF19C, // 3
+    func_80AFF220, // 4
+    func_80AFF2E0, // 5
+    func_80AFF380, // 6
+    func_80AFF424, // 7
+    func_80AFF620, // 8
+    func_80AFF688, // 9
+    func_80AFF7D8, // 10
+    func_80AFFA0C, // 11
+    func_80AFFD14, // 12
+    func_80AFFD84, // 13
+    func_80AFFE44, // 14
+    func_80AFFED4, // 15
+    func_80AFFF58, // 16
+    func_80B00018, // 17
+    func_80B00098, // 18
+    func_80B00130, // 19
+    func_80B00210, // 20
+    func_80B002D8, // 21
+    func_80B00390, // 22
+    func_80B0042C, // 23
+    func_80B0049C, // 24
+    func_80B00554, // 25
+    func_80B00638, // 26
+    func_80B006B0, // 27
+    func_80B00740, // 28
 };
 
 s32 D_80B01EA0; // gets set if actor flags & 0x100 is set
@@ -277,10 +303,10 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
                 D_80B01648[type - 1].unk0 = 1;
                 D_80B01648[type - 1].skullkid = THIS;
                 this->unk_2D8 = 0;
-                this->unk_2DC = 0;
+                this->alpha = 0;
                 func_80B00514(this);
             } else {
-                this->unk_2DC = 0xFF;
+                this->alpha = 0xFF;
                 func_80AFF038(this);
             }
 
@@ -372,7 +398,12 @@ void func_80AFF038(EnSkj* this) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFF688.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFF7A0.s")
+void func_80AFF7A0(EnSkj* this) {
+    this->textID = 0x10BC;
+    func_80AFE2B0(this, 9);
+    func_80AFE338(this, 10);
+}
+
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFF7D8.s")
 
@@ -430,7 +461,16 @@ void func_80AFF038(EnSkj* this) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B0047C.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B0049C.s")
+void func_80B0049C(EnSkj *this, GlobalContext *globalCtx) {
+    u8 state;
+    Player* player;
+    
+    if (((state = func_8010BDBC(&globalCtx->msgCtx)), player = PLAYER,  state == 6) && (func_80106BC8(globalCtx))){
+        func_80AFF7A0(this);
+        player->stateFlags2 |= 0x800000;
+        player->unk_6A8 = (Actor*)D_80B01640.skullkid;
+    }
+}
 
 void func_80B00514(EnSkj* this) {
     this->actor.flags &= ~1;
@@ -438,21 +478,58 @@ void func_80B00514(EnSkj* this) {
     func_80AFE338(this, 25); // TODO: action enum
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00554.s")
+void func_80B00554(EnSkj *this, GlobalContext *globalCtx) {
+    if (this->unk_2D7 != 0) {
+        this->actor.flags |= 1;
+        func_80AFE338(this, 26);
+    }
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00590.s")
+s32 func_80B00590(EnSkj* this) {
+    s32 paramDecr = this->actor.params - 1;
+
+    if (D_80B01648[paramDecr].unk0 == 2) {
+        func_80B006F8(this);
+        return 1;
+    }
+    return 0;
+}
+
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B005E0.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00610.s")
+//EnSkj_Appear
+void func_80B00610(EnSkj *this) {
+    if (this->alpha != 0xFF) {
+        this->alpha += 0x14;
+        if (this->alpha >= 0x100) {
+            this->alpha = 0xFF;
+        }
+    }
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00638.s")
+void func_80B00638(EnSkj *this, GlobalContext *globalCtx) {
+    func_80B00610(this);
+    if ((func_80B00590(this) == 0) && (this->unk_2D8 != 0)) {
+        func_80B00680(this);
+    }
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00680.s")
+void func_80B00680(EnSkj* this) {
+    func_80AFE2B0(this, 2);
+    func_80AFE338(this, 27);
+}
+
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B006B0.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B006F8.s")
+void func_80B006F8(EnSkj* this) {
+    this->actor.velocity.y = 8.0f;
+    this->actor.speedXZ = -8.0f;
+    func_80AFE2B0(this, 0);
+    func_80AFE338(this, 28); // come back to this
+}
+
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00740.s")
 
