@@ -17,6 +17,7 @@ void func_80B00514(EnSkj* this);
 void func_80AFF038(EnSkj* this);
 void func_80B006F8(EnSkj* this);
 void func_80B00680(EnSkj* this);
+void func_80AFEE84(EnSkj* this);
 
 void func_80B00F2C(EnSkj* this, GlobalContext* globalCtx);
 
@@ -353,9 +354,38 @@ void EnSkj_Init(Actor* thisx, GlobalContext* globalCtx) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFEDF8.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFEE84.s")
+void func_80AFEE84(EnSkj* this) {
+    this->actor.velocity.y = 8.0f;
+    this->actor.speedXZ = -8.0f;
+    func_80AFE2B0(this, 0);
+    func_80AFE338(this, 0);
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFEECC.s")
+//#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFEECC.s")
+void func_80AFEECC(EnSkj *this, GlobalContext *globalCtx) {
+    u32 temp_v0;
+    s32 phi_v0;
+
+    if (this->unk_2D6 == 2) {
+        globalCtx->msgCtx.unk_E3EE = 0;
+        this->unk_2D6 = 0;
+    }
+    temp_v0 = this->alpha - 0x14;
+    if (this->unk_2D2 != 0) {
+        phi_v0 = temp_v0;
+        if (temp_v0 >= 0x100) {
+            phi_v0 = 0;
+        }
+        this->alpha = phi_v0;
+        this->actor.shape.unk_14 = phi_v0;
+    }
+    if (this->actor.velocity.y <= 0.0f) {
+        if ((this->actor.bgCheckFlags & 2) != 0) {
+            this->actor.bgCheckFlags = (u16) (this->actor.bgCheckFlags & 0xFFFD);
+            func_80AFF2A0();
+        }
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80AFEF5C.s")
 
@@ -495,8 +525,10 @@ s32 func_80B00590(EnSkj* this) {
     return 0;
 }
 
-
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B005E0.s")
+void func_80B005E0(EnSkj *this) {
+    func_80AFE2B0(this, 9);
+    func_80AFE338(this, 26);
+}
 
 //EnSkj_Appear
 void func_80B00610(EnSkj *this) {
@@ -520,18 +552,29 @@ void func_80B00680(EnSkj* this) {
     func_80AFE338(this, 27);
 }
 
-
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B006B0.s")
+void func_80B006B0(EnSkj *this, GlobalContext *globalCtx) {
+    func_80B00610(this);
+    if ((func_80B00590(this) == 0) && (this->unk_2D8 == 0)) {
+        func_80B005E0(this);
+    }
+}
 
 void func_80B006F8(EnSkj* this) {
     this->actor.velocity.y = 8.0f;
     this->actor.speedXZ = -8.0f;
     func_80AFE2B0(this, 0);
-    func_80AFE338(this, 28); // come back to this
+    func_80AFE338(this, 28);
 }
 
+void func_80B00740(EnSkj *this, GlobalContext *globalCtx) {
+    s32 paramsDecr;
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/func_80B00740.s")
+    paramsDecr = this->actor.params - 1;
+    D_80B01648[paramsDecr].unk0 = 0;
+    D_80B01648[paramsDecr].skullkid = NULL;
+    this->unk_2D2 = 1;
+    func_80AFEE84(this);
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Skj/EnSkj_Update.s")
 
