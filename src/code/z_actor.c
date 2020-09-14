@@ -2119,7 +2119,7 @@ void Actor_UpdateAll(GlobalContext* globalCtx, ActorContext* actorCtx) {
     }
 
     func_8002C7BC(&actorCtx->targetCtx, player, actor, globalCtx);
-    TitleCard_Update(globalCtx, &actorCtx->titleCtx);
+    //TitleCard_Update(globalCtx, &actorCtx->titleCtx);
     func_8003FB64(globalCtx, &globalCtx->colCtx.dyna);
 }
 

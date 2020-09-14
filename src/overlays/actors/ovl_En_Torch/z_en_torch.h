@@ -4,11 +4,15 @@
 #include <ultra64.h>
 #include <global.h>
 
-struct EnTorch;
+struct EffectsDebugger;
 
-typedef struct EnTorch {
+typedef void (*EffectsDebuggerFunc)(struct EffectsDebugger*, struct GlobalContext*, GfxPrint*);
+
+typedef struct EffectsDebugger {
     /* 0x0000 */ Actor actor;
-} EnTorch; // size = 0x014C
+    EffectsDebuggerFunc func;
+    s32 effectIndex;
+} EffectsDebugger; // size = 0x014C
 
 extern const ActorInit En_Torch_InitVars;
 
