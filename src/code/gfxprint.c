@@ -239,7 +239,7 @@ void GfxPrint_PrintCharImpl(GfxPrint* this, u8 c) {
 
     if (this->flag & GFXPRINT_FLAG4) {
         gDPSetPrimColorMod(this->dlist++, 0, 0, 0);
-        gSPScisTextureRectangle(this->dlist++, this->posX + 4, this->posY + 4, this->posX + 32 + 4, this->posY + 32 + 4,
+        gSPScisTextureRectangle(this->dlist++, this->posX + 1, this->posY + 1, this->posX + 32 + 1, this->posY + 32 + 1,
                                 G_TX_RENDERTILE, cx % 2 * 8 * 0x20, cx / 2 * 8 * 0x20, 1024, 1024);
         gDPSetPrimColorMod(this->dlist++, 0, 0, this->color.rgba);
     }

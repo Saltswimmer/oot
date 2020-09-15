@@ -37,6 +37,8 @@
 #include "overlays/effects/ovl_Effect_Ss_Dead_Sound/z_eff_ss_dead_sound.h"
 #include "overlays/effects/ovl_Effect_Ss_Ice_Smoke/z_eff_ss_ice_smoke.h"
 
+// put a size on Dfire
+
 static Vec3f sZeroVec = { 0.0f, 0.0f, 0.0f };
 
 // effects that use this draw function are responsible for making sure their reg usage lines up with those listed here
@@ -370,7 +372,7 @@ void func_80029024(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f*
 }
 
 // EffectSsGSpk Spawn Functions
-
+//EffectSsGSpk_SpawnAccel
 void func_80029060(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* velocity, Vec3f* accel,
                    Color_RGBA8* primColor, Color_RGBA8* envColor, s16 scale, s16 scaleStep) {
     EffectSsGSpkInitParams initParams;
@@ -389,6 +391,7 @@ void func_80029060(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* ve
 }
 
 // unused
+//EffectSsGSpk_SpawnNoAccel
 void func_800290F0(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* velocity, Vec3f* accel,
                    Color_RGBA8* primColor, Color_RGBA8* envColor, s16 scale, s16 scaleStep) {
     EffectSsGSpkInitParams initParams;
@@ -406,6 +409,7 @@ void func_800290F0(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* ve
     EffectSs_Spawn(globalCtx, EFFECT_SS_G_SPK, 128, &initParams);
 }
 
+//EffectSsGSpk_SpawnFuse
 void func_80029184(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* velocity, Vec3f* accel) {
     Color_RGBA8 primColor = { 255, 255, 150, 255 };
     Color_RGBA8 envColor = { 255, 0, 0, 0 };
@@ -414,6 +418,7 @@ void func_80029184(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* ve
 }
 
 // unused
+// EffectSsGSpk_SpawnRandColor
 void func_800291D8(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* velocity, Vec3f* accel, s16 scale,
                    s16 scaleStep) {
     Color_RGBA8 primColor = { 255, 255, 150, 255 };
@@ -433,7 +438,7 @@ void func_800291D8(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* ve
 
     func_80029060(globalCtx, actor, pos, velocity, accel, &primColor, &envColor, scale, scaleStep);
 }
-
+// EffectSsGSpk_SpawnSmall
 void func_800292DC(GlobalContext* globalCtx, Actor* actor, Vec3f* pos, Vec3f* velocity, Vec3f* accel,
                    Color_RGBA8* primColor, Color_RGBA8* envColor) {
     func_80029060(globalCtx, actor, pos, velocity, accel, primColor, envColor, 100, 5);
