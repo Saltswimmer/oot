@@ -1081,7 +1081,8 @@ void EffectSsDeadDb_Spawn(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity,
 }
 
 // EffectSsDeadDd Spawn Functions
-
+// spawn a circle effect that can change in size and transparency over time
+// EffectSsDeadDd_Spawn
 void func_8002A770(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, s16 scale, s16 scaleStep,
                    s16 primR, s16 primG, s16 primB, s16 alpha, s16 envR, s16 envG, s16 envB, s16 alphaStep, s32 life) {
     EffectSsDeadDdInitParams initParams;
@@ -1104,8 +1105,10 @@ void func_8002A770(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f*
 
     EffectSs_Spawn(globalCtx, EFFECT_SS_DEAD_DD, 120, &initParams);
 }
-
+// rename drawMode to type
+// rename num to randIter
 // unused
+//EffectSsDeadDd_SpawnRandYellow
 void func_8002A824(GlobalContext* globalCtx, Vec3f* pos, s16 scale, s16 scaleStep, f32 randPosScale, s32 num,
                    s32 life) {
     EffectSsDeadDdInitParams initParams;

@@ -16,6 +16,7 @@
 void EffectsDebugger_Init(Actor* thisx, GlobalContext* globalCtx);
 void EffectsDebugger_Update(Actor* thisx, GlobalContext* globalCtx);
 
+void EffectsDebugger_SetupDeadDd(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupKira(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupBlast(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupSpark(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
@@ -23,10 +24,8 @@ void EffectsDebugger_SetupDfire(EffectsDebugger* this, GlobalContext* globalCtx,
 void EffectsDebugger_SetupFlash(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 
 EffectsDebuggerFunc setupFuncs[] = {
-    EffectsDebugger_SetupFlash,
-    EffectsDebugger_SetupKira,
-    EffectsDebugger_SetupBlast,
-    EffectsDebugger_SetupSpark,
+    EffectsDebugger_SetupDeadDd, EffectsDebugger_SetupFlash, EffectsDebugger_SetupKira,
+    EffectsDebugger_SetupBlast,  EffectsDebugger_SetupSpark,
 };
 
 const ActorInit En_Torch_InitVars = {
@@ -72,6 +71,7 @@ Spark spark;
 Dfire dfire;
 Kira kira;
 Flash flash;
+DeadDd deaddd;
 
 void EffectsDebugger_UpdateFuncIndex(EffectsDebugger* this, GlobalContext* globalCtx, char* funcArray, s32 size) {
     if (!this->directionHeld) {
@@ -633,8 +633,8 @@ void EffectsDebugger_UpdateArg32(GlobalContext* globalCtx, GfxPrint* printer, s3
             break;
     }
 }
-void EffectsDebugger_UpdateArgf(GlobalContext* globalCtx, GfxPrint* printer, s32 argNum, f32* field, char* name,
-                                s32 amount) {
+void EffectsDebugger_UpdateArgF(GlobalContext* globalCtx, GfxPrint* printer, s32 argNum, f32* field, char* name,
+                                f32 amount) {
     switch (argNum) {
         case ARG_0:
             if (L_HELD && DUP_PRESSED) {
@@ -825,6 +825,53 @@ void EffectsDebugger_Init(Actor* thisx, GlobalContext* globalCtx) {
     accel.x = accel.y = accel.z = 0.0f;
     this->primIdx = 7;
     this->vecIdx = 0;
+}
+
+char* deadddFuncs[] = { "func_8002A770", "func_8002A824" };
+
+void EffectsDebugger_DeadDd(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    s32 size = ARRAY_COUNT(deadddFuncs);
+    EffectsDebugger_UpdateFuncIndex(this, globalCtx, deadddFuncs, size);
+
+    GfxPrint_SetPos(printer, 1, 3);
+    GfxPrint_Printf(printer, "%s", deadddFuncs[this->funcIndex]);
+
+    switch (this->funcIndex) {
+        case 0:
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &deaddd.scale, "scale", 10);
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_1, &deaddd.scaleStep, "scaleStep", 1);
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_2, &deaddd.alphaStep, "alphaStep", 1);
+            EffectsDebugger_UpdateArg32(globalCtx, printer, ARG_3, &deaddd.life, "life", 1);
+            if (SPAWN_EFFECT) {
+                func_8002A770(globalCtx, &deaddd.pos, &velocity, &accel, deaddd.scale, deaddd.scaleStep, 0, 0, 255, 255,
+                              255, 255, 255, deaddd.alphaStep, deaddd.life);
+            }
+            break;
+        case 1:
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &deaddd.scale, "scale", 10);
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_1, &deaddd.scaleStep, "scaleStep", 1);
+            EffectsDebugger_UpdateArgF(globalCtx, printer, ARG_2, &deaddd.randPosScale, "randPosScale", 1.0f);
+            EffectsDebugger_UpdateArg32(globalCtx, printer, ARG_3, &deaddd.num, "num", 1);
+            EffectsDebugger_UpdateArg32(globalCtx, printer, ARG_4, &deaddd.life, "life", 1);
+            if (SPAWN_EFFECT) {
+                func_8002A824(globalCtx, &deaddd.pos, deaddd.scale, deaddd.scaleStep, deaddd.randPosScale, deaddd.num,
+                              deaddd.life);
+            }
+            break;
+    }
+}
+
+void EffectsDebugger_SetupDeadDd(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    deaddd.pos = this->actor.posRot.pos;
+    deaddd.velocity = velocity;
+    deaddd.accel = accel;
+    deaddd.scale = 0x96;
+    deaddd.scaleStep = -0x19;
+    deaddd.alphaStep = 0x10;
+    deaddd.life = 0x14;
+    deaddd.randPosScale = 0.0f;
+    deaddd.num = 0;
+    this->func = EffectsDebugger_DeadDd;
 }
 
 char* flashFuncs[] = { "func_80029CF0_type0", "func_80029D5C_type1" };
