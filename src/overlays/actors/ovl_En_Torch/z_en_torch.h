@@ -92,6 +92,18 @@ typedef struct {
     /* 0x40 */ u8 drawMode;
 } DeadDd; // size = 0x44
 
+typedef struct {
+    /* 0x00 */ Actor* actor;
+    /* 0x04 */ Vec3f pos;
+    /* 0x10 */ f32 scale;
+    /* 0x14 */ Vec3f velocity;
+    /* 0x20 */ Vec3f accel;
+    /* 0x2C */ Color_RGBA8 primColor;
+    /* 0x30 */ Color_RGBA8 envColor;
+    /* 0x34 */ s32 life;
+    /* 0x38 */ s16 type;
+} EnIce; // size = 0x3C
+
 #define L_HELD (CHECK_PAD(globalCtx->state.input[2].cur, L_TRIG))
 #define Z_HELD (CHECK_PAD(globalCtx->state.input[2].cur, Z_TRIG))
 #define R_HELD (CHECK_PAD(globalCtx->state.input[2].cur, R_TRIG))

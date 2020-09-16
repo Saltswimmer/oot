@@ -15,7 +15,7 @@
 
 void EffectsDebugger_Init(Actor* thisx, GlobalContext* globalCtx);
 void EffectsDebugger_Update(Actor* thisx, GlobalContext* globalCtx);
-
+void EffectsDebugger_SetupEnIce(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupDeadDd(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupKira(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupBlast(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
@@ -24,8 +24,8 @@ void EffectsDebugger_SetupDfire(EffectsDebugger* this, GlobalContext* globalCtx,
 void EffectsDebugger_SetupFlash(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 
 EffectsDebuggerFunc setupFuncs[] = {
-    EffectsDebugger_SetupDeadDd, EffectsDebugger_SetupFlash, EffectsDebugger_SetupKira,
-    EffectsDebugger_SetupBlast,  EffectsDebugger_SetupSpark,
+    EffectsDebugger_SetupEnIce, EffectsDebugger_SetupDeadDd, EffectsDebugger_SetupFlash,
+    EffectsDebugger_SetupKira,  EffectsDebugger_SetupBlast,  EffectsDebugger_SetupSpark,
 };
 
 const ActorInit En_Torch_InitVars = {
@@ -72,6 +72,7 @@ Dfire dfire;
 Kira kira;
 Flash flash;
 DeadDd deaddd;
+EnIce enice;
 
 void EffectsDebugger_UpdateFuncIndex(EffectsDebugger* this, GlobalContext* globalCtx, char* funcArray, s32 size) {
     if (!this->directionHeld) {
@@ -825,6 +826,41 @@ void EffectsDebugger_Init(Actor* thisx, GlobalContext* globalCtx) {
     accel.x = accel.y = accel.z = 0.0f;
     this->primIdx = 7;
     this->vecIdx = 0;
+}
+
+char* iceFuncs[] = { "func_8002A140", "func_8002A2A4" };
+
+void EffectsDebugger_EnIce(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    s32 size = ARRAY_COUNT(iceFuncs);
+    EffectsDebugger_UpdateFuncIndex(this, globalCtx, iceFuncs, size);
+
+    GfxPrint_SetPos(printer, 1, 3);
+    GfxPrint_Printf(printer, "%s", iceFuncs[this->funcIndex]);
+
+    switch (this->funcIndex) {
+        case 0:
+            EffectsDebugger_UpdateArgF(globalCtx, printer, ARG_0, &enice.scale, "scale", 1.0f);
+            if (SPAWN_EFFECT) {
+                func_8002A140(globalCtx, PLAYER, &enice.pos, 255, 255, 255, 255, 255, 255, 255, enice.scale);
+            }
+            break;
+        case 1:
+            EffectsDebugger_UpdateArgF(globalCtx, printer, ARG_0, &enice.scale, "scale", 1.0f);
+            EffectsDebugger_UpdateArg32(globalCtx, printer, ARG_0, &enice.life, "life", 1);
+            if (SPAWN_EFFECT) {
+                func_8002A2A4(globalCtx, &enice.pos, enice.scale, &velocity, &accel, &primColor, &envColor, enice.life);
+            }
+            break;
+    }
+}
+
+void EffectsDebugger_SetupEnIce(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    enice.pos = this->actor.posRot.pos;
+    enice.velocity = velocity;
+    enice.accel = accel;
+    enice.scale = 1.0f;
+    enice.life = 20;
+    this->func = EffectsDebugger_EnIce;
 }
 
 char* deadddFuncs[] = { "func_8002A770", "func_8002A824" };
