@@ -113,7 +113,7 @@ void EffectSsKiraKira_Draw(GlobalContext* globalCtx, u32 index, EffectSs* this) 
 
     CLOSE_DISPS(gfxCtx, "../z_eff_ss_kirakira.c", 301);
 }
-
+// dispersed
 void func_809AABF0(GlobalContext* globalCtx, u32 index, EffectSs* this) {
     this->accel.x = (Math_Rand_ZeroOne() * 0.4f) - 0.2f;
     this->accel.z = (Math_Rand_ZeroOne() * 0.4f) - 0.2f;
@@ -129,7 +129,7 @@ void func_809AABF0(GlobalContext* globalCtx, u32 index, EffectSs* this) {
 
     this->rYaw += this->rRotSpeed;
 }
-
+// focused
 void func_809AACAC(GlobalContext* globalCtx, u32 index, EffectSs* this) {
     this->velocity.x *= 0.95f;
     this->velocity.z *= 0.95f;

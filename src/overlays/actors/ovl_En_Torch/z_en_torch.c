@@ -16,12 +16,18 @@
 void EffectsDebugger_Init(Actor* thisx, GlobalContext* globalCtx);
 void EffectsDebugger_Update(Actor* thisx, GlobalContext* globalCtx);
 
+void EffectsDebugger_SetupKira(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupBlast(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupSpark(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 void EffectsDebugger_SetupDfire(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
+void EffectsDebugger_SetupFlash(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer);
 
-EffectsDebuggerFunc setupFuncs[] = { EffectsDebugger_SetupBlast, EffectsDebugger_SetupSpark,
-                                     EffectsDebugger_SetupDfire };
+EffectsDebuggerFunc setupFuncs[] = {
+    EffectsDebugger_SetupFlash,
+    EffectsDebugger_SetupKira,
+    EffectsDebugger_SetupBlast,
+    EffectsDebugger_SetupSpark,
+};
 
 const ActorInit En_Torch_InitVars = {
     ACTOR_EN_TORCH,
@@ -50,19 +56,22 @@ FxColors fxColors[] = {
 };
 
 char* effectNames[] = {
-    "Effect_Ss_Blast",
-    "Effect_Ss_G_Spk",
-    "Effect_Ss_D_Fire",
+    "Effect_Ss_KiraKira", "Effect_Ss_Blast", "Effect_Ss_G_Spk",
+    //"Effect_Ss_D_Fire",
 };
 
 static s32 sRate;
 static Color_RGBA8 primColor;
 static Color_RGBA8 envColor;
+static Vec3f velocity;
+static Vec3f accel;
 
 // effect params
 Blast blast;
 Spark spark;
 Dfire dfire;
+Kira kira;
+Flash flash;
 
 void EffectsDebugger_UpdateFuncIndex(EffectsDebugger* this, GlobalContext* globalCtx, char* funcArray, s32 size) {
     if (!this->directionHeld) {
@@ -812,6 +821,91 @@ void EffectsDebugger_Init(Actor* thisx, GlobalContext* globalCtx) {
     this->effectIndex = 0;
     this->directionHeld = false;
     this->func = setupFuncs[0];
+    velocity.x = velocity.y = velocity.z = 0.0f;
+    accel.x = accel.y = accel.z = 0.0f;
+    this->primIdx = 7;
+    this->vecIdx = 0;
+}
+
+char* flashFuncs[] = { "func_80029CF0_type0", "func_80029D5C_type1" };
+
+void EffectsDebugger_Flash(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    s32 size = ARRAY_COUNT(flashFuncs);
+    EffectsDebugger_UpdateFuncIndex(this, globalCtx, flashFuncs, size);
+
+    GfxPrint_SetPos(printer, 1, 3);
+    GfxPrint_Printf(printer, "%s", flashFuncs[this->funcIndex]);
+
+    switch (this->funcIndex) {
+        case 0:
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &flash.scale, "scale", 10);
+            EffectsDebugger_UpdateArg8(globalCtx, printer, ARG_1, &flash.unk_26, "unk_26", 1);
+            if (SPAWN_EFFECT) {
+                func_80029CF0(globalCtx, &flash.pos, &velocity, &accel, flash.scale, flash.unk_26);
+            }
+            break;
+        case 1:
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &flash.scale, "scale", 10);
+            EffectsDebugger_UpdateArg8(globalCtx, printer, ARG_1, &flash.unk_26, "unk_26", 1);
+            if (SPAWN_EFFECT) {
+                func_80029D5C(globalCtx, PLAYER, &flash.pos, flash.scale, flash.unk_26);
+            }
+            break;
+    }
+}
+
+void EffectsDebugger_SetupFlash(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    flash.pos = this->actor.posRot.pos;
+    flash.scale = 1000;
+    flash.unk_26 = 0;
+    this->funcIndex = 0;
+    Object_Spawn(&globalCtx->objectCtx, OBJECT_FHG);
+    this->func = EffectsDebugger_Flash;
+}
+
+char* kiraFuncs[] = { "SpawnSmallYellow", "SpawnSmall", "func_80028BB0", "func_80028CEC" };
+
+void EffectsDebugger_Kira(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    s32 size = ARRAY_COUNT(kiraFuncs);
+    EffectsDebugger_UpdateFuncIndex(this, globalCtx, kiraFuncs, size);
+
+    GfxPrint_SetPos(printer, 1, 3);
+    GfxPrint_Printf(printer, "%s", kiraFuncs[this->funcIndex]);
+
+    switch (this->funcIndex) {
+        case 0:
+            if (SPAWN_EFFECT) {
+                EffectSsKiraKira_SpawnSmallYellow(globalCtx, &kira.pos, &velocity, &accel);
+            }
+            break;
+        case 1:
+            if (SPAWN_EFFECT) {
+                EffectSsKiraKira_SpawnSmall(globalCtx, &kira.pos, &velocity, &accel, &primColor, &envColor);
+            }
+            break;
+        case 2:
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &kira.scale, "scale", 100);
+            EffectsDebugger_UpdateArg32(globalCtx, printer, ARG_1, &kira.life, "life", 1);
+            if (SPAWN_EFFECT) {
+                func_80028BB0(globalCtx, &kira.pos, &velocity, &accel, &primColor, &envColor, kira.scale, kira.life);
+            }
+            break;
+        case 3:
+            EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &kira.scale, "scale", 100);
+            EffectsDebugger_UpdateArg32(globalCtx, printer, ARG_1, &kira.life, "life", 1);
+            if (SPAWN_EFFECT) {
+                func_80028CEC(globalCtx, &kira.pos, &velocity, &accel, &primColor, &envColor, kira.scale, kira.life);
+            }
+            break;
+    }
+}
+
+void EffectsDebugger_SetupKira(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
+    kira.pos = this->actor.posRot.pos;
+    kira.scale = 1000;
+    kira.life = 16;
+    this->funcIndex = 0;
+    this->func = EffectsDebugger_Kira;
 }
 
 char* dfireFuncs[] = { "EffectSsDFire_Spawn", "func_800293A0" };
@@ -831,8 +925,8 @@ void EffectsDebugger_Dfire(EffectsDebugger* this, GlobalContext* globalCtx, GfxP
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_3, &dfire.fadeDelay, "fadeDelay", 10);
             EffectsDebugger_UpdateArg32(globalCtx, printer, ARG_4, &dfire.life, "life", 10);
             if (SPAWN_EFFECT) {
-                EffectSsDFire_Spawn(globalCtx, &dfire.pos, &dfire.velocity, &dfire.accel, dfire.scale,
-                                    dfire.scaleStep, dfire.alpha, dfire.fadeDelay, dfire.life);
+                EffectSsDFire_Spawn(globalCtx, &dfire.pos, &velocity, &accel, dfire.scale, dfire.scaleStep, dfire.alpha,
+                                    dfire.fadeDelay, dfire.life);
             }
             break;
     }
@@ -840,8 +934,6 @@ void EffectsDebugger_Dfire(EffectsDebugger* this, GlobalContext* globalCtx, GfxP
 
 void EffectsDebugger_SetupDfire(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
     dfire.pos = this->actor.posRot.pos;
-    dfire.velocity = sZeroVec;
-    dfire.accel = sZeroVec;
     dfire.scale = 100;
     dfire.scaleStep = 35;
     dfire.alpha = 255;
@@ -867,36 +959,35 @@ void EffectsDebugger_Spark(EffectsDebugger* this, GlobalContext* globalCtx, GfxP
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &spark.scale, "scale", 1);
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_1, &spark.scaleStep, "scaleStep", 1);
             if (SPAWN_EFFECT) {
-                func_80029060(globalCtx, spark.actor, &spark.pos, &spark.velocity, &spark.accel, &primColor, &envColor,
-                              spark.scale, spark.scaleStep);
+                func_80029060(globalCtx, spark.actor, &spark.pos, &velocity, &accel, &primColor, &envColor, spark.scale,
+                              spark.scaleStep);
             }
             break;
         case 1:
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &spark.scale, "scale", 1);
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_1, &spark.scaleStep, "scaleStep", 1);
             if (SPAWN_EFFECT) {
-                func_80029060(globalCtx, spark.actor, &spark.pos, &spark.velocity, &spark.accel, &primColor, &envColor,
-                              spark.scale, spark.scaleStep);
+                func_80029060(globalCtx, spark.actor, &spark.pos, &velocity, &accel, &primColor, &envColor, spark.scale,
+                              spark.scaleStep);
             }
             break;
         case 2:
             if (SPAWN_EFFECT) {
-                func_80029184(globalCtx, spark.actor, &spark.pos, &spark.velocity, &spark.accel);
+                func_80029184(globalCtx, spark.actor, &spark.pos, &velocity, &accel);
             }
             break;
         case 3:
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &spark.scale, "scale", 1);
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_1, &spark.scaleStep, "scaleStep", 1);
             if (SPAWN_EFFECT) {
-                func_800291D8(globalCtx, spark.actor, &spark.pos, &spark.velocity, &spark.accel, spark.scale,
-                              spark.scaleStep);
+                func_800291D8(globalCtx, spark.actor, &spark.pos, &velocity, &accel, spark.scale, spark.scaleStep);
             }
             break;
         case 4:
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &spark.scale, "scale", 1);
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_1, &spark.scaleStep, "scaleStep", 1);
             if (SPAWN_EFFECT) {
-                func_800292DC(globalCtx, spark.actor, &spark.pos, &spark.velocity, &spark.accel, &primColor, &envColor);
+                func_800292DC(globalCtx, spark.actor, &spark.pos, &velocity, &accel, &primColor, &envColor);
             }
             break;
     }
@@ -904,8 +995,6 @@ void EffectsDebugger_Spark(EffectsDebugger* this, GlobalContext* globalCtx, GfxP
 
 void EffectsDebugger_SetupSpark(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
     spark.pos = this->actor.posRot.pos;
-    spark.velocity = sZeroVec;
-    spark.accel = sZeroVec;
     spark.actor = this;
     spark.scale = 100;
     spark.scaleStep = 5;
@@ -930,8 +1019,8 @@ void EffectsDebugger_Blast(EffectsDebugger* this, GlobalContext* globalCtx, GfxP
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_2, &blast.sclaeStepDecay, "sclaeStepDecay", 10);
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_3, &blast.life, "life", 1);
             if (SPAWN_EFFECT) {
-                EffectSsBlast_Spawn(globalCtx, &blast.pos, &blast.velocity, &blast.accel, &primColor, &envColor,
-                                    blast.scale, blast.scaleStep, blast.sclaeStepDecay, blast.life);
+                EffectSsBlast_Spawn(globalCtx, &blast.pos, &velocity, &accel, &primColor, &envColor, blast.scale,
+                                    blast.scaleStep, blast.sclaeStepDecay, blast.life);
             }
             break;
         case 1:
@@ -939,19 +1028,18 @@ void EffectsDebugger_Blast(EffectsDebugger* this, GlobalContext* globalCtx, GfxP
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_1, &blast.scaleStep, "scaleStep", 10);
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_2, &blast.life, "life", 1);
             if (SPAWN_EFFECT) {
-                func_80028F84(globalCtx, &blast.pos, &blast.velocity, &blast.accel, blast.scale, blast.scaleStep,
-                              blast.life);
+                func_80028F84(globalCtx, &blast.pos, &velocity, &accel, blast.scale, blast.scaleStep, blast.life);
             }
             break;
         case 2:
             EffectsDebugger_UpdateArg16(globalCtx, printer, ARG_0, &blast.life, "life", 1);
             if (SPAWN_EFFECT) {
-                func_80028FD8(globalCtx, &blast.pos, &blast.velocity, &blast.accel, &primColor, &envColor, blast.life);
+                func_80028FD8(globalCtx, &blast.pos, &velocity, &accel, &primColor, &envColor, blast.life);
             }
             break;
         case 3:
             if (SPAWN_EFFECT) {
-                func_80029024(globalCtx, &blast.pos, &blast.velocity, &blast.accel);
+                func_80029024(globalCtx, &blast.pos, &velocity, &accel);
             }
             break;
     }
@@ -959,8 +1047,6 @@ void EffectsDebugger_Blast(EffectsDebugger* this, GlobalContext* globalCtx, GfxP
 
 void EffectsDebugger_SetupBlast(EffectsDebugger* this, GlobalContext* globalCtx, GfxPrint* printer) {
     blast.pos = this->actor.posRot.pos;
-    blast.velocity = sZeroVec;
-    blast.accel = sZeroVec;
     blast.scale = 100;
     blast.scaleStep = 375;
     blast.sclaeStepDecay = 35;
@@ -1009,6 +1095,77 @@ void EffectsDebugger_Update(Actor* thisx, GlobalContext* globalCtx) {
             }
             this->func = setupFuncs[this->effectIndex];
         }
+    }
+
+    if (R_PRESSED) {
+        this->vecIdx++;
+        if (this->vecIdx == 3) {
+            this->vecIdx = 0;
+        }
+    }
+
+    if (Z_HELD && DUP_PRESSED) {
+        if (this->vecIdx == 0) {
+            velocity.x += 0.1f;
+        }
+        if (this->vecIdx == 1) {
+            velocity.y += 0.1f;
+        }
+        if (this->vecIdx == 2) {
+            velocity.z += 0.1f;
+        }
+    }
+
+    if (Z_HELD && DDOWN_PRESSED) {
+        if (this->vecIdx == 0) {
+            velocity.x -= 0.1f;
+        }
+        if (this->vecIdx == 1) {
+            velocity.y -= 0.1f;
+        }
+        if (this->vecIdx == 2) {
+            velocity.z -= 0.1f;
+        }
+    }
+
+    if (Z_HELD && CUP_PRESSED) {
+        if (this->vecIdx == 0) {
+            accel.x += 0.1f;
+        }
+        if (this->vecIdx == 1) {
+            accel.y += 0.1f;
+        }
+        if (this->vecIdx == 2) {
+            accel.z += 0.1f;
+        }
+    }
+
+    if (Z_HELD && CDOWN_PRESSED) {
+        if (this->vecIdx == 0) {
+            accel.x -= 0.1f;
+        }
+        if (this->vecIdx == 1) {
+            accel.y -= 0.1f;
+        }
+        if (this->vecIdx == 2) {
+            accel.z -= 0.1f;
+        }
+    }
+    GfxPrint_SetPos(printer, 11, 25);
+    GfxPrint_Printf(printer, "vel   x: %.2f y: %.2f z: %.2f", velocity.x, velocity.y, velocity.z);
+    GfxPrint_SetPos(printer, 11, 26);
+    GfxPrint_Printf(printer, "accel x: %.2f y: %.2f z: %.2f", accel.x, accel.y, accel.z);
+    GfxPrint_SetPos(printer, 11, 27);
+    GfxPrint_Printf(printer, "vec:");
+    GfxPrint_SetPos(printer, 16, 27);
+    if (this->vecIdx == 0) {
+        GfxPrint_Printf(printer, "x");
+    }
+    if (this->vecIdx == 1) {
+        GfxPrint_Printf(printer, "y");
+    }
+    if (this->vecIdx == 2) {
+        GfxPrint_Printf(printer, "z");
     }
 
     if (L_HELD && A_PRESSSED) {

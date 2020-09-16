@@ -16,6 +16,7 @@ typedef struct EffectsDebugger {
     s32 primIdx;
     s32 envIdx;
     s32 directionHeld;
+    s32 vecIdx;
 } EffectsDebugger; // size = 0x014C
 
 typedef struct {
@@ -51,6 +52,30 @@ typedef struct {
     /* 0x2C */ s32 life;
 } Dfire; // size = 0x
 
+typedef struct {
+    /* 0x00 */ Vec3f pos;
+    /* 0x0C */ Vec3f velocity;
+    /* 0x18 */ Vec3f accel;
+    /* 0x24 */ Color_RGBA8 primColor;
+    /* 0x28 */ Color_RGBA8 envColor;
+    /* 0x2C */ s16 alphaStep;
+    /* 0x2E */ s16 scale;
+    /* 0x30 */ s32 life;
+    /* 0x34 */ s16 rotSpeed;
+    /* 0x36 */ s16 yaw;
+    /* 0x38 */ u8 updateMode;
+} Kira; // size = 0x3C
+
+typedef struct {
+    /* 0x00 */ Vec3f pos;
+    /* 0x0C */ Vec3f velocity;
+    /* 0x18 */ Vec3f accel;
+    /* 0x24 */ s16 scale;
+    /* 0x26 */ u8 unk_26;
+    /* 0x28 */ Actor* actor;
+    /* 0x2C */ u8 unk_2C;
+} Flash; // size = 0x30
+
 #define L_HELD (CHECK_PAD(globalCtx->state.input[2].cur, L_TRIG))
 #define Z_HELD (CHECK_PAD(globalCtx->state.input[2].cur, Z_TRIG))
 #define R_HELD (CHECK_PAD(globalCtx->state.input[2].cur, R_TRIG))
@@ -67,6 +92,8 @@ typedef struct {
 #define CRIGHT_PRESSED (CHECK_PAD(globalCtx->state.input[2].press, R_CBUTTONS))
 #define CDOWN_PRESSED (CHECK_PAD(globalCtx->state.input[2].press, D_CBUTTONS))
 #define CLEFT_PRESSED (CHECK_PAD(globalCtx->state.input[2].press, L_CBUTTONS))
+
+#define R_PRESSED (CHECK_PAD(globalCtx->state.input[2].press, R_TRIG))
 
 typedef enum {
     ARG_0,
