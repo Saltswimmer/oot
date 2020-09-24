@@ -755,7 +755,7 @@ void func_80B00F64(EnSkj* this, GlobalContext* globalCtx) {
         switch (globalCtx->msgCtx.choiceIndex) {
             case 0: // yes
                 player = PLAYER;
-                player->unk_692 |= 0x20; // makes player take ocarina out right away after closing box
+                player->stateFlags3 |= 0x20; // makes player take ocarina out right away after closing box
                 this->actionFunc = func_80B00A54;
                 break;
             case 1: // no
@@ -784,8 +784,8 @@ void func_80B01040(EnSkj* this, GlobalContext* globalCtx) {
 
 // EnSkj_GiveMinigameReward
 void func_80B010C4(EnSkj *this, GlobalContext *globalCtx) {
-    if (func_8002F410(&this->actor, globalCtx)) {
-        this->actor.attachedA = NULL;
+    if (Actor_HasParent(&this->actor, globalCtx)) {
+        this->actor.parent = NULL;
         this->actionFunc = func_80B01134;
     } else {
          func_8002F434(&this->actor, globalCtx, sMinigameRewards[gSaveContext.ocarinaGameReward], 26.0f, 26.0f);
