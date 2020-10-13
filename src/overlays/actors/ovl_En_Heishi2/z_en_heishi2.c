@@ -58,7 +58,7 @@ extern Gfx D_06002C10[]; // 2D Guard in Window
 
 const ActorInit En_Heishi2_InitVars = {
     ACTOR_EN_HEISHI2,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_SD,
     sizeof(EnHeishi2),
@@ -96,12 +96,12 @@ void EnHeishi2_Init(Actor* thisx, GlobalContext* globalCtx) {
 
             Actor_SetScale(&this->actor, 0.02f);
 
-            this->unk_274 = this->actor.posRot.pos;
-            this->actor.posRot.rot.y = 0x7918;
-            this->actor.posRot.pos.x += 90.0f;
-            this->actor.posRot.pos.y -= 60.0f;
-            this->actor.posRot.pos.z += 90.0f;
-            this->actor.shape.rot.y = this->actor.posRot.rot.y;
+            this->unk_274 = this->actor.world.pos;
+            this->actor.world.rot.y = 0x7918;
+            this->actor.world.pos.x += 90.0f;
+            this->actor.world.pos.y -= 60.0f;
+            this->actor.world.pos.z += 90.0f;
+            this->actor.shape.rot.y = this->actor.world.rot.y;
             Collider_DestroyCylinder(globalCtx, &this->collider);
             func_8002DF54(globalCtx, 0, 8);
             this->actor.flags |= 0x11;
@@ -278,7 +278,7 @@ void func_80A53638(EnHeishi2* this, GlobalContext* globalCtx) {
 
     frameCount = this->skelAnime.animCurrentFrame;
     thisx = &this->actor;
-    actor = globalCtx->actorCtx.actorList[ACTORTYPE_ITEMACTION].first;
+    actor = globalCtx->actorCtx.actorList[ACTORCAT_ITEMACTION].first;
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
     if ((frameCount >= 12.0f) && (!this->audioFlag)) {
         Audio_PlayActorSound2(thisx, NA_SE_EV_SPEAR_HIT);
@@ -443,7 +443,7 @@ void func_80A53D0C(EnHeishi2* this, GlobalContext* globalCtx) {
     BgGateShutter* gate;
 
     frameCount = this->skelAnime.animCurrentFrame;
-    gate = (BgGateShutter*)globalCtx->actorCtx.actorList[ACTORTYPE_ITEMACTION].first;
+    gate = (BgGateShutter*)globalCtx->actorCtx.actorList[ACTORCAT_ITEMACTION].first;
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
     if (12.0f <= frameCount) {
         if (this->audioFlag == 0) {
@@ -608,7 +608,7 @@ void func_80A543A0(EnHeishi2* this, GlobalContext* globalCtx) {
 
     frameCount = this->skelAnime.animCurrentFrame;
     thisx = &this->actor;
-    gate = (BgGateShutter*)(globalCtx->actorCtx.actorList[ACTORTYPE_ITEMACTION].first);
+    gate = (BgGateShutter*)(globalCtx->actorCtx.actorList[ACTORCAT_ITEMACTION].first);
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
     if ((frameCount >= 12.0f) && (!this->audioFlag)) {
         Audio_PlayActorSound2(thisx, NA_SE_EV_SPEAR_HIT);
@@ -638,7 +638,7 @@ void func_80A543A0(EnHeishi2* this, GlobalContext* globalCtx) {
 void func_80A544AC(EnHeishi2* this, GlobalContext* globalCtx) {
     Math_SmoothScaleMaxMinS(&this->actor.shape.rot.z, -6100, 5, this->unk_2E4, 0);
     Math_SmoothScaleMaxF(&this->unk_2E4, 3000.0f, 1.0f, 500.0f);
-    this->actor.posRot.rot.z = this->actor.shape.rot.z;
+    this->actor.world.rot.z = this->actor.shape.rot.z;
     if (this->actor.shape.rot.z < -6000) {
         func_8010B680(globalCtx, 0x708F, NULL);
         this->actor.flags |= 0x10000;
@@ -676,7 +676,7 @@ void func_80A5455C(EnHeishi2* this, GlobalContext* globalCtx) {
 void func_80A546DC(EnHeishi2* this, GlobalContext* globalCtx) {
     Math_SmoothScaleMaxMinS(&this->actor.shape.rot.z, 200, 5, this->unk_2E4, 0);
     Math_SmoothScaleMaxF(&this->unk_2E4, 3000.0f, 1.0f, 500.0f);
-    this->actor.posRot.rot.z = this->actor.shape.rot.z;
+    this->actor.world.rot.z = this->actor.shape.rot.z;
     if (this->actor.shape.rot.z > 0) {
         Actor_Kill(&this->actor);
     }
@@ -773,9 +773,9 @@ void EnHeishi2_Update(Actor* thisx, GlobalContext* globalCtx) {
 
     Actor_SetHeight(&this->actor, this->unk_2E0);
     if ((this->initParams == 2) || (this->initParams == 5)) {
-        this->actor.posRot2.pos.y = 70.0f;
+        this->actor.head.pos.y = 70.0f;
         Actor_SetHeight(&this->actor, 70.0f);
-        func_80038290(globalCtx, &this->actor, &this->unk_260, &this->unk_26C, this->actor.posRot2.pos);
+        func_80038290(globalCtx, &this->actor, &this->unk_260, &this->unk_26C, this->actor.head.pos);
     }
 
     this->unk_2FC++;

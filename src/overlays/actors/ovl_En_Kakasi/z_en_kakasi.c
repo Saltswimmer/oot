@@ -34,7 +34,7 @@ extern AnimationHeader D_06000214;
 
 const ActorInit En_Kakasi_InitVars = {
     ACTOR_EN_KAKASI,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_KA,
     sizeof(EnKakasi),
@@ -55,14 +55,14 @@ void EnKakasi_Init(Actor* thisx, GlobalContext* globalCtx) {
     EnKakasi* this = THIS;
 
     osSyncPrintf("\n\n");
-    osSyncPrintf(VT_FGCOL(YELLOW) "☆☆☆☆☆ Ｌｅｔ’ｓ ＤＡＮＣＥ！ ☆☆☆☆☆ %f\n" VT_RST, this->actor.posRot.pos.y);
+    osSyncPrintf(VT_FGCOL(YELLOW) "☆☆☆☆☆ Ｌｅｔ’ｓ ＤＡＮＣＥ！ ☆☆☆☆☆ %f\n" VT_RST, this->actor.world.pos.y);
 
     Collider_InitCylinder(globalCtx, &this->collider);
     Collider_SetCylinder(globalCtx, &this->collider, &this->actor, &sCylinderInit);
     this->actor.unk_1F = 6;
     SkelAnime_InitSV(globalCtx, &this->skelanime, &D_060065B0, &D_06000214, NULL, NULL, 0);
 
-    this->rot = this->actor.posRot.rot;
+    this->rot = this->actor.world.rot;
     this->actor.flags |= 0x400;
     this->actor.colChkInfo.mass = 0xFF;
 
@@ -313,7 +313,7 @@ void EnKakasi_Update(Actor* thisx, GlobalContext* globalCtx) {
     s32 i;
 
     this->unk_198++;
-    this->actor.posRot.rot = this->actor.shape.rot;
+    this->actor.world.rot = this->actor.shape.rot;
     for (i = 0; i < ARRAY_COUNT(this->unk_19C); i++) {
         if (this->unk_19C[i] != 0) {
             this->unk_19C[i]--;

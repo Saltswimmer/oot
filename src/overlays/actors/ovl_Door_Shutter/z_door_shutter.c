@@ -12,7 +12,7 @@ void DoorShutter_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Door_Shutter_InitVars = {
     ACTOR_DOOR_SHUTTER,
-    ACTORTYPE_DOOR,
+    ACTORCAT_DOOR,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(DoorShutter),

@@ -12,7 +12,7 @@ void BgHidanFwbig_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Hidan_Fwbig_InitVars = {
     ACTOR_BG_HIDAN_FWBIG,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_HIDAN_OBJECTS,
     sizeof(BgHidanFwbig),

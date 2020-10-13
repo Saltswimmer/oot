@@ -10,7 +10,7 @@ void BgSpot11Oasis_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Spot11_Oasis_InitVars = {
     ACTOR_BG_SPOT11_OASIS,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_SPOT11_OBJ,
     sizeof(BgSpot11Oasis),

@@ -26,7 +26,7 @@ void func_80897970(BgJyaGoroiwa* this);
 
 const ActorInit Bg_Jya_Goroiwa_InitVars = {
     ACTOR_BG_JYA_GOROIWA,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GOROIWA,
     sizeof(BgJyaGoroiwa),
@@ -62,9 +62,9 @@ static InitChainEntry sInitChain[] = {
 void func_80897970(BgJyaGoroiwa* this) {
     Sphere16* worldSphere = &this->collider.list->dim.worldSphere;
 
-    worldSphere->center.x = this->actor.posRot.pos.x;
-    worldSphere->center.y = (s32)(this->actor.posRot.pos.y + 59.5f);
-    worldSphere->center.z = this->actor.posRot.pos.z;
+    worldSphere->center.x = this->actor.world.pos.x;
+    worldSphere->center.y = (s32)(this->actor.world.pos.y + 59.5f);
+    worldSphere->center.z = this->actor.world.pos.z;
 }
 
 void func_808979C0(BgJyaGoroiwa* this, GlobalContext* globalCtx) {
@@ -79,7 +79,7 @@ void func_808979C0(BgJyaGoroiwa* this, GlobalContext* globalCtx) {
 void func_80897A2C(BgJyaGoroiwa* this) {
     Actor* thisx = &this->actor;
     f32 rotFactor = 175.30046f;
-    f32 posDiff = thisx->posRot.pos.x - thisx->pos4.x;
+    f32 posDiff = thisx->world.pos.x - thisx->prevPos.x;
 
     thisx->shape.rot.z -= rotFactor * posDiff;
 }
@@ -115,34 +115,34 @@ void func_80897B48(BgJyaGoroiwa* this, GlobalContext* globalCtx) {
     Actor* thisx = &this->actor;
     f32 tmpf2;
     s16 tmp16;
-    f32 tmpf1 = (-100.0f - thisx->posRot.pos.y) * 2.5f;
+    f32 tmpf1 = (-100.0f - thisx->world.pos.y) * 2.5f;
 
     if (tmpf1 < 0.01f) {
         tmpf1 = 0.01f;
     }
 
     thisx->speedXZ = (sqrtf(tmpf1) * this->unk_1B0);
-    thisx->velocity.x = (Math_Sins(thisx->posRot.rot.y) * thisx->speedXZ);
+    thisx->velocity.x = (Math_Sins(thisx->world.rot.y) * thisx->speedXZ);
 
-    tmpf2 = Math_Coss(thisx->posRot.rot.y) * thisx->speedXZ;
+    tmpf2 = Math_Coss(thisx->world.rot.y) * thisx->speedXZ;
     thisx->velocity.z = tmpf2;
-    thisx->posRot.pos.x = thisx->posRot.pos.x + thisx->velocity.x;
-    thisx->posRot.pos.z = thisx->posRot.pos.z + tmpf2;
+    thisx->world.pos.x = thisx->world.pos.x + thisx->velocity.x;
+    thisx->world.pos.z = thisx->world.pos.z + tmpf2;
 
-    if ((1466.0f < thisx->posRot.pos.x) && (thisx->posRot.pos.x < 1673.0f)) {
-        thisx->posRot.pos.y = -129.5f;
+    if ((1466.0f < thisx->world.pos.x) && (thisx->world.pos.x < 1673.0f)) {
+        thisx->world.pos.y = -129.5f;
     } else {
-        tmpf2 = 1569.0f - thisx->posRot.pos.x;
+        tmpf2 = 1569.0f - thisx->world.pos.x;
         tmpf1 = fabsf(tmpf2) - 103.0f;
-        thisx->posRot.pos.y = (0.38043478f * tmpf1) - 129.5f;
+        thisx->world.pos.y = (0.38043478f * tmpf1) - 129.5f;
     }
 
     if (this->collider.base.atFlags & 2) {
         this->collider.base.atFlags &= ~3;
 
-        tmp16 = thisx->yawTowardsLink - thisx->posRot.rot.y;
+        tmp16 = thisx->yawTowardsLink - thisx->world.rot.y;
         if ((tmp16 >= -0x3FFF) && (tmp16 < 0x4000)) {
-            thisx->posRot.rot.y += 0x8000;
+            thisx->world.rot.y += 0x8000;
         }
 
         func_8002F6D4(globalCtx, thisx, 2.0f, thisx->yawTowardsLink, 0.0f, 0);
@@ -164,10 +164,10 @@ void func_80897B48(BgJyaGoroiwa* this, GlobalContext* globalCtx) {
         Math_ApproxF(&this->unk_1B0, 1.0f, 0.04f);
     }
 
-    if (thisx->posRot.pos.x > 1745.0f) {
-        thisx->posRot.rot.y = -0x4000;
-    } else if (thisx->posRot.pos.x < 1393.0f) {
-        thisx->posRot.rot.y = 0x4000;
+    if (thisx->world.pos.x > 1745.0f) {
+        thisx->world.rot.y = -0x4000;
+    } else if (thisx->world.pos.x < 1393.0f) {
+        thisx->world.rot.y = 0x4000;
     }
 
     Audio_PlayActorSound2(thisx, NA_SE_EV_BIGBALL_ROLL - SFX_FLAG);
@@ -196,9 +196,9 @@ void BgJyaGoroiwa_Update(Actor* thisx, GlobalContext* globalCtx) {
     if (!(player->stateFlags1 & 0x300000C0)) {
         this->actionFunc(this, globalCtx);
         func_80897A2C(this);
-        pos.x = this->actor.posRot.pos.x;
-        pos.y = this->actor.posRot.pos.y + 59.5f;
-        pos.z = this->actor.posRot.pos.z;
+        pos.x = this->actor.world.pos.x;
+        pos.y = this->actor.world.pos.y + 59.5f;
+        pos.z = this->actor.world.pos.z;
         this->actor.groundY = func_8003C9A4(&globalCtx->colCtx, &this->actor.floorPoly, &sp38, &this->actor, &pos);
         func_80897970(this);
         if (this->collider.base.atFlags & 1) {

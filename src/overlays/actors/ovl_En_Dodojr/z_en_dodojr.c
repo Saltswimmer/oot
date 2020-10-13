@@ -12,7 +12,7 @@ void EnDodojr_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Dodojr_InitVars = {
     ACTOR_EN_DODOJR,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_DODOJR,
     sizeof(EnDodojr),

@@ -20,7 +20,7 @@ typedef struct EnWonderTalk2 {
     /* 0x015B */ u8 unk_15B;
     /* 0x015C */ f32 unk_15C; // processing range
     /* 0x0160 */ f32 height;
-    /* 0x0164 */ Vec3f posRot;
+    /* 0x0164 */ Vec3f world;
 } EnWonderTalk2; // size = 0x0170
 
 extern const ActorInit En_Wonder_Talk2_InitVars;

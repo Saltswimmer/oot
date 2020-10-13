@@ -92,7 +92,7 @@ static EnZl2DrawFunc sDrawFuncs[] = {
 
 const ActorInit En_Zl2_InitVars = {
     ACTOR_EN_ZL2,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_ZL2,
     sizeof(EnZl2),
@@ -255,10 +255,10 @@ void func_80B4EDB8(EnZl2* this, GlobalContext* globalCtx, s32 arg2) {
     CsCmdActorAction* npcAction = EnZl2_GetNpcAction(globalCtx, arg2);
 
     if (npcAction != NULL) {
-        this->actor.posRot.pos.x = npcAction->startPos.x;
-        this->actor.posRot.pos.y = npcAction->startPos.y;
-        this->actor.posRot.pos.z = npcAction->startPos.z;
-        this->actor.posRot.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
+        this->actor.world.pos.x = npcAction->startPos.x;
+        this->actor.world.pos.y = npcAction->startPos.y;
+        this->actor.world.pos.z = npcAction->startPos.z;
+        this->actor.world.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
     }
 }
 
@@ -675,9 +675,9 @@ void EnZl2_GiveLightArrows(EnZl2* this, GlobalContext* globalCtx) {
 
     if (this->unk_244 == 0) {
         player = PLAYER;
-        posX = player->actor.posRot.pos.x;
-        posY = player->actor.posRot.pos.y + 80.0f;
-        posZ = player->actor.posRot.pos.z;
+        posX = player->actor.world.pos.x;
+        posY = player->actor.world.pos.y + 80.0f;
+        posZ = player->actor.world.pos.z;
         Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_DEMO_EFFECT, posX, posY, posZ, 0, 0, 0, 0x17);
         Item_Give(globalCtx, ITEM_ARROW_LIGHT);
         this->unk_244 = 1;
@@ -690,9 +690,9 @@ void func_80B4FF84(EnZl2* this, GlobalContext* globalCtx) {
     f32 posZ;
 
     if (this->unk_250 == 0) {
-        posX = this->actor.posRot.pos.x;
-        posY = this->actor.posRot.pos.y;
-        posZ = this->actor.posRot.pos.z;
+        posX = this->actor.world.pos.x;
+        posY = this->actor.world.pos.y;
+        posZ = this->actor.world.pos.z;
 
         Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_DOOR_WARP1, posX, posY, posZ, 0, 0, 0, 4);
         this->unk_250 = 1;
@@ -705,9 +705,9 @@ void func_80B4FFF0(EnZl2* this, GlobalContext* globalCtx) {
     f32 posZ;
 
     if (this->unk_248 == 0) {
-        posX = this->actor.posRot.pos.x;
-        posY = this->actor.posRot.pos.y + (kREG(5) + -26.0f);
-        posZ = this->actor.posRot.pos.z;
+        posX = this->actor.world.pos.x;
+        posY = this->actor.world.pos.y + (kREG(5) + -26.0f);
+        posZ = this->actor.world.pos.z;
 
         Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DOOR_WARP1, posX, posY, posZ, 0, 0x4000,
                            0, 3);
@@ -719,15 +719,15 @@ void func_80B5008C(EnZl2* this) {
     Actor* child = this->actor.child;
 
     if (child != NULL) {
-        child->posRot.pos.x = this->actor.posRot.pos.x;
-        child->posRot.pos.y = this->actor.posRot.pos.y + (kREG(5) + -26.0f);
-        child->posRot.pos.z = this->actor.posRot.pos.z;
+        child->world.pos.x = this->actor.world.pos.x;
+        child->world.pos.y = this->actor.world.pos.y + (kREG(5) + -26.0f);
+        child->world.pos.z = this->actor.world.pos.z;
     }
 }
 
 void func_80B500E0(EnZl2* this, GlobalContext* globalCtx) {
     CsCmdActorAction* npcAction = EnZl2_GetNpcAction(globalCtx, 0);
-    Vec3f* thisPos = &this->actor.posRot.pos;
+    Vec3f* thisPos = &this->actor.world.pos;
     f32 startX;
     f32 startY;
     f32 startZ;
@@ -775,10 +775,10 @@ void func_80B50260(EnZl2* this, GlobalContext* globalCtx) {
 void func_80B50278(EnZl2* this, GlobalContext* globalCtx) {
     CsCmdActorAction* npcAction = EnZl2_GetNpcAction(globalCtx, 0);
 
-    this->actor.posRot.pos.x = npcAction->startPos.x;
-    this->actor.posRot.pos.y = npcAction->startPos.y;
-    this->actor.posRot.pos.z = npcAction->startPos.z;
-    this->actor.posRot.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
+    this->actor.world.pos.x = npcAction->startPos.x;
+    this->actor.world.pos.y = npcAction->startPos.y;
+    this->actor.world.pos.z = npcAction->startPos.z;
+    this->actor.world.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
     this->actor.shape.unk_14 = 0xFF;
     this->action = 2;
     this->drawConfig = 1;
@@ -798,7 +798,7 @@ void func_80B50304(EnZl2* this, GlobalContext* globalCtx) {
     this->drawConfig = 1;
     this->unk_23C = 0.0f;
     actorShape->unk_14 = 0xFF;
-    this->actor.posRot.rot.y = actorShape->rot.y = Math_atan2f(actionXDelta, actionZDelta) * 10430.3779296875f;
+    this->actor.world.rot.y = actorShape->rot.y = Math_atan2f(actionXDelta, actionZDelta) * 10430.3779296875f;
 }
 
 void func_80B503DC(EnZl2* this, GlobalContext* globalCtx) {
@@ -1225,9 +1225,9 @@ void func_80B513A8(EnZl2* this, GlobalContext* globalCtx) {
 
     if (this->unk_250 == 0) {
         player = PLAYER;
-        posX = player->actor.posRot.pos.x;
-        posY = player->actor.posRot.pos.y;
-        posZ = player->actor.posRot.pos.z;
+        posX = player->actor.world.pos.x;
+        posY = player->actor.world.pos.y;
+        posZ = player->actor.world.pos.z;
         Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_DOOR_WARP1, posX, posY, posZ, 0, 0, 0, 7);
         this->unk_250 = 1;
     }
@@ -1492,7 +1492,7 @@ void func_80B51D24(EnZl2* this, GlobalContext* globalCtx) {
 
 void func_80B51DA4(EnZl2* this, GlobalContext* globalCtx) {
     CsCmdActorAction* npcAction = EnZl2_GetNpcAction(globalCtx, 0);
-    Vec3f* thisPos = &this->actor.posRot.pos;
+    Vec3f* thisPos = &this->actor.world.pos;
     f32 startX;
     f32 startY;
     f32 startZ;
@@ -1529,7 +1529,7 @@ void func_80B51EBC(EnZl2* this, GlobalContext* globalCtx) {
     CsCmdActorAction* npcAction = EnZl2_GetNpcAction(globalCtx, 0);
     s32 pad[2];
 
-    this->actor.posRot.rot.y = shape->rot.y = npcAction->rot.y;
+    this->actor.world.rot.y = shape->rot.y = npcAction->rot.y;
     func_80B4FD00(this, &D_0600B224, 0, 0.0f, 0);
     this->action = 34;
     this->drawConfig = 1;

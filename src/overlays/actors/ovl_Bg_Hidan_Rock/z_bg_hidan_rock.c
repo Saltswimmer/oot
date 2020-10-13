@@ -12,7 +12,7 @@ void BgHidanRock_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Hidan_Rock_InitVars = {
     ACTOR_BG_HIDAN_ROCK,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HIDAN_OBJECTS,
     sizeof(BgHidanRock),

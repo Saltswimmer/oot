@@ -22,7 +22,7 @@ void func_809C1CAC(EnBird* this, s16 params);
 
 const ActorInit En_Bird_InitVars = {
     ACTOR_EN_BIRD,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_BIRD,
     sizeof(EnBird),
@@ -105,15 +105,15 @@ void func_809C1E40(EnBird* this, GlobalContext* globalCtx) {
     this->actor.shape.unk_08 += fVar4 * this->unk_1A0;
     Math_SmoothScaleMaxMinF(&this->actor.speedXZ, this->unk_1A8, 0.1f, this->unk_1AC, 0.0f);
 
-    if (this->unk_1B0 < Math_Vec3f_DistXZ(&this->actor.posRot.pos, &this->actor.initPosRot.pos) || this->unk_198 < 4) {
-        func_80077B58(&this->actor.posRot.rot.y, Math_Vec3f_Yaw(&this->actor.posRot.pos, &this->actor.initPosRot.pos),
+    if (this->unk_1B0 < Math_Vec3f_DistXZ(&this->actor.world.pos, &this->actor.home.pos) || this->unk_198 < 4) {
+        func_80077B58(&this->actor.world.rot.y, Math_Vec3f_Yaw(&this->actor.world.pos, &this->actor.home.pos),
                       this->unk_1C0);
     } else {
         fVar4 = sinf(this->unk_1B4);
-        this->actor.posRot.rot.y += (s16)(fVar4 * this->unk_1A4);
+        this->actor.world.rot.y += (s16)(fVar4 * this->unk_1A4);
     }
 
-    this->actor.shape.rot.y = this->actor.posRot.rot.y;
+    this->actor.shape.rot.y = this->actor.world.rot.y;
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
     this->unk_198 -= 1;
     if (this->unk_198 < 0) {

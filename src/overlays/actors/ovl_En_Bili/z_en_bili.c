@@ -12,7 +12,7 @@ void EnBili_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Bili_InitVars = {
     ACTOR_EN_BILI,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_BL,
     sizeof(EnBili),

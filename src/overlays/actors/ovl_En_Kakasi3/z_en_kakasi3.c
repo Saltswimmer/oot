@@ -38,7 +38,7 @@ extern AnimationHeader D_06000214;
 
 const ActorInit En_Kakasi3_InitVars = {
     ACTOR_EN_KAKASI3,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_KA,
     sizeof(EnKakasi3),
@@ -67,7 +67,7 @@ void EnKakasi3_Init(Actor* thisx, GlobalContext* globalCtx) {
     Collider_SetCylinder(globalCtx, &this->collider, &this->actor, &sCylinderInit);
     SkelAnime_InitSV(globalCtx, &this->skelAnime, &D_060065B0, &D_06000214, NULL, NULL, 0);
     this->actor.flags |= 0x400;
-    this->rot = this->actor.posRot.rot;
+    this->rot = this->actor.world.rot;
     this->actor.colChkInfo.mass = 0xFF;
     Actor_SetScale(&this->actor, 0.01f);
     this->actionFunc = func_80A911F0;
@@ -409,7 +409,7 @@ void EnKakasi3_Update(Actor* thisx, GlobalContext* globalCtx) {
     }
 
     this->unk_198++;
-    this->actor.posRot.rot = this->actor.shape.rot;
+    this->actor.world.rot = this->actor.shape.rot;
     for (i = 0; i < ARRAY_COUNT(this->unk_19C); i++) {
         if (this->unk_19C[i] != 0) {
             this->unk_19C[i]--;

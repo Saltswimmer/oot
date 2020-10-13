@@ -25,7 +25,7 @@ void func_80B17AC4(EnTakaraMan* this, GlobalContext* globalCtx);
 
 const ActorInit En_Takara_Man_InitVars = {
     ACTOR_EN_TAKARA_MAN,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_TS,
     sizeof(EnTakaraMan),
@@ -60,16 +60,16 @@ void EnTakaraMan_Init(Actor* thisx, GlobalContext* globalCtx) {
     gSaveContext.dungeonKeys[gSaveContext.mapIndex] = -1;
     SkelAnime_InitSV(globalCtx, &this->skelAnime, &D_06004FE0, &D_06000498, this->limbDrawTbl, this->transitionDrawTbl,
                      10);
-    thisx->posRot2.pos = thisx->posRot.pos;
-    this->pos = thisx->posRot.pos;
-    thisx->posRot.pos.x = 133.0f;
-    thisx->posRot.pos.y = -12.0f;
-    thisx->posRot.pos.z = 102.0f;
+    thisx->head.pos = thisx->world.pos;
+    this->pos = thisx->world.pos;
+    thisx->world.pos.x = 133.0f;
+    thisx->world.pos.y = -12.0f;
+    thisx->world.pos.z = 102.0f;
     Actor_SetScale(&this->actor, 0.013f);
     this->height = 90.0f;
     this->originalRoomNum = thisx->room;
     thisx->room = -1;
-    thisx->posRot.rot.y = thisx->shape.rot.y = -0x4E20;
+    thisx->world.rot.y = thisx->shape.rot.y = -0x4E20;
     thisx->unk_1F = 1;
     this->actionFunc = func_80B176E0;
 }
@@ -189,7 +189,7 @@ void EnTakaraMan_Update(Actor* thisx, GlobalContext* globalCtx) {
     }
 
     Actor_SetHeight(&this->actor, this->height);
-    func_80038290(globalCtx, &this->actor, &this->unk_22C, &this->unk_232, this->actor.posRot2.pos);
+    func_80038290(globalCtx, &this->actor, &this->unk_22C, &this->unk_232, this->actor.head.pos);
     if (this->eyeTimer == 0) {
         this->eyeTextureIdx++;
         if (this->eyeTextureIdx >= 2) {

@@ -21,7 +21,7 @@ void func_80B43B6C(EnYukabyun* this, GlobalContext* globalCtx);
 
 const ActorInit En_Yukabyun_InitVars = {
     ACTOR_EN_YUKABYUN,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_YUKABYUN,
     sizeof(EnYukabyun),
@@ -79,11 +79,11 @@ void func_80B43AD4(EnYukabyun* this, GlobalContext* globalCtx) {
     this->unk_150 += 0xA0;
     this->actor.shape.rot.y += this->unk_150;
     if (this->unk_150 >= 0x2000) {
-        this->actor.posRot.rot.y = this->actor.yawTowardsLink;
+        this->actor.world.rot.y = this->actor.yawTowardsLink;
         this->actor.speedXZ = 10.0f;
         this->actionfunc = func_80B43B6C;
     }
-    Math_ApproxF(&this->actor.posRot.pos.y, this->actor.initPosRot.pos.y + 30.0f, 1.0f);
+    Math_ApproxF(&this->actor.world.pos.y, this->actor.home.pos.y + 30.0f, 1.0f);
     func_8002F974(&this->actor, NA_SE_EN_YUKABYUN_FLY - SFX_FLAG);
 }
 
@@ -97,7 +97,7 @@ void func_80B43B6C(EnYukabyun* this, GlobalContext* globalCtx) {
 }
 
 void EnYukabyun_Break(EnYukabyun* this, GlobalContext* globalCtx) {
-    EffectSsHahen_SpawnBurst(globalCtx, &this->actor.posRot.pos, 8.0f, 0, 1300, 300, 15, OBJECT_YUKABYUN, 10,
+    EffectSsHahen_SpawnBurst(globalCtx, &this->actor.world.pos, 8.0f, 0, 1300, 300, 15, OBJECT_YUKABYUN, 10,
                              &D_06000A60);
     Actor_Kill(&this->actor);
 }
@@ -113,7 +113,7 @@ void EnYukabyun_Update(Actor* thisx, GlobalContext* globalCtx) {
         this->collider.base.acFlags &= ~0x2;
         this->collider.base.maskA &= ~0x2;
         this->actor.flags &= ~0x5;
-        Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot.pos, 30, NA_SE_EN_OCTAROCK_ROCK);
+        Audio_PlaySoundAtPosition(globalCtx, &this->actor.world.pos, 30, NA_SE_EN_OCTAROCK_ROCK);
         this->actionfunc = EnYukabyun_Break;
     }
 

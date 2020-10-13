@@ -12,7 +12,7 @@ void EnMThunder_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_M_Thunder_InitVars = {
     ACTOR_EN_M_THUNDER,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnMThunder),

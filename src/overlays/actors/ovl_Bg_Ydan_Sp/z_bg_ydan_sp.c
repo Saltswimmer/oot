@@ -12,7 +12,7 @@ void BgYdanSp_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Ydan_Sp_InitVars = {
     ACTOR_BG_YDAN_SP,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_YDAN_OBJECTS,
     sizeof(BgYdanSp),

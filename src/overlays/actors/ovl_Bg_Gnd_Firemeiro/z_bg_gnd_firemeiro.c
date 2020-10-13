@@ -22,7 +22,7 @@ void func_80879808(BgGndFiremeiro* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Gnd_Firemeiro_InitVars = {
     ACTOR_BG_GND_FIREMEIRO,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_DEMO_KEKKAI,
     sizeof(BgGndFiremeiro),

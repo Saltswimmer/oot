@@ -18,7 +18,7 @@ void EnBa_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Ba_InitVars = {
     ACTOR_EN_BA,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_BXA,
     sizeof(EnBa),

@@ -21,7 +21,7 @@ void DoorAna_GrabLink(DoorAna* this, GlobalContext* globalCtx);
 
 const ActorInit Door_Ana_InitVars = {
     ACTOR_DOOR_ANA,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_GAMEPLAY_FIELD_KEEP,
     sizeof(DoorAna),
@@ -119,11 +119,11 @@ void DoorAna_WaitOpen(DoorAna* this, GlobalContext* globalCtx) {
             (player->unk_84F == 0)) {
             destinationIdx = ((this->actor.params >> 0xC) & 7) - 1;
             Gameplay_SetupRespawnPoint(globalCtx, RESPAWN_MODE_RETURN, 0x4FF);
-            gSaveContext.respawn[RESPAWN_MODE_RETURN].pos.y = this->actor.posRot.pos.y;
-            gSaveContext.respawn[RESPAWN_MODE_RETURN].yaw = this->actor.initPosRot.rot.y;
+            gSaveContext.respawn[RESPAWN_MODE_RETURN].pos.y = this->actor.world.pos.y;
+            gSaveContext.respawn[RESPAWN_MODE_RETURN].yaw = this->actor.home.rot.y;
             gSaveContext.respawn[RESPAWN_MODE_RETURN].data = this->actor.params & 0xFFFF;
             if (destinationIdx < 0) {
-                destinationIdx = this->actor.initPosRot.rot.z + 1;
+                destinationIdx = this->actor.home.rot.z + 1;
             }
             globalCtx->nextEntranceIndex = entrances[destinationIdx];
             DoorAna_SetupAction(this, DoorAna_GrabLink);
@@ -147,8 +147,8 @@ void DoorAna_GrabLink(DoorAna* this, GlobalContext* globalCtx) {
 
     if (this->actor.yDistFromLink <= 0.0f && 15.0f < this->actor.xzDistFromLink) {
         player = PLAYER;
-        player->actor.posRot.pos.x = Math_Sins(this->actor.yawTowardsLink) * 15.0f + this->actor.posRot.pos.x;
-        player->actor.posRot.pos.z = Math_Coss(this->actor.yawTowardsLink) * 15.0f + this->actor.posRot.pos.z;
+        player->actor.world.pos.x = Math_Sins(this->actor.yawTowardsLink) * 15.0f + this->actor.world.pos.x;
+        player->actor.world.pos.z = Math_Coss(this->actor.yawTowardsLink) * 15.0f + this->actor.world.pos.z;
     }
 }
 

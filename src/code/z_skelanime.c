@@ -1007,9 +1007,9 @@ void SkelAnime_AnimationType5Loaded(GlobalContext* globalCtx, AnimationEntryType
     Vec3f pos;
 
     func_800A54FC(entry->skelAnime, &pos, actor->shape.rot.y);
-    actor->posRot.pos.x += pos.x * actor->scale.x;
-    actor->posRot.pos.y += pos.y * actor->scale.y * entry->unk_08;
-    actor->posRot.pos.z += pos.z * actor->scale.z;
+    actor->world.pos.x += pos.x * actor->scale.x;
+    actor->world.pos.y += pos.y * actor->scale.y * entry->unk_08;
+    actor->world.pos.z += pos.z * actor->scale.z;
 }
 
 void func_800A390C(GlobalContext* globalCtx, AnimationContext* animationCtx) {

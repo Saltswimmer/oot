@@ -21,7 +21,7 @@ void func_80ABBBA8(EnNutsball* this, GlobalContext* globalCtx);
 
 const ActorInit En_Nutsball_InitVars = {
     ACTOR_EN_NUTSBALL,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnNutsball),
@@ -85,7 +85,7 @@ void func_80ABBBA8(EnNutsball* this, GlobalContext* globalCtx) {
         this->actor.gravity = -1.0f;
     }
 
-    this->actor.initPosRot.rot.z += 0x2AA8;
+    this->actor.home.rot.z += 0x2AA8;
 
     if ((this->actor.bgCheckFlags & 8) || (this->actor.bgCheckFlags & 1) || (this->collider.base.atFlags & 2) ||
         (this->collider.base.acFlags & 2) || (this->collider.base.maskA & 2)) {
@@ -100,18 +100,18 @@ void func_80ABBBA8(EnNutsball* this, GlobalContext* globalCtx) {
 
                 this->collider.body.toucher.flags = 2;
                 func_800D20CC(&player->shieldMf, &sp4C, 0);
-                this->actor.posRot.rot.y = sp4C.y + 0x8000;
+                this->actor.world.rot.y = sp4C.y + 0x8000;
                 this->timer = 30;
                 return;
             }
         }
 
-        sp40.x = this->actor.posRot.pos.x;
-        sp40.y = this->actor.posRot.pos.y + 4;
-        sp40.z = this->actor.posRot.pos.z;
+        sp40.x = this->actor.world.pos.x;
+        sp40.y = this->actor.world.pos.y + 4;
+        sp40.z = this->actor.world.pos.z;
 
         EffectSsHahen_SpawnBurst(globalCtx, &sp40, 6.0f, 0, 7, 3, 15, HAHEN_OBJECT_DEFAULT, 10, NULL);
-        Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot.pos, 20, NA_SE_EN_OCTAROCK_ROCK);
+        Audio_PlaySoundAtPosition(globalCtx, &this->actor.world.pos, 20, NA_SE_EN_OCTAROCK_ROCK);
         Actor_Kill(&this->actor);
     } else {
         if (this->timer == -300) {
@@ -147,7 +147,7 @@ void EnNutsball_Draw(Actor* thisx, GlobalContext* globalCtx) {
 
     func_80093D18(globalCtx->state.gfxCtx);
     Matrix_Mult(&globalCtx->mf_11DA0, MTXMODE_APPLY);
-    Matrix_RotateZ(thisx->initPosRot.rot.z * 9.58738e-05f, MTXMODE_APPLY);
+    Matrix_RotateZ(thisx->home.rot.z * 9.58738e-05f, MTXMODE_APPLY);
     gSPMatrix(oGfxCtx->polyOpa.p++, Matrix_NewMtx(globalCtx->state.gfxCtx, "../z_en_nutsball.c", 333),
               G_MTX_MODELVIEW | G_MTX_LOAD);
     gSPDisplayList(oGfxCtx->polyOpa.p++, sDLists[thisx->params]);

@@ -18,7 +18,7 @@ void ObjBean_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Obj_Bean_InitVars = {
     ACTOR_OBJ_BEAN,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_MAMENOKI,
     sizeof(ObjBean),

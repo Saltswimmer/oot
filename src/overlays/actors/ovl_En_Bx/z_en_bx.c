@@ -19,7 +19,7 @@ extern Gfx D_060022F0[];
 
 const ActorInit En_Bx_InitVars = {
     ACTOR_EN_BX,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_BXA,
     sizeof(EnBx),
@@ -55,14 +55,14 @@ void EnBx_Init(Actor* thisx, GlobalContext* globalCtx) {
     thisx->scale.x = thisx->scale.z = 0.01f;
     thisx->scale.y = 0.03f;
 
-    thisx->posRot.pos.y = thisx->posRot.pos.y - 100.0f;
+    thisx->world.pos.y = thisx->world.pos.y - 100.0f;
     for (i = 0; i < 4; i++) {
         this->unk_184[i] = sp48;
         if (i == 0) {
             this->unk_1B4[i].x = thisx->shape.rot.x - 0x4000;
         }
-        this->unk_154[i] = thisx->posRot.pos;
-        this->unk_154[i].y = thisx->posRot.pos.y + ((i + 1) * 140.0f);
+        this->unk_154[i] = thisx->world.pos;
+        this->unk_154[i].y = thisx->world.pos.y + ((i + 1) * 140.0f);
     }
 
     ActorShape_Init(&thisx->shape, 0.0f, ActorShadow_DrawFunc_Circle, 48.0f);
@@ -113,7 +113,7 @@ void EnBx_Update(Actor* thisx, GlobalContext* globalCtx) {
         if ((thisx->xzDistFromLink <= 70.0f) || (&player->actor == this->collider.base.at) ||
             (&player->actor == this->collider.base.ac) || (&player->actor == this->colliderQuad.base.at)) {
             tmp33 = player->invincibilityTimer & 0xFF;
-            tmp32 = thisx->posRot.rot.y;
+            tmp32 = thisx->world.rot.y;
             if (!(thisx->params & 0x80)) {
                 tmp32 = thisx->yawTowardsLink;
             }
@@ -150,16 +150,16 @@ void EnBx_Update(Actor* thisx, GlobalContext* globalCtx) {
 
                 yaw = (s32)Math_Rand_CenteredFloat(12288.0f);
                 yaw = (yaw + (i * 0x4000)) + 0x2000;
-                pos.x = Math_Rand_CenteredFloat(5.0f) + thisx->posRot.pos.x;
-                pos.y = Math_Rand_CenteredFloat(30.0f) + thisx->posRot.pos.y + 170.0f;
-                pos.z = Math_Rand_CenteredFloat(5.0f) + thisx->posRot.pos.z;
+                pos.x = Math_Rand_CenteredFloat(5.0f) + thisx->world.pos.x;
+                pos.y = Math_Rand_CenteredFloat(30.0f) + thisx->world.pos.y + 170.0f;
+                pos.z = Math_Rand_CenteredFloat(5.0f) + thisx->world.pos.z;
                 EffectSsLightning_Spawn(globalCtx, &pos, &primColor, &envColor, 230, yaw, 6, 0);
             }
         }
 
         Audio_PlayActorSound2(thisx, NA_SE_EN_BIRI_SPARK - SFX_FLAG);
     }
-    thisx->posRot2.pos = thisx->posRot.pos;
+    thisx->head.pos = thisx->world.pos;
     Collider_CylinderUpdate(thisx, &this->collider);
     CollisionCheck_SetAC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
     CollisionCheck_SetAT(globalCtx, &globalCtx->colChkCtx, &this->collider.base);

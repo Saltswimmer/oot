@@ -12,7 +12,7 @@ void EnHorseNormal_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Horse_Normal_InitVars = {
     ACTOR_EN_HORSE_NORMAL,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HORSE_NORMAL,
     sizeof(EnHorseNormal),

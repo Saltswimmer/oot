@@ -1600,9 +1600,9 @@ s32 func_800C04D8(GlobalContext* globalCtx, s16 camId, Vec3f* arg2, Vec3f* arg3)
 
     player = camera->player;
     if (player != NULL) {
-        camera->unk_E4.x = arg2->x - player->actor.posRot.pos.x;
-        camera->unk_E4.y = arg2->y - player->actor.posRot.pos.y;
-        camera->unk_E4.z = arg2->z - player->actor.posRot.pos.z;
+        camera->unk_E4.x = arg2->x - player->actor.world.pos.x;
+        camera->unk_E4.y = arg2->y - player->actor.world.pos.y;
+        camera->unk_E4.z = arg2->z - player->actor.world.pos.z;
     } else {
         camera->unk_E4.x = camera->unk_E4.y = camera->unk_E4.z = 0.0f;
     }
@@ -1628,9 +1628,9 @@ s32 func_800C05E4(GlobalContext* globalCtx, s16 camId, Vec3f* arg2, Vec3f* arg3,
 
     player = camera->player;
     if (player != NULL) {
-        camera->unk_E4.x = arg2->x - player->actor.posRot.pos.x;
-        camera->unk_E4.y = arg2->y - player->actor.posRot.pos.y;
-        camera->unk_E4.z = arg2->z - player->actor.posRot.pos.z;
+        camera->unk_E4.x = arg2->x - player->actor.world.pos.x;
+        camera->unk_E4.y = arg2->y - player->actor.world.pos.y;
+        camera->unk_E4.z = arg2->z - player->actor.world.pos.z;
     } else {
         camera->unk_E4.x = camera->unk_E4.y = camera->unk_E4.z = 0.0f;
     }
@@ -1754,7 +1754,7 @@ void Gameplay_SetupRespawnPoint(GlobalContext* globalCtx, s32 respawnMode, s32 p
         roomIndex = globalCtx->roomCtx.curRoom.num;
         entranceIndex = gSaveContext.entranceIndex;
         Gameplay_SetRespawnData(globalCtx, respawnMode, entranceIndex, roomIndex, playerParams,
-                                &player->actor.posRot.pos, player->actor.shape.rot.y);
+                                &player->actor.world.pos, player->actor.shape.rot.y);
     }
 }
 
@@ -1803,7 +1803,7 @@ s32 func_800C0D34(GlobalContext* globalCtx, Actor* actor, s16* yaw) {
     TransitionActorEntry* transitionActor;
     s32 frontRoom;
 
-    if (actor->type != ACTORTYPE_DOOR) {
+    if (actor->category != ACTORCAT_DOOR) {
         return 0;
     }
 

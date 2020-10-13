@@ -18,7 +18,7 @@ void EnPoDesert_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Po_Desert_InitVars = {
     ACTOR_EN_PO_DESERT,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_PO_FIELD,
     sizeof(EnPoDesert),

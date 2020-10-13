@@ -32,7 +32,7 @@ static CollisionCheckInfoInit2 D_80AFBADC = {
 
 const ActorInit En_Si_InitVars = {
     ACTOR_EN_SI,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_ST,
     sizeof(EnSi),

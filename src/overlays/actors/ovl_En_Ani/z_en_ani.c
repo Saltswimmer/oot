@@ -34,7 +34,7 @@ extern AnimationHeader D_060076EC;
 
 const ActorInit En_Ani_InitVars = {
     ACTOR_EN_ANI,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_ANI,
     sizeof(EnAni),
@@ -275,7 +275,7 @@ void EnAni_Update(Actor* thisx, GlobalContext* globalCtx) {
     }
 
     if (this->unk_2A8 & 1) {
-        func_80038290(globalCtx, &this->actor, &this->unk_29C, &this->unk_2A2, this->actor.posRot2.pos);
+        func_80038290(globalCtx, &this->actor, &this->unk_29C, &this->unk_2A2, this->actor.head.pos);
         this->unk_2A2.z = 0;
         this->unk_2A2.y = this->unk_2A2.z;
         this->unk_2A2.x = this->unk_2A2.z;
@@ -307,7 +307,7 @@ s32 EnAni_OverrideLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList,
 
 void EnAni_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec3s* rot, Actor* thisx) {
     if (limbIndex == 15) {
-        Matrix_MultVec3f(&sMultVec, &thisx->posRot2.pos);
+        Matrix_MultVec3f(&sMultVec, &thisx->head.pos);
     }
 }
 

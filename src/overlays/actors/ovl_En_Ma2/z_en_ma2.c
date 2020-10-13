@@ -23,7 +23,7 @@ void func_80AA21C8(EnMa2* this, GlobalContext* globalCtx);
 
 const ActorInit En_Ma2_InitVars = {
     ACTOR_EN_MA2,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_MA2,
     sizeof(EnMa2),
@@ -129,7 +129,7 @@ void func_80AA1AE4(EnMa2* this, GlobalContext* globalCtx) {
         phi_a3 = 0;
     }
 
-    this->unk_1E0.unk_18 = player->actor.posRot.pos;
+    this->unk_1E0.unk_18 = player->actor.world.pos;
     this->unk_1E0.unk_14 = 0.0f;
 
     func_80034A14(&this->actor, &this->unk_1E0, 0, phi_a3);
@@ -355,7 +355,7 @@ void EnMa2_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Ve
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_en_ma2.c", 904);
 
     if (limbIndex == 18) {
-        Matrix_MultVec3f(&vec, &this->actor.posRot2.pos);
+        Matrix_MultVec3f(&vec, &this->actor.head.pos);
     }
     if ((limbIndex == 14) && (this->skelAnime.animCurrentSeg == &D_060093BC)) {
         gSPDisplayList(oGfxCtx->polyOpa.p++, D_06005420);
@@ -373,7 +373,7 @@ void EnMa2_Draw(Actor* thisx, GlobalContext* globalCtx) {
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_en_ma2.c", 955);
 
     camera = ACTIVE_CAM;
-    someFloat = Math_Vec3f_DistXZ(&this->actor.posRot.pos, &camera->eye);
+    someFloat = Math_Vec3f_DistXZ(&this->actor.world.pos, &camera->eye);
     func_800F6268(someFloat, 0x2F);
     func_80093D18(globalCtx->state.gfxCtx);
 

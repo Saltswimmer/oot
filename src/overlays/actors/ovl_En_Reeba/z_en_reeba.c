@@ -38,7 +38,7 @@ static DamageTable sDamageTable = {
 
 const ActorInit En_Reeba_InitVars = {
     ACTOR_EN_REEBA,
-    ACTORTYPE_MISC,
+    ACTORCAT_MISC,
     FLAGS,
     OBJECT_REEBA,
     sizeof(EnReeba),
@@ -66,7 +66,7 @@ void EnReeba_Init(Actor* thisx, GlobalContext* globalCtx) {
     this->actor.naviEnemyId = 0x47;
     this->actor.unk_1F = 3;
     this->actor.gravity = -3.5f;
-    this->actor.posRot2.pos = this->actor.posRot.pos;
+    this->actor.head.pos = this->actor.world.pos;
     SkelAnime_Init(globalCtx, &this->skelanime, &D_06001EE8, &D_060001E4, this->limbDrawTable,
                    this->transitionDrawTable, 18);
     this->actor.colChkInfo.mass = 0xFE;
@@ -84,7 +84,7 @@ void EnReeba_Init(Actor* thisx, GlobalContext* globalCtx) {
         this->actor.colChkInfo.health = 20;
         this->collider.body.toucher.effect = 4;
         this->collider.body.toucher.damage = 16;
-        Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_ENEMY);
+        Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORCAT_ENEMY);
     }
 
     temp_f0 = this->scale * -27500.0f;
@@ -146,7 +146,7 @@ void func_80AE4F40(EnReeba* this, GlobalContext* globalCtx) {
     }
 
     this->actor.flags &= ~0x08000000;
-    this->actor.posRot.pos.y = this->actor.groundY;
+    this->actor.world.pos.y = this->actor.groundY;
 
     if (this->isBig) {
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_RIVA_BIG_APPEAR);
@@ -164,7 +164,7 @@ void func_80AE5054(EnReeba* this, GlobalContext* globalCtx) {
     SkelAnime_FrameUpdateMatrix(&this->skelanime);
 
     if ((globalCtx->gameplayFrames % 4) == 0) {
-        func_80033260(globalCtx, &this->actor, &this->actor.posRot.pos, this->actor.shape.unk_10, 1, 8.0f, 0x1F4, 0xA,
+        func_80033260(globalCtx, &this->actor, &this->actor.world.pos, this->actor.shape.unk_10, 1, 8.0f, 0x1F4, 0xA,
                       1);
     }
 
@@ -181,19 +181,19 @@ void func_80AE5054(EnReeba* this, GlobalContext* globalCtx) {
 
             switch (this->unk_280) {
                 case 0:
-                    this->actor.posRot.rot.y = this->actor.yawTowardsLink;
+                    this->actor.world.rot.y = this->actor.yawTowardsLink;
                     break;
                 case 1:
-                    this->actor.posRot.rot.y = this->actor.yawTowardsLink + (800.0f * playerLinearVel);
+                    this->actor.world.rot.y = this->actor.yawTowardsLink + (800.0f * playerLinearVel);
                     break;
                 case 2:
                 case 3:
-                    this->actor.posRot.rot.y =
+                    this->actor.world.rot.y =
                         this->actor.yawTowardsLink +
                         (player->actor.shape.rot.y - this->actor.yawTowardsLink) * (playerLinearVel * 0.15f);
                     break;
                 case 4:
-                    this->actor.posRot.rot.y = this->actor.yawTowardsLink - (800.0f * playerLinearVel);
+                    this->actor.world.rot.y = this->actor.yawTowardsLink - (800.0f * playerLinearVel);
             }
 
             if (this->isBig) {
@@ -278,9 +278,9 @@ void func_80AE53AC(EnReeba* this, GlobalContext* globalCtx) {
     }
 
     yawDiff = (this->unk_270 == 0) ? this->actor.yawTowardsLink : -this->actor.yawTowardsLink;
-    yawDiff = yawDiff - this->actor.posRot.rot.y;
+    yawDiff = yawDiff - this->actor.world.rot.y;
     yaw = (yawDiff > 0) ? ((yawDiff / 31.0f) + 10.0f) : ((yawDiff / 31.0f) - 10.0f);
-    this->actor.posRot.rot.y += (yaw * 2.0f);
+    this->actor.world.rot.y += (yaw * 2.0f);
 
     if (this->unk_274 == 0) {
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_RIVA_MOVE);
@@ -315,7 +315,7 @@ void func_80AE56E0(EnReeba* this, GlobalContext* globalCtx) {
 
     if ((this->unk_284 + 10.0f) <= this->actor.shape.unk_08) {
         if ((globalCtx->gameplayFrames & 3) == 0) {
-            func_80033260(globalCtx, &this->actor, &this->actor.posRot.pos, this->actor.shape.unk_10, 1, 8.0f, 500, 10,
+            func_80033260(globalCtx, &this->actor, &this->actor.world.pos, this->actor.shape.unk_10, 1, 8.0f, 500, 10,
                           1);
         }
 
@@ -329,7 +329,7 @@ void func_80AE56E0(EnReeba* this, GlobalContext* globalCtx) {
 void func_80AE57F0(EnReeba* this, GlobalContext* globalCtx) {
     this->unk_276 = 14;
     this->actor.speedXZ = -8.0f;
-    this->actor.posRot.rot.y = this->actor.yawTowardsLink;
+    this->actor.world.rot.y = this->actor.yawTowardsLink;
     func_8003426C(&this->actor, 0x4000, 0xFF, 0, 8);
     this->actionfunc = func_80AE5854;
 }
@@ -353,7 +353,7 @@ void func_80AE5854(EnReeba* this, GlobalContext* globalCtx) {
 
 void func_80AE58EC(EnReeba* this, GlobalContext* globalCtx) {
     this->unk_278 = 14;
-    this->actor.posRot.rot.y = this->actor.yawTowardsLink;
+    this->actor.world.rot.y = this->actor.yawTowardsLink;
     this->actor.speedXZ = -8.0f;
     this->actor.flags |= 0x8000000;
     this->actor.flags &= ~5;
@@ -373,9 +373,9 @@ void func_80AE5938(EnReeba* this, GlobalContext* globalCtx) {
 
         if ((this->unk_27E == 4) || (this->actor.colChkInfo.health != 0)) {
             if (this->unk_27E == 2) {
-                pos.x = this->actor.posRot.pos.x + Math_Rand_CenteredFloat(20.0f);
-                pos.y = this->actor.posRot.pos.y + Math_Rand_CenteredFloat(20.0f);
-                pos.z = this->actor.posRot.pos.z + Math_Rand_CenteredFloat(20.0f);
+                pos.x = this->actor.world.pos.x + Math_Rand_CenteredFloat(20.0f);
+                pos.y = this->actor.world.pos.y + Math_Rand_CenteredFloat(20.0f);
+                pos.z = this->actor.world.pos.z + Math_Rand_CenteredFloat(20.0f);
                 scale = 3.0f;
 
                 if (this->isBig) {
@@ -400,9 +400,9 @@ void func_80AE5A9C(EnReeba* this, GlobalContext* globalCtx) {
 
     if (this->unk_278 != 0) {
         if ((this->unk_27E == 2) && ((this->unk_278 & 0xF) == 0)) {
-            randPos.x = this->actor.posRot.pos.x + Math_Rand_CenteredFloat(20.0f);
-            randPos.y = this->actor.posRot.pos.y + Math_Rand_CenteredFloat(20.0f);
-            randPos.z = this->actor.posRot.pos.z + Math_Rand_CenteredFloat(20.0f);
+            randPos.x = this->actor.world.pos.x + Math_Rand_CenteredFloat(20.0f);
+            randPos.y = this->actor.world.pos.y + Math_Rand_CenteredFloat(20.0f);
+            randPos.z = this->actor.world.pos.z + Math_Rand_CenteredFloat(20.0f);
             scale = 3.0f;
 
             if (this->isBig) {
@@ -420,7 +420,7 @@ void func_80AE5A9C(EnReeba* this, GlobalContext* globalCtx) {
 
 void func_80AE5BC4(EnReeba* this, GlobalContext* globalCtx) {
     this->actor.speedXZ = -8.0f;
-    this->actor.posRot.rot.y = this->actor.yawTowardsLink;
+    this->actor.world.rot.y = this->actor.yawTowardsLink;
     func_8003426C(&this->actor, 0x4000, 0xFF, 0, 8);
     this->unk_278 = 14;
     this->actor.flags &= ~1;
@@ -442,9 +442,9 @@ void func_80AE5C38(EnReeba* this, GlobalContext* globalCtx) {
         Math_SmoothDownscaleMaxF(&this->scale, 0.1f, 0.01f);
 
         if (this->scale < 0.01f) {
-            pos.x = this->actor.posRot.pos.x;
-            pos.y = this->actor.posRot.pos.y;
-            pos.z = this->actor.posRot.pos.z;
+            pos.x = this->actor.world.pos.x;
+            pos.y = this->actor.world.pos.y;
+            pos.z = this->actor.world.pos.z;
             velocity.y = 4.0f;
             EffectSsDeadDb_Spawn(globalCtx, &pos, &velocity, &accel, 120, 0, 255, 255, 255, 255, 255, 0, 0, 1, 9, true);
 
@@ -589,7 +589,7 @@ void EnReeba_Update(Actor* thisx, GlobalContext* globalCtx) {
 
         if ((this->actionfunc == func_80AE5270) || (this->actionfunc == func_80AE53AC)) {
             this->actor.speedXZ = 8.0f;
-            this->actor.posRot.rot.y *= -1.0f;
+            this->actor.world.rot.y *= -1.0f;
             this->unk_272 = 14;
             this->actionfunc = func_80AE561C;
             return;
@@ -603,12 +603,12 @@ void EnReeba_Update(Actor* thisx, GlobalContext* globalCtx) {
         }
     }
 
-    this->actor.posRot2.pos = this->actor.posRot.pos;
+    this->actor.head.pos = this->actor.world.pos;
 
     if (!this->isBig) {
-        this->actor.posRot2.pos.y += 15.0f;
+        this->actor.head.pos.y += 15.0f;
     } else {
-        this->actor.posRot2.pos.y += 30.0f;
+        this->actor.head.pos.y += 30.0f;
     }
 
     Collider_CylinderUpdate(&this->actor, &this->collider);
@@ -648,10 +648,10 @@ void EnReeba_Draw(Actor* thisx, GlobalContext* globalCtx) {
     if (BREG(0)) {
         Vec3f debugPos;
 
-        debugPos.x = (Math_Sins(this->actor.posRot.rot.y) * 30.0f) + this->actor.posRot.pos.x;
-        debugPos.y = this->actor.posRot.pos.y + 20.0f;
-        debugPos.z = (Math_Coss(this->actor.posRot.rot.y) * 30.0f) + this->actor.posRot.pos.z;
-        DebugDisplay_AddObject(debugPos.x, debugPos.y, debugPos.z, this->actor.posRot.rot.x, this->actor.posRot.rot.y,
-                               this->actor.posRot.rot.z, 1.0f, 1.0f, 1.0f, 255, 0, 0, 255, 4, globalCtx->state.gfxCtx);
+        debugPos.x = (Math_Sins(this->actor.world.rot.y) * 30.0f) + this->actor.world.pos.x;
+        debugPos.y = this->actor.world.pos.y + 20.0f;
+        debugPos.z = (Math_Coss(this->actor.world.rot.y) * 30.0f) + this->actor.world.pos.z;
+        DebugDisplay_AddObject(debugPos.x, debugPos.y, debugPos.z, this->actor.world.rot.x, this->actor.world.rot.y,
+                               this->actor.world.rot.z, 1.0f, 1.0f, 1.0f, 255, 0, 0, 255, 4, globalCtx->state.gfxCtx);
     }
 }

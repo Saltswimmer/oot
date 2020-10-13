@@ -11,7 +11,7 @@ void EnGm_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Gm_InitVars = {
     ACTOR_EN_GM,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_OF1D_MAP,
     sizeof(EnGm),

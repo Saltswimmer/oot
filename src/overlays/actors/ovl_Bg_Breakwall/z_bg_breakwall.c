@@ -22,7 +22,7 @@ void func_808705D8(BgBreakwall* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Breakwall_InitVars = {
     ACTOR_BG_BREAKWALL,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(BgBreakwall),

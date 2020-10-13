@@ -18,7 +18,7 @@ void EnTr_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Tr_InitVars = {
     ACTOR_EN_TR,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_TR,
     sizeof(EnTr),

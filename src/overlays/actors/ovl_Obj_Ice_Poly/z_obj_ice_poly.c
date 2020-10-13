@@ -18,7 +18,7 @@ void ObjIcePoly_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Obj_Ice_Poly_InitVars = {
     ACTOR_OBJ_ICE_POLY,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(ObjIcePoly),

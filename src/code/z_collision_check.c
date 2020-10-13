@@ -1386,7 +1386,7 @@ void func_8005E2EC(GlobalContext* globalCtx, ColliderBody* colliderBody, Collide
 
 s32 func_8005E4F8(Collider* left, ColliderBody* rightBody) {
     if (left->actor != NULL) {
-        if (ACTORTYPE_PLAYER == left->actor->type) {
+        if (ACTORCAT_PLAYER == left->actor->category) {
             if (rightBody->flags == 0) {
                 Audio_PlaySoundGeneral(NA_SE_IT_SWORD_STRIKE, &left->actor->projectedPos, 4, &D_801333E0, &D_801333E0,
                                        &D_801333E8);
@@ -2860,9 +2860,9 @@ s32 func_800626B0(GlobalContext* globalCtx, CollisionCheckContext* colChkCtx, Ve
 }
 
 void Collider_CylinderUpdate(Actor* actor, ColliderCylinder* collider) {
-    collider->dim.pos.x = (s32)actor->posRot.pos.x;
-    collider->dim.pos.y = (s32)actor->posRot.pos.y;
-    collider->dim.pos.z = (s32)actor->posRot.pos.z;
+    collider->dim.pos.x = (s32)actor->world.pos.x;
+    collider->dim.pos.y = (s32)actor->world.pos.y;
+    collider->dim.pos.z = (s32)actor->world.pos.z;
 }
 
 // Set ColliderCylinder position

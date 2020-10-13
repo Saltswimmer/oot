@@ -21,7 +21,7 @@ void func_8087EDC0(BgHakaSgami* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Haka_Sgami_InitVars = {
     ACTOR_BG_HAKA_SGAMI,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(BgHakaSgami),

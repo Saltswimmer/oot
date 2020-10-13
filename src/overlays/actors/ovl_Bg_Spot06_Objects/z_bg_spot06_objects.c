@@ -12,7 +12,7 @@ void BgSpot06Objects_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Spot06_Objects_InitVars = {
     ACTOR_BG_SPOT06_OBJECTS,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_SPOT06_OBJECTS,
     sizeof(BgSpot06Objects),

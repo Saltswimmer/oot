@@ -30,7 +30,7 @@ void func_8087C85C(BgHakaGate* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Haka_Gate_InitVars = {
     ACTOR_BG_HAKA_GATE,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_HAKA_OBJECTS,
     sizeof(BgHakaGate),

@@ -12,7 +12,7 @@ void EnElf_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Elf_InitVars = {
     ACTOR_EN_ELF,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnElf),

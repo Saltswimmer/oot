@@ -18,7 +18,7 @@ void EnJj_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Jj_InitVars = {
     ACTOR_EN_JJ,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_JJ,
     sizeof(EnJj),

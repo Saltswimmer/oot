@@ -12,7 +12,7 @@ void BgSpot18Basket_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Spot18_Basket_InitVars = {
     ACTOR_BG_SPOT18_BASKET,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_SPOT18_OBJ,
     sizeof(BgSpot18Basket),

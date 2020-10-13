@@ -11,7 +11,7 @@ void EnEncount2_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Encount2_InitVars = {
     ACTOR_EN_ENCOUNT2,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_EFC_STAR_FIELD,
     sizeof(EnEncount2),

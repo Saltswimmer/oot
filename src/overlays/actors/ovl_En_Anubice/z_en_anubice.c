@@ -18,7 +18,7 @@ void EnAnubice_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Anubice_InitVars = {
     ACTOR_EN_ANUBICE,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_ANUBICE,
     sizeof(EnAnubice),

@@ -12,7 +12,7 @@ void EnDntJiji_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Dnt_Jiji_InitVars = {
     ACTOR_EN_DNT_JIJI,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_DNS,
     sizeof(EnDntJiji),

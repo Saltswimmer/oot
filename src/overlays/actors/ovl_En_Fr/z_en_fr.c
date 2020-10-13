@@ -11,7 +11,7 @@ void EnFr_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Fr_InitVars = {
     ACTOR_EN_FR,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_FR,
     sizeof(EnFr),

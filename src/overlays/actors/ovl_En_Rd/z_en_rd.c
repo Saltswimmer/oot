@@ -32,7 +32,7 @@ void func_80AE3ECC(EnRd* this, GlobalContext* globalCtx);
 
 const ActorInit En_Rd_InitVars = {
     ACTOR_EN_RD,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_RD,
     sizeof(EnRd),
@@ -99,8 +99,8 @@ void EnRd_Init(Actor* thisx, GlobalContext* globalCtx) {
     thisx->colChkInfo.damageTable = &sDamageTable;
     ActorShape_Init(&thisx->shape, 0.0f, NULL, 0.0f);
     this->unk_310 = this->unk_30E = 0;
-    thisx->posRot2.pos = thisx->posRot.pos;
-    thisx->posRot2.pos.y += 50.0f;
+    thisx->head.pos = thisx->world.pos;
+    thisx->head.pos.y += 50.0f;
     thisx->colChkInfo.mass = 0xFE;
     thisx->colChkInfo.health = 8;
     this->unk_314 = this->unk_31D = 0xFF;
@@ -148,7 +148,7 @@ void EnRd_Destroy(Actor* thisx, GlobalContext* globalCtx) {
 }
 
 void func_80AE2630(GlobalContext* globalCtx, Actor* thisx, s32 arg2) {
-    Actor* enemyIt = globalCtx->actorCtx.actorList[ACTORTYPE_ENEMY].first;
+    Actor* enemyIt = globalCtx->actorCtx.actorList[ACTORCAT_ENEMY].first;
 
     while (enemyIt != NULL) {
         if ((enemyIt->id != ACTOR_EN_RD) || (enemyIt == thisx) || (enemyIt->params < 0)) {
@@ -175,7 +175,7 @@ void func_80AE269C(EnRd* this) {
     this->unk_31B = 0;
     this->unk_30C = (Math_Rand_ZeroOne() * 10.0f) + 5.0f;
     this->actor.speedXZ = 0.0f;
-    this->actor.posRot.rot.y = this->actor.shape.rot.y;
+    this->actor.world.rot.y = this->actor.shape.rot.y;
     EnRd_SetupAction(this, func_80AE2744);
 }
 
@@ -246,16 +246,16 @@ void func_80AE2970(EnRd* this) {
 void func_80AE2A10(EnRd* this, GlobalContext* globalCtx) {
     if (this->actor.shape.rot.x != -0x4000) {
         Math_SmoothScaleMaxMinS(&this->actor.shape.rot.x, 0, 1, 0x7D0, 0);
-        if (Math_SmoothScaleMaxMinF(&this->actor.posRot.pos.y, this->actor.initPosRot.pos.y, 0.3f, 2.0f, 0.3f) ==
+        if (Math_SmoothScaleMaxMinF(&this->actor.world.pos.y, this->actor.home.pos.y, 0.3f, 2.0f, 0.3f) ==
             0.0f) {
             this->actor.gravity = -3.5f;
             func_80AE269C(this);
         }
     } else {
-        if (this->actor.posRot.pos.y == this->actor.initPosRot.pos.y) {
+        if (this->actor.world.pos.y == this->actor.home.pos.y) {
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_REDEAD_CRY);
         }
-        if (Math_SmoothScaleMaxMinF(&this->actor.posRot.pos.y, this->actor.initPosRot.pos.y + 50.0f, 0.3f, 2.0f,
+        if (Math_SmoothScaleMaxMinF(&this->actor.world.pos.y, this->actor.home.pos.y + 50.0f, 0.3f, 2.0f,
                                     0.3f) == 0.0f) {
             if (this->unk_30C != 0) {
                 this->unk_30C--;
@@ -287,10 +287,10 @@ void func_80AE2C1C(EnRd* this, GlobalContext* globalCtx) {
     Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, this->actor.yawTowardsLink, 1, 0xFA, 0);
     Math_SmoothScaleMaxMinS(&this->unk_30E, 0, 1, 0x64, 0);
     Math_SmoothScaleMaxMinS(&this->unk_310, 0, 1, 0x64, 0);
-    this->actor.posRot.rot.y = this->actor.shape.rot.y;
+    this->actor.world.rot.y = this->actor.shape.rot.y;
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
 
-    if (func_8002DB6C(&player->actor, &this->actor.initPosRot.pos) >= 150.0f) {
+    if (func_8002DB6C(&player->actor, &this->actor.home.pos) >= 150.0f) {
         func_80AE2F50(this, globalCtx);
     }
 
@@ -345,13 +345,13 @@ void func_80AE2F50(EnRd* this, GlobalContext* globalCtx) {
 void func_80AE2FD0(EnRd* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
     s32 pad;
-    s16 targetY = func_8002DAC0(&this->actor, &this->actor.initPosRot.pos);
+    s16 targetY = func_8002DAC0(&this->actor, &this->actor.home.pos);
 
-    if (func_8002DB6C(&this->actor, &this->actor.initPosRot.pos) >= 5.0f) {
+    if (func_8002DB6C(&this->actor, &this->actor.home.pos) >= 5.0f) {
         Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, targetY, 1, 0x1C2, 0);
     } else {
         this->actor.speedXZ = 0.0f;
-        if (Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, this->actor.initPosRot.rot.y, 1, 0x1C2, 0) == 0) {
+        if (Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, this->actor.home.rot.y, 1, 0x1C2, 0) == 0) {
             if (this->actor.params != 2) {
                 func_80AE269C(this);
             } else {
@@ -362,11 +362,11 @@ void func_80AE2FD0(EnRd* this, GlobalContext* globalCtx) {
 
     Math_SmoothScaleMaxMinS(&this->unk_30E, 0, 1, 0x64, 0);
     Math_SmoothScaleMaxMinS(&this->unk_310, 0, 1, 0x64, 0);
-    this->actor.posRot.rot.y = this->actor.shape.rot.y;
+    this->actor.world.rot.y = this->actor.shape.rot.y;
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
 
     if (!(player->stateFlags1 & 0x2C6080) && !(player->stateFlags2 & 0x80) &&
-        (func_8002DB6C(&player->actor, &this->actor.initPosRot.pos) < 150.0f)) {
+        (func_8002DB6C(&player->actor, &this->actor.home.pos) < 150.0f)) {
         this->actor.unk_1F = 0;
         func_80AE2B90(this, globalCtx);
     } else if (this->actor.params > 0) {
@@ -396,7 +396,7 @@ void func_80AE3260(EnRd* this, GlobalContext* globalCtx) {
     if (this->actor.parent != NULL) {
         s32 pad;
         s16 targetY;
-        Vec3f thisPos = this->actor.parent->posRot.pos;
+        Vec3f thisPos = this->actor.parent->world.pos;
 
         targetY = func_8002DAC0(&this->actor, &thisPos);
 
@@ -420,7 +420,7 @@ void func_80AE3260(EnRd* this, GlobalContext* globalCtx) {
         func_80AE2B90(this, globalCtx);
     }
 
-    this->actor.posRot.rot.y = this->actor.shape.rot.y;
+    this->actor.world.rot.y = this->actor.shape.rot.y;
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
 
     if (this->skelAnime.animCurrentFrame == 10.0f || this->skelAnime.animCurrentFrame == 22.0f) {
@@ -470,12 +470,12 @@ void func_80AE3454(EnRd* this, GlobalContext* globalCtx) {
                 Math_SmoothScaleMaxMinF(&this->actor.shape.unk_08, -1500.0f, 1.0f, 150.0f, 0.0f);
             }
 
-            Math_SmoothScaleMaxMinF(&this->actor.posRot.pos.x,
-                                    (Math_Sins(player->actor.shape.rot.y) * -25.0f) + player->actor.posRot.pos.x, 1.0f,
+            Math_SmoothScaleMaxMinF(&this->actor.world.pos.x,
+                                    (Math_Sins(player->actor.shape.rot.y) * -25.0f) + player->actor.world.pos.x, 1.0f,
                                     10.0f, 0.0f);
-            Math_SmoothScaleMaxMinF(&this->actor.posRot.pos.y, player->actor.posRot.pos.y, 1.0f, 10.0f, 0.0f);
-            Math_SmoothScaleMaxMinF(&this->actor.posRot.pos.z,
-                                    (Math_Coss(player->actor.shape.rot.y) * -25.0f) + player->actor.posRot.pos.z, 1.0f,
+            Math_SmoothScaleMaxMinF(&this->actor.world.pos.y, player->actor.world.pos.y, 1.0f, 10.0f, 0.0f);
+            Math_SmoothScaleMaxMinF(&this->actor.world.pos.z,
+                                    (Math_Coss(player->actor.shape.rot.y) * -25.0f) + player->actor.world.pos.z, 1.0f,
                                     10.0f, 0.0f);
             Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, player->actor.shape.rot.y, 1, 0x1770, 0);
 
@@ -583,15 +583,15 @@ void func_80AE3B18(EnRd* this, GlobalContext* globalCtx) {
         this->actor.speedXZ += 0.15f;
     }
 
-    this->actor.posRot.rot.y = this->actor.yawTowardsLink;
+    this->actor.world.rot.y = this->actor.yawTowardsLink;
     Math_SmoothScaleMaxMinS(&this->unk_30E, 0, 1, 0x12C, 0);
     Math_SmoothScaleMaxMinS(&this->unk_310, 0, 1, 0x12C, 0);
     if (SkelAnime_FrameUpdateMatrix(&this->skelAnime)) {
-        this->actor.posRot.rot.y = this->actor.shape.rot.y;
+        this->actor.world.rot.y = this->actor.shape.rot.y;
 
         if (this->actor.parent != NULL) {
             func_80AE31DC(this);
-        } else if (func_8002DB6C(&player->actor, &this->actor.initPosRot.pos) >= 150.0f) {
+        } else if (func_8002DB6C(&player->actor, &this->actor.home.pos) >= 150.0f) {
             func_80AE2F50(this, globalCtx);
         } else {
             func_80AE2B90(this, globalCtx);
@@ -612,8 +612,8 @@ void func_80AE3C20(EnRd* this) {
 }
 
 void func_80AE3C98(EnRd* this, GlobalContext* globalCtx) {
-    if (this->actor.type != ACTORTYPE_PROP) {
-        Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORTYPE_PROP);
+    if (this->actor.category != ACTORCAT_PROP) {
+        Actor_ChangeType(globalCtx, &globalCtx->actorCtx, &this->actor, ACTORCAT_PROP);
     }
 
     Math_SmoothScaleMaxMinS(&this->unk_30E, 0, 1, 0x7D0, 0);
@@ -644,7 +644,7 @@ void func_80AE3C98(EnRd* this, GlobalContext* globalCtx) {
 void func_80AE3DE4(EnRd* this) {
     this->unk_31B = 1;
     this->actor.speedXZ = 0.0f;
-    this->actor.posRot.rot.y = this->actor.shape.rot.y;
+    this->actor.world.rot.y = this->actor.shape.rot.y;
     if (gSaveContext.unk_1422 != 0) {
         this->unk_318 = 1;
         this->unk_316 = 0x258;
@@ -675,7 +675,7 @@ void func_80AE3ECC(EnRd* this, GlobalContext* globalCtx) {
         if (this->actor.colChkInfo.health == 0) {
             func_80AE2630(globalCtx, &this->actor, 1);
             func_80AE3C20(this);
-            Item_DropCollectibleRandom(globalCtx, &this->actor, &this->actor.posRot.pos, 0x90);
+            Item_DropCollectibleRandom(globalCtx, &this->actor, &this->actor.world.pos, 0x90);
         } else {
             func_80AE3A8C(this);
         }
@@ -760,7 +760,7 @@ void func_80AE4114(EnRd* this, GlobalContext* globalCtx) {
                 if (this->actor.colChkInfo.health == 0) {
                     func_80AE2630(globalCtx, &this->actor, 1);
                     func_80AE3C20(this);
-                    Item_DropCollectibleRandom(globalCtx, 0, &this->actor.posRot.pos, 0x90);
+                    Item_DropCollectibleRandom(globalCtx, 0, &this->actor.world.pos, 0x90);
                 } else {
                     func_80AE3A8C(this);
                 }
@@ -800,8 +800,8 @@ void EnRd_Update(Actor* thisx, GlobalContext* globalCtx) {
         }
     }
 
-    this->actor.posRot2.pos = this->actor.posRot.pos;
-    this->actor.posRot2.pos.y += 50.0f;
+    this->actor.head.pos = this->actor.world.pos;
+    this->actor.head.pos.y += 50.0f;
 
     if ((this->actor.colChkInfo.health > 0) && (this->unk_31B != 8)) {
         Collider_CylinderUpdate(&this->actor, collider);
@@ -876,7 +876,7 @@ void EnRd_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
 void EnRd_Draw(Actor* thisx, GlobalContext* globalCtx) {
     EnRd* this = THIS;
     s32 pad;
-    Vec3f thisPos = this->actor.posRot.pos;
+    Vec3f thisPos = this->actor.world.pos;
 
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_en_rd.c", 1679);
 

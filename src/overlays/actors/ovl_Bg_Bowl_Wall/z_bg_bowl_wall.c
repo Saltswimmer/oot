@@ -24,7 +24,7 @@ void func_8086F7F8(BgBowlWall* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Bowl_Wall_InitVars = {
     ACTOR_BG_BOWL_WALL,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_BOWL,
     sizeof(BgBowlWall),

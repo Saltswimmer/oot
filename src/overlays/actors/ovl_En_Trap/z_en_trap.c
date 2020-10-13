@@ -18,7 +18,7 @@ void EnTrap_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Trap_InitVars = {
     ACTOR_EN_TRAP,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_TRAP,
     sizeof(EnTrap),

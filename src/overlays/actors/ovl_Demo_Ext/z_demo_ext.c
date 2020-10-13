@@ -12,7 +12,7 @@ void DemoExt_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Demo_Ext_InitVars = {
     ACTOR_DEMO_EXT,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_FHG,
     sizeof(DemoExt),

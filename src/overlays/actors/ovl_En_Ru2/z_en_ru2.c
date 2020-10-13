@@ -73,7 +73,7 @@ static EnRu2DrawFunc sDrawFuncs[] = {
 
 const ActorInit En_Ru2_InitVars = {
     ACTOR_EN_RU2,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_RU2,
     sizeof(EnRu2),
@@ -209,12 +209,12 @@ void func_80AF2868(EnRu2* this, GlobalContext* globalCtx, u32 npcActionIdx) {
     Actor* thisx = &this->actor;
 
     if (csCmdNPCAction != NULL) {
-        thisx->posRot.pos.x = csCmdNPCAction->startPos.x;
-        thisx->posRot.pos.y = csCmdNPCAction->startPos.y;
-        thisx->posRot.pos.z = csCmdNPCAction->startPos.z;
+        thisx->world.pos.x = csCmdNPCAction->startPos.x;
+        thisx->world.pos.y = csCmdNPCAction->startPos.y;
+        thisx->world.pos.z = csCmdNPCAction->startPos.z;
         newRotY = csCmdNPCAction->rot.y;
         thisx->shape.rot.y = newRotY;
-        thisx->posRot.rot.y = newRotY;
+        thisx->world.rot.y = newRotY;
     }
 }
 
@@ -248,18 +248,18 @@ void func_80AF2994(EnRu2* this, GlobalContext* globalCtx) {
 
 void func_80AF29DC(EnRu2* this, GlobalContext* globalCtx) {
     Actor* thisx = &this->actor;
-    f32 posX = thisx->posRot.pos.x;
-    f32 posY = thisx->posRot.pos.y;
-    f32 posZ = thisx->posRot.pos.z;
+    f32 posX = thisx->world.pos.x;
+    f32 posY = thisx->world.pos.y;
+    f32 posZ = thisx->world.pos.z;
 
     Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DOOR_WARP1, posX, posY, posZ, 0, 0, 0, 2);
 }
 
 void func_80AF2A38(EnRu2* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
-    f32 posX = player->actor.posRot.pos.x;
-    f32 posY = player->actor.posRot.pos.y + 50.0f;
-    f32 posZ = player->actor.posRot.pos.z;
+    f32 posX = player->actor.world.pos.x;
+    f32 posY = player->actor.world.pos.y + 50.0f;
+    f32 posZ = player->actor.world.pos.z;
 
     Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_EFFECT, posX, posY, posZ, 0, 0, 0, 10);
     Item_Give(globalCtx, ITEM_MEDALLION_WATER);
@@ -276,9 +276,9 @@ void func_80AF2AB4(EnRu2* this, GlobalContext* globalCtx) {
         globalCtx->csCtx.segment = &D_80AF411C;
         gSaveContext.cutsceneTrigger = 2;
         Item_Give(globalCtx, ITEM_MEDALLION_WATER);
-        temp = this->actor.posRot.rot.y + 0x8000;
+        temp = this->actor.world.rot.y + 0x8000;
         player->actor.shape.rot.y = temp;
-        player->actor.posRot.rot.y = temp;
+        player->actor.world.rot.y = temp;
     }
 }
 
@@ -390,8 +390,8 @@ void func_80AF2E64() {
 }
 
 void func_80AF2E84(EnRu2* this, GlobalContext* globalCtx) {
-    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.posRot.pos.x,
-                       kREG(19) + 24.0f + this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 8);
+    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.world.pos.x,
+                       kREG(19) + 24.0f + this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 8);
 }
 
 void func_80AF2F04(EnRu2* this, GlobalContext* globalCtx) {
@@ -620,13 +620,13 @@ void func_80AF37CC(EnRu2* this) {
 
     this->unk_2C0 += 1;
     funcFloat = func_8006F9BC((kREG(2) + 0x96) & 0xFFFF, 0, this->unk_2C0, 8, 0);
-    this->actor.posRot.pos.y = this->actor.initPosRot.pos.y + (300.0f * funcFloat);
+    this->actor.world.pos.y = this->actor.home.pos.y + (300.0f * funcFloat);
 }
 
 s32 func_80AF383C(EnRu2* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
-    f32 thisPosX = this->actor.posRot.pos.x;
-    f32 playerPosX = player->actor.posRot.pos.x;
+    f32 thisPosX = this->actor.world.pos.x;
+    f32 playerPosX = player->actor.world.pos.x;
 
     if (playerPosX - thisPosX >= -202.0f) {
         return 1;
@@ -678,9 +678,9 @@ void func_80AF39DC(EnRu2* this, GlobalContext* globalCtx) {
                 player = PLAYER;
                 osSyncPrintf("うおりゃー！ \n");
                 func_8005B1A4(ACTIVE_CAM);
-                player->actor.posRot.pos.x = 820.0f;
-                player->actor.posRot.pos.y = 0.0f;
-                player->actor.posRot.pos.z = 180.0f;
+                player->actor.world.pos.x = 820.0f;
+                player->actor.world.pos.y = 0.0f;
+                player->actor.world.pos.z = 180.0f;
             }
         }
     }

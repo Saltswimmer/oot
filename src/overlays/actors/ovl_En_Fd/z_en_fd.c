@@ -12,7 +12,7 @@ void EnFd_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Fd_InitVars = {
     ACTOR_EN_FD,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_FW,
     sizeof(EnFd),

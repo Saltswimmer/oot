@@ -22,7 +22,7 @@ void func_80B87A18(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Magic_Dark_InitVars = {
     ACTOR_MAGIC_DARK,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(MagicDark),
@@ -43,7 +43,7 @@ void MagicDark_Init(Actor* thisx, GlobalContext* globalCtx) {
         this->unk_15C = 0.6f;
     }
 
-    thisx->posRot.pos = player->actor.posRot.pos;
+    thisx->world.pos = player->actor.world.pos;
     Actor_SetScale(&this->actor, 0.0f);
     thisx->room = -1;
 

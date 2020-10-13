@@ -28,7 +28,7 @@ void func_809DFA84(EnCow* this, GlobalContext* globalCtx);
 
 const ActorInit En_Cow_InitVars = {
     ACTOR_EN_COW,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_COW,
     sizeof(EnCow),
@@ -71,17 +71,17 @@ void func_809DEE9C(EnCow* this) {
     vec.x = 0.0f;
     vec.z = 30.0f;
     func_809DEE00(&vec, this->actor.shape.rot.y);
-    this->colliders[0].dim.pos.x = this->actor.posRot.pos.x + vec.x;
-    this->colliders[0].dim.pos.y = this->actor.posRot.pos.y;
-    this->colliders[0].dim.pos.z = this->actor.posRot.pos.z + vec.z;
+    this->colliders[0].dim.pos.x = this->actor.world.pos.x + vec.x;
+    this->colliders[0].dim.pos.y = this->actor.world.pos.y;
+    this->colliders[0].dim.pos.z = this->actor.world.pos.z + vec.z;
 
     vec.x = 0.0f;
     vec.y = 0.0f;
     vec.z = -20.0f;
     func_809DEE00(&vec, this->actor.shape.rot.y);
-    this->colliders[1].dim.pos.x = this->actor.posRot.pos.x + vec.x;
-    this->colliders[1].dim.pos.y = this->actor.posRot.pos.y;
-    this->colliders[1].dim.pos.z = this->actor.posRot.pos.z + vec.z;
+    this->colliders[1].dim.pos.x = this->actor.world.pos.x + vec.x;
+    this->colliders[1].dim.pos.y = this->actor.world.pos.y;
+    this->colliders[1].dim.pos.z = this->actor.world.pos.z + vec.z;
 }
 
 void func_809DEF94(EnCow* this) {
@@ -90,9 +90,9 @@ void func_809DEF94(EnCow* this) {
     VEC_SET(vec, 0.0f, 57.0f, -36.0f);
 
     func_809DEE00(&vec, this->actor.shape.rot.y);
-    this->actor.posRot.pos.x += vec.x;
-    this->actor.posRot.pos.y += vec.y;
-    this->actor.posRot.pos.z += vec.z;
+    this->actor.world.pos.x += vec.x;
+    this->actor.world.pos.y += vec.y;
+    this->actor.world.pos.z += vec.z;
 }
 
 void EnCow_Init(Actor* thisx, GlobalContext* globalCtx) {
@@ -121,8 +121,8 @@ void EnCow_Init(Actor* thisx, GlobalContext* globalCtx) {
                     return;
                 }
             }
-            Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_COW, this->actor.posRot.pos.x,
-                               this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, this->actor.shape.rot.y, 0, 1);
+            Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_COW, this->actor.world.pos.x,
+                               this->actor.world.pos.y, this->actor.world.pos.z, 0, this->actor.shape.rot.y, 0, 1);
             this->unk_278 = Math_Rand_ZeroFloat(1000.0f) + 40.0f;
             this->unk_27A = 0;
             this->actor.unk_1F = 6;
@@ -312,9 +312,9 @@ void EnCow_Update(Actor* thisx, GlobalContext* globalCtx) {
     }
     this->actionFunc(this, globalCtx);
     if ((thisx->xzDistFromLink < 150.0f) &&
-        (ABS(Math_Vec3f_Yaw(&thisx->posRot.pos, &player->actor.posRot.pos)) < 0xC000)) {
-        targetX = Math_Vec3f_Pitch(&thisx->posRot2.pos, &player->actor.posRot2.pos);
-        targetY = Math_Vec3f_Yaw(&thisx->posRot2.pos, &player->actor.posRot2.pos) - thisx->shape.rot.y;
+        (ABS(Math_Vec3f_Yaw(&thisx->world.pos, &player->actor.world.pos)) < 0xC000)) {
+        targetX = Math_Vec3f_Pitch(&thisx->head.pos, &player->actor.head.pos);
+        targetY = Math_Vec3f_Yaw(&thisx->head.pos, &player->actor.head.pos) - thisx->shape.rot.y;
 
         if (targetX > 0x1000) {
             targetX = 0x1000;
@@ -367,7 +367,7 @@ s32 EnCow_OverrideLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList,
 
 void EnCow_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec3s* rot, Actor* thisx) {
     if (limbIndex == 2) {
-        Matrix_MultVec3f(&D_809E010C, &thisx->posRot2.pos);
+        Matrix_MultVec3f(&D_809E010C, &thisx->head.pos);
     }
 }
 

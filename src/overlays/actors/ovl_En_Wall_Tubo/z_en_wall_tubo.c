@@ -17,7 +17,7 @@ void EnWallTubo_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Wall_Tubo_InitVars = {
     ACTOR_EN_WALL_TUBO,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnWallTubo),

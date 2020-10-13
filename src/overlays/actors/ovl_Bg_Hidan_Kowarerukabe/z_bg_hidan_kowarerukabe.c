@@ -12,7 +12,7 @@ void BgHidanKowarerukabe_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Hidan_Kowarerukabe_InitVars = {
     ACTOR_BG_HIDAN_KOWARERUKABE,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HIDAN_OBJECTS,
     sizeof(BgHidanKowarerukabe),

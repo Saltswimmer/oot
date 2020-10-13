@@ -17,7 +17,7 @@ void EnPubox_Draw(Actor* thisx, GlobalContext* globalCtx);
 
 const ActorInit En_Pu_box_InitVars = {
     ACTOR_EN_PU_BOX,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_PU_BOX,
     sizeof(EnPubox),
@@ -73,7 +73,7 @@ void EnPubox_Update(Actor* thisx, GlobalContext* globalCtx) {
     EnPubox* this = THIS;
 
     thisx->speedXZ += this->dyna.unk_150;
-    thisx->posRot.rot.y = this->dyna.unk_158;
+    thisx->world.rot.y = this->dyna.unk_158;
     thisx->speedXZ = (thisx->speedXZ < -2.5f) ? -2.5f : ((thisx->speedXZ > 2.5f) ? 2.5f : thisx->speedXZ);
     Math_SmoothScaleMaxMinF(&thisx->speedXZ, 0.0f, 1.0f, 1.0f, 0.0f);
     if (thisx->speedXZ != 0.0f) {
@@ -84,7 +84,7 @@ void EnPubox_Update(Actor* thisx, GlobalContext* globalCtx) {
     this->dyna.unk_150 = 0.0f;
     Actor_MoveForward(thisx);
     func_8002E4B4(globalCtx, thisx, thisx->colChkInfo.unk_12, thisx->colChkInfo.unk_10, thisx->colChkInfo.unk_10, 0x1D);
-    thisx->posRot2.pos = thisx->posRot.pos;
+    thisx->head.pos = thisx->world.pos;
 }
 
 void EnPubox_Draw(Actor* thisx, GlobalContext* globalCtx) {

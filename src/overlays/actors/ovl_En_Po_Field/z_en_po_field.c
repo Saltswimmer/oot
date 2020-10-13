@@ -12,7 +12,7 @@ void EnPoField_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Po_Field_InitVars = {
     ACTOR_EN_PO_FIELD,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_PO_FIELD,
     sizeof(EnPoField),

@@ -18,7 +18,7 @@ void EnZo_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Zo_InitVars = {
     ACTOR_EN_ZO,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_ZO,
     sizeof(EnZo),

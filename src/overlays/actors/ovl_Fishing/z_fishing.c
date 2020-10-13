@@ -18,7 +18,7 @@ void Fishing_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Fishing_InitVars = {
     ACTOR_FISHING,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_FISH,
     sizeof(Fishing),

@@ -45,7 +45,7 @@ void func_8086DDC0(BgBdanSwitch* this, GlobalContext* globalCtx);
 
 const ActorInit Bg_Bdan_Switch_InitVars = {
     ACTOR_BG_BDAN_SWITCH,
-    ACTORTYPE_SWITCH,
+    ACTORCAT_SWITCH,
     FLAGS,
     OBJECT_BDAN_OBJECTS,
     sizeof(BgBdanSwitch),
@@ -255,7 +255,7 @@ void func_8086D67C(BgBdanSwitch* this) {
 }
 
 void func_8086D694(BgBdanSwitch* this, GlobalContext* globalCtx) {
-    if ((func_8005B198() == this->actor.type) || (this->unk_1DA <= 0)) {
+    if ((func_8005B198() == this->actor.category) || (this->unk_1DA <= 0)) {
         this->unk_1C8 -= 0.2f;
         if (this->unk_1C8 <= 0.1f) {
             func_8086D730(this);
@@ -332,7 +332,7 @@ void func_8086D944(BgBdanSwitch* this) {
 }
 
 void func_8086D95C(BgBdanSwitch* this, GlobalContext* globalCtx) {
-    if ((func_8005B198() == this->actor.type) || (this->unk_1DA <= 0)) {
+    if ((func_8005B198() == this->actor.category) || (this->unk_1DA <= 0)) {
         this->unk_1C8 -= 0.2f;
         if (this->unk_1C8 <= 0.1f) {
             func_8086DB24(this);
@@ -418,7 +418,7 @@ void func_8086DC30(BgBdanSwitch* this) {
 }
 
 void func_8086DC48(BgBdanSwitch* this, GlobalContext* globalCtx) {
-    if ((func_8005B198() == this->actor.type) || (this->unk_1DA <= 0)) {
+    if ((func_8005B198() == this->actor.category) || (this->unk_1DA <= 0)) {
         this->unk_1C8 -= 0.3f;
         if (this->unk_1C8 <= 1.0f) {
             func_8086DCCC(this);
@@ -454,7 +454,7 @@ void func_8086DDA8(BgBdanSwitch* this) {
 }
 
 void func_8086DDC0(BgBdanSwitch* this, GlobalContext* globalCtx) {
-    if ((((this->actor.params & 0xFF) != YELLOW_TALL_2) || (func_8005B198() == this->actor.type)) ||
+    if ((((this->actor.params & 0xFF) != YELLOW_TALL_2) || (func_8005B198() == this->actor.category)) ||
         (this->unk_1DA <= 0)) {
         this->unk_1C8 += 0.3f;
         if (this->unk_1C8 >= 2.0f) {
@@ -491,8 +491,8 @@ void BgBdanSwitch_Update(Actor* thisx, GlobalContext* globalCtx) {
 }
 
 void func_8086DF58(BgBdanSwitch* this, GlobalContext* globalCtx, Gfx* dlist) {
-    func_800D1694(this->actor.posRot.pos.x, this->actor.posRot.pos.y + (this->actor.shape.unk_08 * this->unk_1D0),
-                  this->actor.posRot.pos.z, &this->actor.shape.rot);
+    func_800D1694(this->actor.world.pos.x, this->actor.world.pos.y + (this->actor.shape.unk_08 * this->unk_1D0),
+                  this->actor.world.pos.z, &this->actor.shape.rot);
     Matrix_Scale(this->unk_1D4, this->unk_1D0, this->unk_1D4, MTXMODE_APPLY);
     Gfx_DrawDListOpa(globalCtx, dlist);
 }
@@ -509,7 +509,7 @@ void BgBdanSwitch_Draw(Actor* thisx, GlobalContext* globalCtx) {
         case YELLOW_TALL_2:
             func_8086DF58(this, globalCtx, &D_060061A0);
             func_800628A4(0, &this->collider);
-            Matrix_MultVec3f(&D_8086E0E0, &this->actor.posRot2);
+            Matrix_MultVec3f(&D_8086E0E0, &this->actor.head);
             break;
         case BLUE:
             func_8086DF58(this, globalCtx, &D_06005A20);

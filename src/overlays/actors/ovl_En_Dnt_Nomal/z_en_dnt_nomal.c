@@ -11,7 +11,7 @@ void EnDntNomal_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Dnt_Nomal_InitVars = {
     ACTOR_EN_DNT_NOMAL,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnDntNomal),

@@ -21,7 +21,7 @@ void func_80871838(BgDdanKd* this, GlobalContext* globalCtx);
 
 const ActorInit Bg_Ddan_Kd_InitVars = {
     ACTOR_BG_DDAN_KD,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_DDAN_OBJECTS,
     sizeof(BgDdanKd),
@@ -73,7 +73,7 @@ void BgDdanKd_Init(Actor* thisx, GlobalContext* globalCtx) {
     if (Flags_GetSwitch(globalCtx, this->dyna.actor.params) == 0) {
         BgDdanKd_SetupAction(this, BgDdanKd_CheckForExplosions);
     } else {
-        this->dyna.actor.posRot.pos.y = this->dyna.actor.initPosRot.pos.y - 200.0f - 20.0f;
+        this->dyna.actor.world.pos.y = this->dyna.actor.home.pos.y - 200.0f - 20.0f;
         BgDdanKd_SetupAction(this, func_80871838);
     }
 }
@@ -94,7 +94,7 @@ void BgDdanKd_CheckForExplosions(BgDdanKd* this, GlobalContext* globalCtx) {
         explosive->params = 2;
     }
     if ((explosive != NULL) && (this->prevExplosive != NULL) && (explosive != this->prevExplosive) &&
-        (Math_Vec3f_DistXZ(&this->prevExplosivePos, &explosive->posRot.pos) > 80.0f)) {
+        (Math_Vec3f_DistXZ(&this->prevExplosivePos, &explosive->world.pos) > 80.0f)) {
         BgDdanKd_SetupAction(this, BgDdanKd_LowerStairs);
         func_800800F8(globalCtx, 0xBEA, 0x3E7, this, 0);
     } else {
@@ -104,7 +104,7 @@ void BgDdanKd_CheckForExplosions(BgDdanKd* this, GlobalContext* globalCtx) {
             this->prevExplosive = explosive;
             if (explosive != NULL) {
                 this->timer = 13;
-                this->prevExplosivePos = explosive->posRot.pos;
+                this->prevExplosivePos = explosive->world.pos;
             }
         }
         Collider_CylinderUpdate(&this->dyna.actor, &this->collider);
@@ -120,15 +120,15 @@ void BgDdanKd_LowerStairs(BgDdanKd* this, GlobalContext* globalCtx) {
     Math_SmoothScaleMaxMinF(&this->dyna.actor.speedXZ, 4.0f, 0.5f, 0.025f, 0.0f);
     func_800AA000(500.0f, 0x78, 0x14, 0xA);
 
-    if (Math_SmoothScaleMaxMinF(&this->dyna.actor.posRot.pos.y, (this->dyna.actor.initPosRot.pos.y - 200.0f) - 20.0f,
+    if (Math_SmoothScaleMaxMinF(&this->dyna.actor.world.pos.y, (this->dyna.actor.home.pos.y - 200.0f) - 20.0f,
                                 0.075f, this->dyna.actor.speedXZ, 0.0075f) == 0.0f) {
         Flags_SetSwitch(globalCtx, this->dyna.actor.params);
         BgDdanKd_SetupAction(this, func_80871838);
     } else {
-        sp4C = (this->dyna.actor.pos4.y - this->dyna.actor.posRot.pos.y) + (this->dyna.actor.speedXZ * 0.25f);
+        sp4C = (this->dyna.actor.prevPos.y - this->dyna.actor.world.pos.y) + (this->dyna.actor.speedXZ * 0.25f);
 
         if (globalCtx->state.frames & 1) {
-            sp5C = sp50 = this->dyna.actor.posRot.pos;
+            sp5C = sp50 = this->dyna.actor.world.pos;
 
             if (globalCtx->state.frames & 2) {
                 sp5C.z += 210.0f + Math_Rand_ZeroOne() * 230.0f;
@@ -151,7 +151,7 @@ void BgDdanKd_LowerStairs(BgDdanKd* this, GlobalContext* globalCtx) {
             func_8003555C(globalCtx, &sp5C, &D_808718FC, &D_80871908);
             func_8003555C(globalCtx, &sp50, &D_808718FC, &D_80871908);
 
-            sp5C = this->dyna.actor.posRot.pos;
+            sp5C = this->dyna.actor.world.pos;
             sp5C.z += 560.0f + Math_Rand_ZeroOne() * 5.0f;
             sp5C.x += (Math_Rand_ZeroOne() - 0.5f) * 160.0f;
             sp5C.y = Math_Rand_ZeroOne() * 3.0f + (this->dyna.actor.groundY + 20.0f);

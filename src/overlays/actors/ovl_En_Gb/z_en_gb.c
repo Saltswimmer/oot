@@ -12,7 +12,7 @@ void EnGb_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Gb_InitVars = {
     ACTOR_EN_GB,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_PS,
     sizeof(EnGb),

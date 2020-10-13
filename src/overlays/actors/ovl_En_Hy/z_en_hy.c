@@ -12,7 +12,7 @@ void EnHy_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Hy_InitVars = {
     ACTOR_EN_HY,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnHy),

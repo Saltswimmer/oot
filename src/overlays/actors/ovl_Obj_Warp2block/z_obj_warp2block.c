@@ -31,7 +31,7 @@ void func_80BA2610(ObjWarp2block* this, GlobalContext* globalCtx);
 /*
 const ActorInit Obj_Warp2block_InitVars = {
     ACTOR_OBJ_WARP2BLOCK,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_TIMEBLOCK,
     sizeof(ObjWarp2block),

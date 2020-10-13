@@ -18,7 +18,7 @@ void BgSpot07Taki_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Spot07_Taki_InitVars = {
     ACTOR_BG_SPOT07_TAKI,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_SPOT07_OBJECT,
     sizeof(BgSpot07Taki),

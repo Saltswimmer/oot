@@ -18,7 +18,7 @@ void BgIceTurara_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Ice_Turara_InitVars = {
     ACTOR_BG_ICE_TURARA,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_ICE_OBJECTS,
     sizeof(BgIceTurara),

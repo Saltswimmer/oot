@@ -12,7 +12,7 @@ void EnPoRelay_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Po_Relay_InitVars = {
     ACTOR_EN_PO_RELAY,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_TK,
     sizeof(EnPoRelay),

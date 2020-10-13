@@ -27,7 +27,7 @@ void func_8086EE94(BgBombwall* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Bombwall_InitVars = {
     ACTOR_BG_BOMBWALL,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_GAMEPLAY_FIELD_KEEP,
     sizeof(BgBombwall),

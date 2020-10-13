@@ -18,7 +18,7 @@ void EnVali_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Vali_InitVars = {
     ACTOR_EN_VALI,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_VALI,
     sizeof(EnVali),

@@ -18,7 +18,7 @@ void EnViewer_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Viewer_InitVars = {
     ACTOR_EN_VIEWER,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnViewer),

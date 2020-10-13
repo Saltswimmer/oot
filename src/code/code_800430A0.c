@@ -11,7 +11,7 @@ void func_800432A0(CollisionContext* colCtx, u32 floorPolySource, Actor* actor) 
         }
 
         actor->shape.rot.y += v1;
-        actor->posRot.rot.y += v1;
+        actor->world.rot.y += v1;
     }
 }
 

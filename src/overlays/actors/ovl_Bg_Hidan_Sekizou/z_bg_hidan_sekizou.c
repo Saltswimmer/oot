@@ -12,7 +12,7 @@ void BgHidanSekizou_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Hidan_Sekizou_InitVars = {
     ACTOR_BG_HIDAN_SEKIZOU,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HIDAN_OBJECTS,
     sizeof(BgHidanSekizou),

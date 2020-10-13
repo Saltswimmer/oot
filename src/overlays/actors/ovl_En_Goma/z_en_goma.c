@@ -12,7 +12,7 @@ void EnGoma_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Goma_InitVars = {
     ACTOR_BOSS_GOMA,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_GOL,
     sizeof(EnGoma),

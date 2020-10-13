@@ -11,7 +11,7 @@ void EnSyatekiItm_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Syateki_Itm_InitVars = {
     ACTOR_EN_SYATEKI_ITM,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnSyatekiItm),

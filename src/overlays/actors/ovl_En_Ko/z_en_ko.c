@@ -12,7 +12,7 @@ void EnKo_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Ko_InitVars = {
     ACTOR_EN_KO,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnKo),

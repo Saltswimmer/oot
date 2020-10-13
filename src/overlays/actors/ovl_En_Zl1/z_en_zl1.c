@@ -28,7 +28,7 @@ void func_80B4BF2C(EnZl1* this, GlobalContext* globalCtx);
 
 const ActorInit En_Zl1_InitVars = {
     ACTOR_EN_ZL1,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_ZL1,
     sizeof(EnZl1),
@@ -138,7 +138,7 @@ void func_80B4AF18(EnZl1* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
     s32 pad;
 
-    func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.posRot2.pos);
+    func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.head.pos);
 
     if (this->unk_1E6 != 0) {
         if (func_8002F334(this, globalCtx) != 0) {
@@ -148,7 +148,7 @@ void func_80B4AF18(EnZl1* this, GlobalContext* globalCtx) {
         if (func_8002F194(this, globalCtx)) {
             this->unk_1E6 = 1;
         } else {
-            if (this->actor.posRot.pos.y <= player->actor.posRot.pos.y) {
+            if (this->actor.world.pos.y <= player->actor.world.pos.y) {
                 func_8002F2F4(this, globalCtx);
             }
         }
@@ -185,7 +185,7 @@ void func_80B4B010(EnZl1* this, GlobalContext* globalCtx) {
         func_800C0704(globalCtx, this->unk_1E8, 30.0f);
         ShrinkWindow_SetVal(0x20);
         Interface_ChangeAlpha(2);
-        player->actor.posRot.pos = playerPos;
+        player->actor.world.pos = playerPos;
         player->actor.speedXZ = 0.0f;
         this->unk_1E2 = 0;
         this->actionFunc = func_80B4B240;
@@ -194,7 +194,7 @@ void func_80B4B010(EnZl1* this, GlobalContext* globalCtx) {
         if (1) {}; // necessary to match
         rotDiff = ABS(this->actor.yawTowardsLink - this->actor.shape.rot.y);
         if (rotDiff < 0x238E) {
-            if (!(player->actor.posRot.pos.y < this->actor.posRot.pos.y)) {
+            if (!(player->actor.world.pos.y < this->actor.world.pos.y)) {
                 func_8002F2F4(this, globalCtx);
             }
         }
@@ -239,7 +239,7 @@ void func_80B4B240(EnZl1* this, GlobalContext* globalCtx) {
                 globalCtx->envCtx.unk_E1 = 0;
                 func_800C04D8(globalCtx, this->unk_1E8, &sp74, &sp68);
                 func_800C0704(globalCtx, this->unk_1E8, 25.0f);
-                player->actor.posRot.pos = sp58;
+                player->actor.world.pos = sp58;
                 this->actor.textId = 0x702F;
                 func_8010B720(globalCtx, this->actor.textId);
                 this->unk_1E2 += 1;
@@ -334,7 +334,7 @@ void func_80B4B240(EnZl1* this, GlobalContext* globalCtx) {
         frameCount = SkelAnime_GetFrameCount(&animationHeader->genericHeader);
         SkelAnime_ChangeAnim(&this->skelAnime, animationHeader, 1.0f, 0.0f, frameCount, sp54[sp3C], -10.0f);
     }
-    func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.posRot2.pos);
+    func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.head.pos);
 }
 
 void func_80B4B7F4(CsCmdActorAction* npcAction, Vec3f* pos) {
@@ -387,8 +387,8 @@ void func_80B4B8B4(EnZl1* this, GlobalContext* globalCtx) {
         func_80B4B834(npcAction, &sp68);
         if (this->unk_1E6 == 0) {
             sp48 = sp74;
-            this->actor.initPosRot.pos = sp48;
-            this->actor.posRot.pos = sp48;
+            this->actor.home.pos = sp48;
+            this->actor.world.pos = sp48;
         }
         if (this->unk_1E6 != npcAction->action) {
             frameCount = SkelAnime_GetFrameCount(&spB0[npcAction->action]->genericHeader);
@@ -407,7 +407,7 @@ void func_80B4B8B4(EnZl1* this, GlobalContext* globalCtx) {
             }
             this->actor.velocity.z = (sp68.z - sp74.z) / actionLength;
         }
-        func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.posRot2.pos);
+        func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.head.pos);
         func_800C04D8(globalCtx, this->unk_1E8, &sp98, &sp8C);
         func_800C0704(globalCtx, this->unk_1E8, 70.0f);
     }
@@ -458,8 +458,8 @@ void func_80B4BC78(EnZl1* this, GlobalContext* globalCtx) {
         func_80B4B834(npcAction, &sp64);
         if (this->unk_1E6 == 0) {
             sp40 = sp70;
-            this->actor.initPosRot.pos = sp40;
-            this->actor.posRot.pos = sp40;
+            this->actor.home.pos = sp40;
+            this->actor.world.pos = sp40;
         }
 
         if (this->unk_1E6 != npcAction->action) {
@@ -532,7 +532,7 @@ void func_80B4BF2C(EnZl1* this, GlobalContext* globalCtx) {
             }
             break;
         case 4:
-            if (player->actor.posRot.pos.y < this->actor.posRot.pos.y) {
+            if (player->actor.world.pos.y < this->actor.world.pos.y) {
                 break;
             } else {
                 if (func_8002F194(this, globalCtx) != 0) {
@@ -556,7 +556,7 @@ void func_80B4BF2C(EnZl1* this, GlobalContext* globalCtx) {
             }
             break;
     }
-    func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.posRot2.pos);
+    func_80038290(globalCtx, &this->actor, &this->unk_200, &this->unk_206, this->actor.head.pos);
 }
 
 void EnZl1_Update(Actor* thisx, GlobalContext* globalCtx) {
@@ -572,9 +572,9 @@ void EnZl1_Update(Actor* thisx, GlobalContext* globalCtx) {
         Collider_CylinderUpdate(&this->actor, &this->collider);
         CollisionCheck_SetOC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
     }
-    Math_SmoothScaleMaxMinS(&this->actor.shape.rot.x, this->actor.posRot.rot.x, 0xA, 0x3E8, 1);
-    Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, this->actor.posRot.rot.y, 0xA, 0x3E8, 1);
-    Math_SmoothScaleMaxMinS(&this->actor.shape.rot.z, this->actor.posRot.rot.z, 0xA, 0x3E8, 1);
+    Math_SmoothScaleMaxMinS(&this->actor.shape.rot.x, this->actor.world.rot.x, 0xA, 0x3E8, 1);
+    Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, this->actor.world.rot.y, 0xA, 0x3E8, 1);
+    Math_SmoothScaleMaxMinS(&this->actor.shape.rot.z, this->actor.world.rot.z, 0xA, 0x3E8, 1);
     func_80B4AE18(this);
 }
 
@@ -603,7 +603,7 @@ void func_80B4C400(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec3s* 
     Vec3f vec = { 0.0f, 0.0f, 0.0f };
 
     if (limbIndex == 17) {
-        Matrix_MultVec3f(&vec, &this->posRot2.pos);
+        Matrix_MultVec3f(&vec, &this->head.pos);
     }
 }
 

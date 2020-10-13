@@ -34,7 +34,7 @@ extern SkeletonHeader D_06002530;
 
 const ActorInit En_Syateki_Niw_InitVars = {
     ACTOR_EN_SYATEKI_NIW,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_NIW,
     sizeof(EnSyatekiNiw),
@@ -85,8 +85,8 @@ void EnSyatekiNiw_Init(Actor* thisx, GlobalContext* globalCtx) {
         Actor_SetScale(&this->actor, 0.01f);
     }
 
-    this->unk_2DC = this->actor.posRot.pos;
-    this->unk_2E8 = this->actor.posRot.pos;
+    this->unk_2DC = this->actor.world.pos;
+    this->unk_2E8 = this->actor.world.pos;
     this->actionFunc = func_80B11DEC;
 }
 
@@ -302,11 +302,11 @@ void func_80B11E78(EnSyatekiNiw* this, GlobalContext* globalCtx) {
     }
     if (this->unk_25C != 0) {
         sp4A = 1;
-        Math_SmoothScaleMaxF(&this->actor.posRot.pos.x, this->unk_2E8.x, 1.0f, this->unk_2C8.y);
-        Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, this->unk_2E8.z, 1.0f, this->unk_2C8.y);
+        Math_SmoothScaleMaxF(&this->actor.world.pos.x, this->unk_2E8.x, 1.0f, this->unk_2C8.y);
+        Math_SmoothScaleMaxF(&this->actor.world.pos.z, this->unk_2E8.z, 1.0f, this->unk_2C8.y);
         Math_SmoothScaleMaxF(&this->unk_2C8.y, 3.0f, 1.0f, 0.3f);
-        tmpf1 = this->unk_2E8.x - this->actor.posRot.pos.x;
-        tmpf2 = this->unk_2E8.z - this->actor.posRot.pos.z;
+        tmpf1 = this->unk_2E8.x - this->actor.world.pos.x;
+        tmpf2 = this->unk_2E8.z - this->actor.world.pos.z;
 
         if (fabsf(tmpf1) < 10.0f) {
             tmpf1 = 0;
@@ -321,7 +321,7 @@ void func_80B11E78(EnSyatekiNiw* this, GlobalContext* globalCtx) {
             this->unk_294 = 7;
         }
 
-        Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, Math_atan2f(tmpf1, tmpf2) * 10430.378f, 3, this->unk_2C8.z,
+        Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, Math_atan2f(tmpf1, tmpf2) * 10430.378f, 3, this->unk_2C8.z,
                                 0);
         Math_SmoothScaleMaxF(&this->unk_2C8.z, 10000.0f, 1.0f, 1000.0f);
     }
@@ -334,7 +334,7 @@ void func_80B11E78(EnSyatekiNiw* this, GlobalContext* globalCtx) {
     if ((globalCtx->gameplayFrames % 4) == 0) {
         dustVelocity.y = Math_Rand_CenteredFloat(5.0f);
         dustAccel.y = 0.2f;
-        dustPos = this->actor.posRot.pos;
+        dustPos = this->actor.world.pos;
         func_8002836C(globalCtx, &dustPos, &dustVelocity, &dustAccel, &dustPrimColor, &dustEnvColor, 600, 40, 30);
     }
 }
@@ -382,7 +382,7 @@ void func_80B12460(EnSyatekiNiw* this, GlobalContext* globalCtx) {
             }
 
             phi_f16 = (this->unk_298 == 0) ? 5000.0f : -5000.0f;
-            if (this->actor.posRot.pos.z > 100.0f) {
+            if (this->actor.world.pos.z > 100.0f) {
                 this->actor.speedXZ = 2.0f;
                 this->actor.gravity = -0.3f;
                 this->actor.velocity.y = 5.0f;
@@ -391,11 +391,11 @@ void func_80B12460(EnSyatekiNiw* this, GlobalContext* globalCtx) {
             break;
 
         case 2:
-            if ((player->actor.posRot.pos.z - 40.0f) < this->actor.posRot.pos.z) {
+            if ((player->actor.world.pos.z - 40.0f) < this->actor.world.pos.z) {
                 this->actor.speedXZ = 0.0f;
             }
 
-            if ((this->actor.bgCheckFlags & 1) && (this->actor.posRot.pos.z > 110.0f)) {
+            if ((this->actor.bgCheckFlags & 1) && (this->actor.world.pos.z > 110.0f)) {
                 this->actor.velocity.y = 0.0f;
                 this->actor.gravity = 0.0f;
                 this->unk_284 = 0.0f;
@@ -412,7 +412,7 @@ void func_80B12460(EnSyatekiNiw* this, GlobalContext* globalCtx) {
             break;
 
         case 3:
-            if ((player->actor.posRot.pos.z - 50.0f) < this->actor.posRot.pos.z) {
+            if ((player->actor.world.pos.z - 50.0f) < this->actor.world.pos.z) {
                 this->actor.speedXZ = 0.0f;
                 this->unk_262 = 0x3C;
                 this->unk_25A = 0x14;
@@ -446,7 +446,7 @@ void func_80B12460(EnSyatekiNiw* this, GlobalContext* globalCtx) {
                 this->actor.speedXZ = 1.0f;
             }
 
-            if ((this->unk_25A == 0) && ((player->actor.posRot.pos.z - 30.0f) < this->actor.posRot.pos.z)) {
+            if ((this->unk_25A == 0) && ((player->actor.world.pos.z - 30.0f) < this->actor.world.pos.z)) {
                 Audio_PlaySoundGeneral(NA_SE_VO_LI_DOWN, &this->actor.projectedPos, 4, &D_801333E0, &D_801333E0,
                                        &D_801333E8);
                 this->unk_25E = 0x14;
@@ -467,9 +467,9 @@ void func_80B12460(EnSyatekiNiw* this, GlobalContext* globalCtx) {
             break;
     }
 
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y,
-                            (s16)(Math_atan2f(player->actor.posRot.pos.x - this->actor.posRot.pos.x,
-                                              player->actor.posRot.pos.z - this->actor.posRot.pos.z) *
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.y,
+                            (s16)(Math_atan2f(player->actor.world.pos.x - this->actor.world.pos.x,
+                                              player->actor.world.pos.z - this->actor.world.pos.z) *
                                   10430.378f) +
                                 phi_f16,
                             5, this->unk_2C8.y, 0);
@@ -532,7 +532,7 @@ void func_80B129EC(EnSyatekiNiw* this, GlobalContext* globalCtx) {
 
     phi_f2 = (this->unk_298 == 0) ? 5000.0f : -5000.0f;
     tmpf2 = this->unk_2D8 + phi_f2;
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, tmpf2, 3, this->unk_2C8.y, 0);
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, tmpf2, 3, this->unk_2C8.y, 0);
     Math_SmoothScaleMaxF(&this->unk_2C8.y, 3000.0f, 1.0f, 500.0f);
     func_80B11A94(this, globalCtx, 2);
 }
@@ -608,7 +608,7 @@ void EnSyatekiNiw_Update(Actor* thisx, GlobalContext* globalCtx) {
         this->unk_260--;
     }
 
-    this->actor.shape.rot = this->actor.posRot.rot;
+    this->actor.shape.rot = this->actor.world.rot;
     this->actor.shape.unk_10 = 15.0f;
 
     this->actionFunc(this, globalCtx);
@@ -617,9 +617,9 @@ void EnSyatekiNiw_Update(Actor* thisx, GlobalContext* globalCtx) {
 
     if (this->unk_2A0 != 0) {
         for (i = 0; i < 20; i++) {
-            sp78.x = Math_Rand_CenteredFloat(10.0f) + this->actor.posRot.pos.x;
-            sp78.y = Math_Rand_CenteredFloat(10.0f) + (this->actor.posRot.pos.y + 20.0f);
-            sp78.z = Math_Rand_CenteredFloat(10.0f) + this->actor.posRot.pos.z;
+            sp78.x = Math_Rand_CenteredFloat(10.0f) + this->actor.world.pos.x;
+            sp78.y = Math_Rand_CenteredFloat(10.0f) + (this->actor.world.pos.y + 20.0f);
+            sp78.z = Math_Rand_CenteredFloat(10.0f) + this->actor.world.pos.z;
             sp6C.x = Math_Rand_CenteredFloat(3.0f);
             sp6C.y = (Math_Rand_ZeroFloat(2.0f) * 0.5f) + 2.0f;
             sp6C.z = Math_Rand_CenteredFloat(3.0f);

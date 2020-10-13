@@ -12,7 +12,7 @@ void EnExItem_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Ex_Item_InitVars = {
     ACTOR_EN_EX_ITEM,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnExItem),

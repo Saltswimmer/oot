@@ -19,7 +19,7 @@ void func_80A6F1A4(EnHs2* this, GlobalContext* globalCtx);
 
 const ActorInit En_Hs2_InitVars = {
     ACTOR_EN_HS2,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_HS,
     sizeof(EnHs2),
@@ -108,7 +108,7 @@ void EnHs2_Update(Actor* thisx, GlobalContext* globalCtx) {
     }
     this->actionFunc(this, globalCtx);
     if (this->unk_2A8 & 0x1) {
-        func_80038290(globalCtx, &this->actor, &this->unk_29C, &this->unk_2A2, this->actor.posRot2.pos);
+        func_80038290(globalCtx, &this->actor, &this->unk_29C, &this->unk_2A2, this->actor.head.pos);
         this->unk_2A8 &= ~1;
     } else {
         Math_SmoothScaleMaxMinS(&this->unk_29C.x, 12800, 6, 6200, 100);
@@ -145,7 +145,7 @@ void EnHs2_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Ve
     EnHs2* this = THIS;
 
     if (limbIndex == 9) {
-        Matrix_MultVec3f(&D_80A6F4CC, &this->actor.posRot2.pos);
+        Matrix_MultVec3f(&D_80A6F4CC, &this->actor.head.pos);
     }
 }
 

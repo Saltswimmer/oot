@@ -12,7 +12,7 @@ void EfcErupc_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Efc_Erupc_InitVars = {
     ACTOR_EFC_ERUPC,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_EFC_ERUPC,
     sizeof(EfcErupc),

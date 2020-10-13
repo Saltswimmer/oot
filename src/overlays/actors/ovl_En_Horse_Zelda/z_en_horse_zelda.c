@@ -18,7 +18,7 @@ void EnHorseZelda_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Horse_Zelda_InitVars = {
     ACTOR_EN_HORSE_ZELDA,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HORSE_ZELDA,
     sizeof(EnHorseZelda),

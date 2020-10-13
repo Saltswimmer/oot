@@ -25,7 +25,7 @@ void EnKz_StartTimer(EnKz* this, GlobalContext* globalCtx);
 
 const ActorInit En_Kz_InitVars = {
     ACTOR_EN_KZ,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_KZ,
     sizeof(EnKz),
@@ -189,7 +189,7 @@ s32 func_80A9C95C(GlobalContext* globalCtx, EnKz* this, s16* arg2, f32 unkf, cal
         return 0;
     }
 
-    yaw = Math_Vec3f_Yaw(&this->actor.initPosRot.pos, &player->actor.posRot.pos);
+    yaw = Math_Vec3f_Yaw(&this->actor.home.pos, &player->actor.world.pos);
     yaw -= this->actor.shape.rot.y;
     if ((fabsf(yaw) > 1638.0f) || (this->actor.xzDistFromLink < 265.0f)) {
         this->actor.flags &= ~1;
@@ -204,7 +204,7 @@ s32 func_80A9C95C(GlobalContext* globalCtx, EnKz* this, s16* arg2, f32 unkf, cal
     }
 
     xzDistFromLink = this->actor.xzDistFromLink;
-    this->actor.xzDistFromLink = Math_Vec3f_DistXZ(&this->actor.initPosRot.pos, &player->actor.posRot.pos);
+    this->actor.xzDistFromLink = Math_Vec3f_DistXZ(&this->actor.home.pos, &player->actor.world.pos);
     if (func_8002F2CC(&this->actor, globalCtx, unkf) == 0) {
         this->actor.xzDistFromLink = xzDistFromLink;
         return 0;
@@ -266,9 +266,9 @@ s32 EnKz_FollowPath(EnKz* this, GlobalContext* globalCtx) {
     pointPos = SEGMENTED_TO_VIRTUAL(path->points);
     pointPos += this->waypoint;
 
-    pathDiffX = pointPos->x - this->actor.posRot.pos.x;
-    pathDiffZ = pointPos->z - this->actor.posRot.pos.z;
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, (Math_atan2f(pathDiffX, pathDiffZ) * 10430.3779296875f), 0xA,
+    pathDiffX = pointPos->x - this->actor.world.pos.x;
+    pathDiffZ = pointPos->z - this->actor.world.pos.z;
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, (Math_atan2f(pathDiffX, pathDiffZ) * 10430.3779296875f), 0xA,
                             0x3E8, 1);
 
     if ((SQ(pathDiffX) + SQ(pathDiffZ)) < 10.0f) {
@@ -293,9 +293,9 @@ s32 EnKz_SetMovedPos(EnKz* this, GlobalContext* globalCtx) {
     lastPointPos = SEGMENTED_TO_VIRTUAL(path->points);
     lastPointPos += path->count - 1;
 
-    this->actor.posRot.pos.x = lastPointPos->x;
-    this->actor.posRot.pos.y = lastPointPos->y;
-    this->actor.posRot.pos.z = lastPointPos->z;
+    this->actor.world.pos.x = lastPointPos->x;
+    this->actor.world.pos.y = lastPointPos->y;
+    this->actor.world.pos.z = lastPointPos->z;
 
     return 1;
 }
@@ -322,7 +322,7 @@ void EnKz_Init(Actor* thisx, GlobalContext* globalCtx) {
     if (LINK_IS_ADULT) {
         if (!(gSaveContext.infTable[19] & 0x100)) {
             Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_BG_ICE_SHELTER,
-                               this->actor.posRot.pos.x, this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0,
+                               this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0,
                                0x04FF);
         }
         this->actionFunc = EnKz_Wait;
@@ -356,8 +356,8 @@ void EnKz_SetupMweep(EnKz* this, GlobalContext* globalCtx) {
     this->gameplayCamera = globalCtx->activeCamera;
     Gameplay_ChangeCameraStatus(globalCtx, this->gameplayCamera, 1);
     Gameplay_ChangeCameraStatus(globalCtx, this->cutsceneCamera, 7);
-    pos = this->actor.posRot.pos;
-    initPos = this->actor.initPosRot.pos;
+    pos = this->actor.world.pos;
+    initPos = this->actor.home.pos;
     pos.y += 60.0f;
     initPos.y += -100.0f;
     initPos.z += 260.0f;
@@ -372,8 +372,8 @@ void EnKz_Mweep(EnKz* this, GlobalContext* globalCtx) {
     Vec3f pos;
     Vec3f initPos;
 
-    pos = this->actor.posRot.pos;
-    initPos = this->actor.initPosRot.pos;
+    pos = this->actor.world.pos;
+    initPos = this->actor.home.pos;
     pos.y += 60.0f;
     initPos.y += -100.0f;
     initPos.z += 260.0f;
@@ -468,7 +468,7 @@ void EnKz_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
     Vec3f mult = { 2600.0f, 0.0f, 0.0f };
 
     if (limb == 11) {
-        Matrix_MultVec3f(&mult, &THIS->actor.posRot2.pos);
+        Matrix_MultVec3f(&mult, &THIS->actor.head.pos);
     }
 }
 

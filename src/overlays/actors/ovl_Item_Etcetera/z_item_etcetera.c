@@ -26,7 +26,7 @@ void ItemEtcetera_UpdateFireArrow(ItemEtcetera* this, GlobalContext* globalCtx);
 
 const ActorInit Item_Etcetera_InitVars = {
     ACTOR_ITEM_ETCETERA,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(ItemEtcetera),
@@ -100,7 +100,7 @@ void ItemEtcetera_Init(Actor* thisx, GlobalContext* globalCtx) {
             Actor_SetScale(&this->actor, 0.5f);
             this->futureActionFunc = func_80B85B28;
             this->drawFunc = ItemEtcetera_DrawThroughLens;
-            this->actor.posRot.pos.y += 15.0f;
+            this->actor.world.pos.y += 15.0f;
             break;
     }
 }
@@ -139,7 +139,7 @@ void func_80B858B4(ItemEtcetera* this, GlobalContext* globalCtx) {
         if (0) {} // Necessary to match
         func_8002F434(&this->actor, globalCtx, this->getItemId, 30.0f, 50.0f);
         if ((globalCtx->gameplayFrames & 0xD) == 0) {
-            EffectSsBubble_Spawn(globalCtx, &this->actor.posRot.pos, 0.0f, 0.0f, 10.0f, 0.13f);
+            EffectSsBubble_Spawn(globalCtx, &this->actor.world.pos, 0.0f, 0.0f, 10.0f, 0.13f);
         }
     }
 }
@@ -155,9 +155,9 @@ void ItemEtcetera_SpawnSparkles(ItemEtcetera* this, GlobalContext* globalCtx) {
     velocity.z = Math_Rand_CenteredFloat(3.0f);
     velocity.y = -0.05f;
     accel.y = -0.025f;
-    pos.x = Math_Rand_CenteredFloat(12.0f) + this->actor.posRot.pos.x;
-    pos.y = (Math_Rand_ZeroOne() * 6.0f) + this->actor.posRot.pos.y;
-    pos.z = Math_Rand_CenteredFloat(12.0f) + this->actor.posRot.pos.z;
+    pos.x = Math_Rand_CenteredFloat(12.0f) + this->actor.world.pos.x;
+    pos.y = (Math_Rand_ZeroOne() * 6.0f) + this->actor.world.pos.y;
+    pos.z = Math_Rand_CenteredFloat(12.0f) + this->actor.world.pos.z;
     EffectSsKiraKira_SpawnDispersed(globalCtx, &pos, &velocity, &accel, &primColor, &envColor, 5000, 16);
 }
 

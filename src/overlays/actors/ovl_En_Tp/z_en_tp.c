@@ -18,7 +18,7 @@ void EnTp_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Tp_InitVars = {
     ACTOR_EN_TP,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_TP,
     sizeof(EnTp),

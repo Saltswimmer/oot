@@ -38,7 +38,7 @@ static Gfx sUnusedDList[] = {
 
 const ActorInit En_St_InitVars = {
     ACTOR_EN_ST,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_ST,
     sizeof(EnSt),
@@ -109,8 +109,8 @@ void EnSt_SpawnDust(EnSt* this, GlobalContext* globalCtx, s32 dustCnt) {
     for (i = dustCnt; i >= 0; i--, yAngle += (s16)(0x10000 / dustCnt)) {
         dustAccel.x = (Math_Rand_ZeroOne() - 0.5f) * 4.0f;
         dustAccel.z = (Math_Rand_ZeroOne() - 0.5f) * 4.0f;
-        dustPos.x = this->actor.posRot.pos.x + (Math_Sins(yAngle) * 22.0f);
-        dustPos.z = this->actor.posRot.pos.z + (Math_Coss(yAngle) * 22.0f);
+        dustPos.x = this->actor.world.pos.x + (Math_Sins(yAngle) * 22.0f);
+        dustPos.z = this->actor.world.pos.z + (Math_Coss(yAngle) * 22.0f);
         func_8002836C(globalCtx, &dustPos, &dustVel, &dustAccel, &primColor, &envColor, 120, 40, 10);
     }
 }
@@ -119,9 +119,9 @@ void EnSt_SpawnBlastEffect(EnSt* this, GlobalContext* globalCtx) {
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
     Vec3f blastPos;
 
-    blastPos.x = this->actor.posRot.pos.x;
+    blastPos.x = this->actor.world.pos.x;
     blastPos.y = this->actor.groundY;
-    blastPos.z = this->actor.posRot.pos.z;
+    blastPos.z = this->actor.world.pos.z;
 
     EffectSsBlast_SpawnWhiteCustomScale(globalCtx, &blastPos, &zeroVec, &zeroVec, 100, 220, 8);
 }
@@ -130,9 +130,9 @@ void EnSt_SpawnDeadEffect(EnSt* this, GlobalContext* globalCtx) {
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
     Vec3f firePos;
 
-    firePos.x = this->actor.posRot.pos.x + ((Math_Rand_ZeroOne() - 0.5f) * 60.0f);
-    firePos.y = (this->actor.posRot.pos.y + 10.0f) + ((Math_Rand_ZeroOne() - 0.5f) * 45.0f);
-    firePos.z = this->actor.posRot.pos.z + ((Math_Rand_ZeroOne() - 0.5f) * 60.0f);
+    firePos.x = this->actor.world.pos.x + ((Math_Rand_ZeroOne() - 0.5f) * 60.0f);
+    firePos.y = (this->actor.world.pos.y + 10.0f) + ((Math_Rand_ZeroOne() - 0.5f) * 45.0f);
+    firePos.z = this->actor.world.pos.z + ((Math_Rand_ZeroOne() - 0.5f) * 60.0f);
     EffectSsDeadDb_Spawn(globalCtx, &firePos, &zeroVec, &zeroVec, 100, 0, 255, 255, 255, 255, 255, 0, 0, 1, 9, true);
 }
 
@@ -169,14 +169,14 @@ s32 EnSt_CheckCeilingPos(EnSt* this, GlobalContext* globalCtx) {
     s32 bgId;
     Vec3f checkPos;
 
-    checkPos.x = this->actor.posRot.pos.x;
-    checkPos.y = this->actor.posRot.pos.y + 1000.0f;
-    checkPos.z = this->actor.posRot.pos.z;
-    if (!func_8003DE84(&globalCtx->colCtx, &this->actor.posRot.pos, &checkPos, &this->ceilingPos, &poly, 0, 0, 1, 1,
+    checkPos.x = this->actor.world.pos.x;
+    checkPos.y = this->actor.world.pos.y + 1000.0f;
+    checkPos.z = this->actor.world.pos.z;
+    if (!func_8003DE84(&globalCtx->colCtx, &this->actor.world.pos, &checkPos, &this->ceilingPos, &poly, 0, 0, 1, 1,
                        &bgId)) {
         return false;
     }
-    this->unusedPos = this->actor.posRot.pos;
+    this->unusedPos = this->actor.world.pos;
     this->unusedPos.y -= 100.0f;
     return true;
 }
@@ -216,7 +216,7 @@ void EnSt_SetReturnToCeilingAnimation(EnSt* this) {
 }
 
 void EnSt_SetLandAnimation(EnSt* this) {
-    this->actor.posRot.pos.y = this->actor.groundY + this->groundYOffset;
+    this->actor.world.pos.y = this->actor.groundY + this->groundYOffset;
     func_80034EC0(&this->skelAnime, sAnimations, 4);
     this->sfxTimer = 0;
     this->animFrames = this->skelAnime.totalFrames;
@@ -302,7 +302,7 @@ s32 EnSt_SetCylinderOC(EnSt* this, GlobalContext* globalCtx) {
     s32 i;
 
     for (i = 0; i < 3; i++) {
-        cylPos = this->actor.posRot.pos;
+        cylPos = this->actor.world.pos;
         cyloffsets[i].x *= this->colliderScale;
         cyloffsets[i].y *= this->colliderScale;
         cyloffsets[i].z *= this->colliderScale;
@@ -587,7 +587,7 @@ void EnSt_UpdateYaw(EnSt* this, GlobalContext* globalCtx) {
             rot.y += 0x2000;
         }
 
-        this->actor.shape.rot = this->actor.posRot.rot = rot;
+        this->actor.shape.rot = this->actor.world.rot = rot;
 
         // Do the shaking animation.
         if (yawDir == 0 && this->rotAwayTimer < 0xA) {
@@ -656,14 +656,14 @@ s32 EnSt_IsCloseToPlayer(EnSt* this, GlobalContext* globalCtx) {
         return false;
     }
 
-    yDist = this->actor.posRot.pos.y - player->actor.posRot.pos.y;
+    yDist = this->actor.world.pos.y - player->actor.world.pos.y;
     if (yDist < 0.0f || yDist > 400.0f) {
         // player is above the skulltulla or more than 400 units below
         // the skulltulla
         return false;
     }
 
-    if (player->actor.posRot.pos.y < this->actor.groundY) {
+    if (player->actor.world.pos.y < this->actor.groundY) {
         // player is below the Skulltulla's ground position
         return false;
     }
@@ -672,9 +672,9 @@ s32 EnSt_IsCloseToPlayer(EnSt* this, GlobalContext* globalCtx) {
 
 s32 EnSt_IsCloseToInitalPos(EnSt* this) {
     f32 velY = this->actor.velocity.y;
-    f32 checkY = this->actor.posRot.pos.y + (velY * 2.0f);
+    f32 checkY = this->actor.world.pos.y + (velY * 2.0f);
 
-    if (checkY >= this->actor.initPosRot.pos.y) {
+    if (checkY >= this->actor.home.pos.y) {
         return true;
     }
     return false;
@@ -682,7 +682,7 @@ s32 EnSt_IsCloseToInitalPos(EnSt* this) {
 
 s32 EnSt_IsCloseToGround(EnSt* this) {
     f32 velY = this->actor.velocity.y;
-    f32 checkY = this->actor.posRot.pos.y + (velY * 2.0f);
+    f32 checkY = this->actor.world.pos.y + (velY * 2.0f);
 
     if (checkY - this->actor.groundY <= this->groundYOffset) {
         return true;
@@ -727,12 +727,12 @@ void EnSt_Sway(EnSt* this) {
         amtToTranslate.z = 0.0f;
         Matrix_Push();
         Matrix_Translate(this->ceilingPos.x, this->ceilingPos.y, this->ceilingPos.z, MTXMODE_NEW);
-        Matrix_RotateY(this->actor.posRot.rot.y * (M_PI / 32768.0f), MTXMODE_APPLY);
+        Matrix_RotateY(this->actor.world.rot.y * (M_PI / 32768.0f), MTXMODE_APPLY);
         Matrix_MultVec3f(&amtToTranslate, &translatedPos);
         Matrix_Pull();
         this->actor.shape.rot.z = -(rotAngle * 2);
-        this->actor.posRot.pos.x = translatedPos.x;
-        this->actor.posRot.pos.z = translatedPos.z;
+        this->actor.world.pos.x = translatedPos.x;
+        this->actor.world.pos.z = translatedPos.z;
     }
 }
 
@@ -758,7 +758,7 @@ void EnSt_Init(Actor* thisx, GlobalContext* globalCtx) {
     this->actor.flags |= 0x1000000;
     EnSt_SetColliderScale(this);
     this->actor.gravity = 0.0f;
-    this->initalYaw = this->actor.posRot.rot.y;
+    this->initalYaw = this->actor.world.rot.y;
     EnSt_SetupAction(this, EnSt_StartOnCeilingOrGround);
 }
 
@@ -839,7 +839,7 @@ void EnSt_LandOnGround(EnSt* this, GlobalContext* globalCtx) {
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_STALTU_DOWN_SET);
     }
 
-    if ((this->actor.groundY + this->groundYOffset) < this->actor.posRot.pos.y) {
+    if ((this->actor.groundY + this->groundYOffset) < this->actor.world.pos.y) {
         // the skulltulla has hit the ground.
         this->sfxTimer = 0;
         EnSt_SetupAction(this, EnSt_WaitOnGround);
@@ -898,9 +898,9 @@ void EnSt_ReturnToCeiling(EnSt* this, GlobalContext* globalCtx) {
 void EnSt_BounceAround(EnSt* this, GlobalContext* globalCtx) {
     this->actor.dmgEffectTimer = this->deathTimer;
     func_8002D868(&this->actor);
-    this->actor.posRot.rot.x += 0x800;
-    this->actor.posRot.rot.z -= 0x800;
-    this->actor.shape.rot = this->actor.posRot.rot;
+    this->actor.world.rot.x += 0x800;
+    this->actor.world.rot.z -= 0x800;
+    this->actor.shape.rot = this->actor.world.rot;
     if (EnSt_IsDoneBouncing(this, globalCtx)) {
         this->actor.shape.unk_08 = 400.0f;
         this->actor.speedXZ = 1.0f;
@@ -925,15 +925,15 @@ void EnSt_FinishBouncing(EnSt* this, GlobalContext* globalCtx) {
     }
 
     if (DECR(this->setTargetYawTimer) == 0) {
-        this->deathYawTarget = Math_Vec3f_Yaw(&this->actor.posRot.pos, &this->actor.initPosRot.pos);
+        this->deathYawTarget = Math_Vec3f_Yaw(&this->actor.world.pos, &this->actor.home.pos);
         this->setTargetYawTimer = 8;
     }
 
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.x, 0x3FFC, 4, 0x2710, 1);
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.z, 0, 4, 0x2710, 1);
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, this->deathYawTarget, 0xA, 0x2710, 1);
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.x, 0x3FFC, 4, 0x2710, 1);
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.z, 0, 4, 0x2710, 1);
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, this->deathYawTarget, 0xA, 0x2710, 1);
 
-    this->actor.shape.rot = this->actor.posRot.rot;
+    this->actor.shape.rot = this->actor.world.rot;
 
     func_8002D868(&this->actor);
     this->groundBounces = 2;
@@ -947,7 +947,7 @@ void EnSt_Die(EnSt* this, GlobalContext* globalCtx) {
     if (DECR(this->finishDeathTimer) != 0) {
         EnSt_SpawnDeadEffect(this, globalCtx);
     } else {
-        Item_DropCollectibleRandom(globalCtx, NULL, &this->actor.posRot.pos, 0xE0);
+        Item_DropCollectibleRandom(globalCtx, NULL, &this->actor.world.pos, 0xE0);
         Actor_Kill(&this->actor);
     }
 }

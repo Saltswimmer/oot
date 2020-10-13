@@ -21,7 +21,7 @@ void EnBom_WaitForRelease(EnBom* this, GlobalContext* globalCtx);
 
 const ActorInit En_Bom_InitVars = {
     ACTOR_EN_BOM,
-    ACTORTYPE_EXPLOSIVES,
+    ACTORCAT_EXPLOSIVE,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnBom),
@@ -108,9 +108,9 @@ void EnBom_Move(EnBom* this, GlobalContext* globalCtx) {
 
     // rebound bomb off the wall it hits
     if ((this->actor.speedXZ != 0.0f) && (this->actor.bgCheckFlags & 8)) {
-        if (ABS((s16)(this->actor.wallPolyRot - this->actor.posRot.rot.y)) > 0x4000) {
-            this->actor.posRot.rot.y =
-                ((this->actor.wallPolyRot - this->actor.posRot.rot.y) + this->actor.wallPolyRot) - 0x8000;
+        if (ABS((s16)(this->actor.wallPolyRot - this->actor.world.rot.y)) > 0x4000) {
+            this->actor.world.rot.y =
+                ((this->actor.wallPolyRot - this->actor.world.rot.y) + this->actor.wallPolyRot) - 0x8000;
         }
         Audio_PlayActorSound2(&this->actor, NA_SE_EV_BOMB_BOUND);
         Actor_MoveForward(&this->actor);
@@ -228,7 +228,7 @@ void EnBom_Update(Actor* thisx, GlobalContext* globalCtx) {
             dustAccel.y = 0.2f;
 
             // spawn spark effect on even frames
-            effPos = thisx->posRot.pos;
+            effPos = thisx->world.pos;
             effPos.y += 17.0f;
             if ((globalCtx->gameplayFrames % 2) == 0) {
                 EffectSsGSpk_SpawnFuse(globalCtx, thisx, &effPos, &effVelocity, &effAccel);
@@ -241,19 +241,19 @@ void EnBom_Update(Actor* thisx, GlobalContext* globalCtx) {
         }
 
         if ((this->bombCollider.base.acFlags & 2) ||
-            ((this->bombCollider.base.maskA & 2) && (this->bombCollider.base.oc->type == ACTORTYPE_ENEMY))) {
+            ((this->bombCollider.base.maskA & 2) && (this->bombCollider.base.oc->category == ACTORCAT_ENEMY))) {
             this->timer = 0;
             thisx->shape.rot.z = 0;
         } else {
             // if a lit stick touches the bomb, set timer to 100
             // these bombs never have a timer over 70, so this isnt used
-            if ((this->timer > 100) && Player_IsBurningStickInRange(globalCtx, &thisx->posRot.pos, 30.0f, 50.0f)) {
+            if ((this->timer > 100) && Player_IsBurningStickInRange(globalCtx, &thisx->world.pos, 30.0f, 50.0f)) {
                 this->timer = 100;
             }
         }
 
         dustAccel.y = 0.2f;
-        effPos = thisx->posRot.pos;
+        effPos = thisx->world.pos;
         effPos.y += 10.0f;
 
         // double bomb flash speed and adjust red color at certain times during the countdown
@@ -273,7 +273,7 @@ void EnBom_Update(Actor* thisx, GlobalContext* globalCtx) {
         }
 
         if (this->timer == 0) {
-            effPos = thisx->posRot.pos;
+            effPos = thisx->world.pos;
 
             effPos.y += 10.0f;
             if (Actor_HasParent(thisx, globalCtx)) {

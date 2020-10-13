@@ -12,7 +12,7 @@ void EnGeldB_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_GeldB_InitVars = {
     ACTOR_EN_GELDB,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_GELDB,
     sizeof(EnGeldB),

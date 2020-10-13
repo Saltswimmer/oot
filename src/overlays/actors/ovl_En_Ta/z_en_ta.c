@@ -18,7 +18,7 @@ void EnTa_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Ta_InitVars = {
     ACTOR_EN_TA,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_TA,
     sizeof(EnTa),

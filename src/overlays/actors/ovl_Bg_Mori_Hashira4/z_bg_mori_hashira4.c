@@ -27,7 +27,7 @@ extern ColHeader D_060089E0;
 
 const ActorInit Bg_Mori_Hashira4_InitVars = {
     ACTOR_BG_MORI_HASHIRA4,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_MORI_OBJECTS,
     sizeof(BgMoriHashira4),
@@ -130,7 +130,7 @@ void BgMoriHashira4_SetupPillarsRotate(BgMoriHashira4* this) {
 }
 
 void BgMoriHashira4_PillarsRotate(BgMoriHashira4* this, GlobalContext* globalCtx) {
-    this->dyna.actor.shape.rot.y = this->dyna.actor.posRot.rot.y += 0x96;
+    this->dyna.actor.shape.rot.y = this->dyna.actor.world.rot.y += 0x96;
     Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_ROLL_STAND_2 - SFX_FLAG);
 }
 
@@ -147,7 +147,7 @@ void BgMoriHashira4_GateWait(BgMoriHashira4* this, GlobalContext* globalCtx) {
 }
 
 void BgMoriHashira4_GateOpen(BgMoriHashira4* this, GlobalContext* globalCtx) {
-    if (Math_ApproxF(&this->dyna.actor.posRot.pos.y, this->dyna.actor.initPosRot.pos.y + 120.0f, 10.0f)) {
+    if (Math_ApproxF(&this->dyna.actor.world.pos.y, this->dyna.actor.home.pos.y + 120.0f, 10.0f)) {
         Actor_Kill(&this->dyna.actor);
     }
 }

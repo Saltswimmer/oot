@@ -11,7 +11,7 @@ void BgHidanRsekizou_Draw(Actor* thisx, GlobalContext* globalCtx);
 
 const ActorInit Bg_Hidan_Rsekizou_InitVars = {
     ACTOR_BG_HIDAN_RSEKIZOU,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HIDAN_OBJECTS,
     sizeof(BgHidanRsekizou),
@@ -118,12 +118,12 @@ void BgHidanRsekizou_Update(Actor* thisx, GlobalContext* globalCtx) {
 
     for (i = 0; i < ARRAY_COUNT(this->colliderItems); i++) {
         sphere = &this->collider.list[i];
-        sphere->dim.worldSphere.center.x = this->dyna.actor.initPosRot.pos.x +
+        sphere->dim.worldSphere.center.x = this->dyna.actor.home.pos.x +
                                            yawCosine * sphere->dim.modelSphere.center.x +
                                            yawSine * sphere->dim.modelSphere.center.z;
-        sphere->dim.worldSphere.center.y = (s16)this->dyna.actor.initPosRot.pos.y + sphere->dim.modelSphere.center.y;
+        sphere->dim.worldSphere.center.y = (s16)this->dyna.actor.home.pos.y + sphere->dim.modelSphere.center.y;
         sphere->dim.worldSphere.center.z =
-            (this->dyna.actor.initPosRot.pos.z - yawSine * sphere->dim.modelSphere.center.x) +
+            (this->dyna.actor.home.pos.z - yawSine * sphere->dim.modelSphere.center.x) +
             yawCosine * sphere->dim.modelSphere.center.z;
     }
 
@@ -159,9 +159,9 @@ Gfx* BgHidanRsekizou_DrawFireball(GlobalContext* globalCtx, BgHidanRsekizou* thi
     mf->xx = mf->yy = mf->zz = (0.7f * fVar6) + 0.5f;
     tmpf7 = (((((0.7f * fVar6) + 0.5f) * 10.0f) * fVar6) + 20.0f);
 
-    mf->wx = (tmpf7 * sins) + this->dyna.actor.posRot.pos.x;
-    mf->wy = (this->dyna.actor.posRot.pos.y + 30.0f) + (0.699999988079f * fVar6);
-    mf->wz = (tmpf7 * coss) + this->dyna.actor.posRot.pos.z;
+    mf->wx = (tmpf7 * sins) + this->dyna.actor.world.pos.x;
+    mf->wy = (this->dyna.actor.world.pos.y + 30.0f) + (0.699999988079f * fVar6);
+    mf->wz = (tmpf7 * coss) + this->dyna.actor.world.pos.z;
 
     gSPMatrix(displayList++,
               Matrix_MtxFToMtx(Matrix_CheckFloats(mf, "../z_bg_hidan_rsekizou.c", 543),

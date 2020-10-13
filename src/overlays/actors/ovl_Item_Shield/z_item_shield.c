@@ -18,7 +18,7 @@ void ItemShield_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Item_Shield_InitVars = {
     ACTOR_ITEM_SHIELD,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_LINK_CHILD,
     sizeof(ItemShield),

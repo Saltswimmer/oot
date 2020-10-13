@@ -12,7 +12,7 @@ void DemoEc_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Demo_Ec_InitVars = {
     ACTOR_DEMO_EC,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_EC,
     sizeof(DemoEc),

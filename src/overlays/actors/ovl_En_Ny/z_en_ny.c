@@ -12,7 +12,7 @@ void EnNy_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Ny_InitVars = {
     ACTOR_EN_NY,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_NY,
     sizeof(EnNy),

@@ -12,7 +12,7 @@ void EnDh_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Dh_InitVars = {
     ACTOR_EN_DH,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_DH,
     sizeof(EnDh),

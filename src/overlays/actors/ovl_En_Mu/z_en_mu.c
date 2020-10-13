@@ -12,7 +12,7 @@ void EnMu_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Mu_InitVars = {
     ACTOR_EN_MU,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_MU,
     sizeof(EnMu),

@@ -32,7 +32,7 @@ static s16 sPlayerCaught = 0;
 
 const ActorInit En_Heishi3_InitVars = {
     ACTOR_EN_HEISHI3,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_SD,
     sizeof(EnHeishi3),
@@ -56,7 +56,7 @@ void EnHeishi3_Init(Actor* thisx, GlobalContext* globalCtx) {
         this->unk_278 = 0;
     } else {
         this->unk_278 = 1;
-        if (this->actor.posRot.pos.x < -290.0f) {
+        if (this->actor.world.pos.x < -290.0f) {
             this->unk_278 = 2;
         }
     }
@@ -72,7 +72,7 @@ void EnHeishi3_Init(Actor* thisx, GlobalContext* globalCtx) {
     osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 城門兵パワーアップ ☆☆☆☆☆ \n" VT_RST);
 
     this->actor.gravity = -3.0f;
-    this->actor.posRot2.pos = this->actor.posRot.pos;
+    this->actor.head.pos = this->actor.world.pos;
     this->actionFunc = EnHeishi3_SetupGuardType;
 }
 
@@ -120,7 +120,7 @@ void EnHeishi3_StandSentinelInGrounds(EnHeishi3* this, GlobalContext* globalCtx)
         }
     }
     if ((this->actor.xzDistFromLink < sightRange) &&
-        (fabsf(player->actor.posRot.pos.y - this->actor.posRot.pos.y) < 100.0f) && (sPlayerCaught == 0)) {
+        (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 100.0f) && (sPlayerCaught == 0)) {
         sPlayerCaught = 1;
         func_8010B680(globalCtx, 0x702D, &this->actor); // "Hey you! Stop! You, kid, over there!"
         func_80078884(NA_SE_SY_FOUND);
@@ -137,15 +137,15 @@ void EnHeishi3_StandSentinelInCastle(EnHeishi3* this, GlobalContext* globalCtx) 
     Player* player = PLAYER;
 
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
-    if ((player->actor.posRot.pos.x < -190.0f) && (player->actor.posRot.pos.x > -380.0f) &&
-        (fabsf(player->actor.posRot.pos.y - this->actor.posRot.pos.y) < 100.0f) &&
-        (player->actor.posRot.pos.z < 1020.0f) && (player->actor.posRot.pos.z > 700.0f) && (sPlayerCaught == 0)) {
+    if ((player->actor.world.pos.x < -190.0f) && (player->actor.world.pos.x > -380.0f) &&
+        (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 100.0f) &&
+        (player->actor.world.pos.z < 1020.0f) && (player->actor.world.pos.z > 700.0f) && (sPlayerCaught == 0)) {
         if (this->unk_278 == 1) {
-            if ((player->actor.posRot.pos.x < -290.0f)) {
+            if ((player->actor.world.pos.x < -290.0f)) {
                 return;
             }
         } else {
-            if (player->actor.posRot.pos.x > -290.0f) {
+            if (player->actor.world.pos.x > -290.0f) {
                 return;
             }
         }
@@ -177,7 +177,7 @@ void func_80A55BD4(EnHeishi3* this, GlobalContext* globalCtx) {
         this->actionFunc = EnHeishi3_ResetAnimationToIdle;
         this->actor.speedXZ = 0.0f;
     } else {
-        Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, this->actor.yawTowardsLink, 5, 3000, 0);
+        Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, this->actor.yawTowardsLink, 5, 3000, 0);
     }
 }
 
@@ -211,7 +211,7 @@ void EnHeishi3_Update(Actor* thisx, GlobalContext* globalCtx) {
         this->caughtTimer -= 1;
     }
     this->actionFunc(this, globalCtx);
-    this->actor.shape.rot = this->actor.posRot.rot;
+    this->actor.shape.rot = this->actor.world.rot;
     Actor_MoveForward(&this->actor);
     func_8002E4B4(globalCtx, &this->actor, 20.0f, 20.0f, 50.0f, 0x1C);
     Collider_CylinderUpdate(&this->actor, &this->collider);

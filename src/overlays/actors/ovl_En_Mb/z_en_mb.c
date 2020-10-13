@@ -12,7 +12,7 @@ void EnMb_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Mb_InitVars = {
     ACTOR_EN_MB,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_MB,
     sizeof(EnMb),

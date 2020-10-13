@@ -12,7 +12,7 @@ void EnEiyer_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Eiyer_InitVars = {
     ACTOR_EN_EIYER,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_EI,
     sizeof(EnEiyer),

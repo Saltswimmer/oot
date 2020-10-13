@@ -21,7 +21,7 @@ extern Gfx D_06000EB0[];
 
 const ActorInit En_Skjneedle_InitVars = {
     ACTOR_EN_SKJNEEDLE,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_SKJ,
     sizeof(EnSkjneedle),

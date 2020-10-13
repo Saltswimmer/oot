@@ -18,7 +18,7 @@ void BgJyaHaheniron_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Jya_Haheniron_InitVars = {
     ACTOR_BG_JYA_HAHENIRON,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_JYA_IRON,
     sizeof(BgJyaHaheniron),

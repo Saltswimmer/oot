@@ -41,7 +41,7 @@ extern SkeletonHeader D_0600BE40;
 
 const ActorInit En_Tk_InitVars = {
     ACTOR_EN_TK,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_TK,
     sizeof(EnTk),
@@ -236,7 +236,7 @@ s32 EnTk_CheckNextSpot(EnTk* this, GlobalContext* globalCtx) {
     f32 dxz;
     f32 dy;
 
-    prop = globalCtx->actorCtx.actorList[ACTORTYPE_PROP].first;
+    prop = globalCtx->actorCtx.actorList[ACTORCAT_PROP].first;
 
     while (prop != NULL) {
         if (prop->id != ACTOR_EN_IT) {
@@ -249,7 +249,7 @@ s32 EnTk_CheckNextSpot(EnTk* this, GlobalContext* globalCtx) {
             continue;
         }
 
-        dy = prop->posRot.pos.y - this->actor.groundY;
+        dy = prop->world.pos.y - this->actor.groundY;
         dxz = func_8002DB8C(&this->actor, prop);
         if (dxz > 40.f || dy > 10.f) {
             prop = prop->next;
@@ -268,7 +268,7 @@ void EnTk_CheckCurrentSpot(EnTk* this) {
     f32 dy;
 
     if (this->currentSpot != NULL) {
-        dy = this->currentSpot->posRot.pos.y - this->actor.groundY;
+        dy = this->currentSpot->world.pos.y - this->actor.groundY;
         dxz = func_8002DB8C(&this->actor, this->currentSpot);
         if (dxz > 40.f || dy > 10.f) {
             this->currentSpot = NULL;
@@ -317,11 +317,11 @@ s32 EnTk_Orient(EnTk* this, GlobalContext* globalCtx) {
     point = SEGMENTED_TO_VIRTUAL(path->points);
     point += this->currentWaypoint;
 
-    dx = point->x - this->actor.posRot.pos.x;
-    dz = point->z - this->actor.posRot.pos.z;
+    dx = point->x - this->actor.world.pos.x;
+    dz = point->z - this->actor.world.pos.z;
 
     Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, Math_atan2f(dx, dz) * (0x8000 / M_PI), 10, 1000, 1);
-    this->actor.posRot.rot = this->actor.shape.rot;
+    this->actor.world.rot = this->actor.shape.rot;
 
     if (SQ(dx) + SQ(dz) < 10.f) {
         this->currentWaypoint++;
@@ -609,9 +609,9 @@ void EnTk_Dig(EnTk* this, GlobalContext* globalCtx) {
             Matrix_RotateY(this->actor.shape.rot.y, MTXMODE_NEW);
             Matrix_MultVec3f(&rewardOrigin, &rewardPos);
 
-            rewardPos.x += this->actor.posRot.pos.x;
-            rewardPos.y += this->actor.posRot.pos.y;
-            rewardPos.z += this->actor.posRot.pos.z;
+            rewardPos.x += this->actor.world.pos.x;
+            rewardPos.y += this->actor.world.pos.y;
+            rewardPos.z += this->actor.world.pos.z;
 
             this->currentReward = EnTk_ChooseReward(this);
             if (this->currentReward == 3) {
@@ -713,7 +713,7 @@ void EnTk_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
 
     /* Limb 16 - Jaw */
     if (limbIndex == 16) {
-        Matrix_MultVec3f(&sp1C, &this->actor.posRot2.pos);
+        Matrix_MultVec3f(&sp1C, &this->actor.head.pos);
     }
 
     /* Limb 14 - Neck */

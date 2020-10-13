@@ -11,7 +11,7 @@ void EnGSwitch_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_G_Switch_InitVars = {
     ACTOR_EN_G_SWITCH,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnGSwitch),

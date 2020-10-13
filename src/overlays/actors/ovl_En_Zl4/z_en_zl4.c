@@ -18,7 +18,7 @@ void EnZl4_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Zl4_InitVars = {
     ACTOR_EN_ZL4,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_ZL4,
     sizeof(EnZl4),

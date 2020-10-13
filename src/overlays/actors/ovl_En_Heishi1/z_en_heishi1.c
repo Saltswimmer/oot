@@ -34,7 +34,7 @@ s32 sPlayerIsCaught = false;
 
 const ActorInit En_Heishi1_InitVars = {
     0,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_SD,
     sizeof(EnHeishi1),
@@ -168,13 +168,13 @@ void EnHeishi1_Walk(EnHeishi1* this, GlobalContext* globalCtx) {
         pointPos = SEGMENTED_TO_VIRTUAL(path->points);
         pointPos += this->waypoint;
 
-        Math_SmoothScaleMaxF(&this->actor.posRot.pos.x, pointPos->x, 1.0f, this->moveSpeed);
-        Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, pointPos->z, 1.0f, this->moveSpeed);
+        Math_SmoothScaleMaxF(&this->actor.world.pos.x, pointPos->x, 1.0f, this->moveSpeed);
+        Math_SmoothScaleMaxF(&this->actor.world.pos.z, pointPos->z, 1.0f, this->moveSpeed);
 
         Math_SmoothScaleMaxF(&this->moveSpeed, this->moveSpeedTarget, 1.0f, this->moveSpeedMax);
 
-        pathDiffX = pointPos->x - this->actor.posRot.pos.x;
-        pathDiffZ = pointPos->z - this->actor.posRot.pos.z;
+        pathDiffX = pointPos->x - this->actor.world.pos.x;
+        pathDiffZ = pointPos->z - this->actor.world.pos.z;
         Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, (Math_atan2f(pathDiffX, pathDiffZ) * 10430.378f), 3,
                                 this->bodyTurnSpeed, 0);
 
@@ -238,8 +238,8 @@ void EnHeishi1_MoveToLink(EnHeishi1* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
 
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
-    Math_SmoothScaleMaxF(&this->actor.posRot.pos.x, player->actor.posRot.pos.x, 1.0f, this->moveSpeed);
-    Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, player->actor.posRot.pos.z, 1.0f, this->moveSpeed);
+    Math_SmoothScaleMaxF(&this->actor.world.pos.x, player->actor.world.pos.x, 1.0f, this->moveSpeed);
+    Math_SmoothScaleMaxF(&this->actor.world.pos.z, player->actor.world.pos.z, 1.0f, this->moveSpeed);
     Math_SmoothScaleMaxF(&this->moveSpeed, 6.0f, 1.0f, 0.4f);
     Math_SmoothScaleMaxMinS(&this->actor.shape.rot.y, this->actor.yawTowardsLink, 3, this->bodyTurnSpeed, 0);
     Math_SmoothScaleMaxF(&this->bodyTurnSpeed, 3000.0f, 1.0f, 300.0f);
@@ -430,9 +430,9 @@ void EnHeishi1_Update(Actor* thisx, GlobalContext* globalCtx) {
                         Vec3f searchBallMult = { 0.0f, 0.0f, 20.0f };
                         Vec3f searchBallPos;
 
-                        searchBallPos.x = this->actor.posRot.pos.x;
-                        searchBallPos.y = this->actor.posRot.pos.y + 60.0f;
-                        searchBallPos.z = this->actor.posRot.pos.z;
+                        searchBallPos.x = this->actor.world.pos.x;
+                        searchBallPos.y = this->actor.world.pos.y + 60.0f;
+                        searchBallPos.z = this->actor.world.pos.z;
 
                         Matrix_Push();
                         Matrix_RotateY(((this->actor.shape.rot.y + this->headAngle) / 32768.0f) * M_PI, 0);
@@ -464,7 +464,7 @@ void EnHeishi1_Update(Actor* thisx, GlobalContext* globalCtx) {
                             if (!(player->actor.velocity.y > -3.9f)) {
                                 this->linkDetected = false;
                                 // this 60 unit height check is so the player doesnt get caught when on the upper path
-                                if (fabsf(player->actor.posRot.pos.y - this->actor.posRot.pos.y) < 60.0f) {
+                                if (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 60.0f) {
                                     func_80078884(NA_SE_SY_FOUND);
                                     // "Discovered!"
                                     osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 発見！ ☆☆☆☆☆ \n" VT_RST);
@@ -501,11 +501,11 @@ void EnHeishi1_Draw(Actor* thisx, GlobalContext* globalCtx) {
     func_80093D18(globalCtx->state.gfxCtx);
     SkelAnime_Draw(globalCtx, this->skelAnime.skeleton, this->skelAnime.limbDrawTbl, EnHeishi1_OverrideLimbDraw, NULL,
                    &this->actor);
-    func_80033C30(&this->actor.posRot.pos, &matrixScale, 0xFF, globalCtx);
+    func_80033C30(&this->actor.world.pos, &matrixScale, 0xFF, globalCtx);
 
     if ((this->path == BREG(1)) && (BREG(0) != 0)) {
-        DebugDisplay_AddObject(this->actor.posRot.pos.x, this->actor.posRot.pos.y + 100.0f, this->actor.posRot.pos.z,
-                               17000, this->actor.posRot.rot.y, this->actor.posRot.rot.z, 1.0f, 1.0f, 1.0f, 255, 0, 0,
+        DebugDisplay_AddObject(this->actor.world.pos.x, this->actor.world.pos.y + 100.0f, this->actor.world.pos.z,
+                               17000, this->actor.world.rot.y, this->actor.world.rot.z, 1.0f, 1.0f, 1.0f, 255, 0, 0,
                                255, 4, globalCtx->state.gfxCtx);
     }
 }

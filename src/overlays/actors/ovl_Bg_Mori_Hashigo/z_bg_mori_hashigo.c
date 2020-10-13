@@ -31,7 +31,7 @@ extern Gfx D_06004770[];
 
 const ActorInit Bg_Mori_Hashigo_InitVars = {
     ACTOR_BG_MORI_HASHIGO,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_MORI_OBJECTS,
     sizeof(BgMoriHashigo),
@@ -94,9 +94,9 @@ void BgMoriHashigo_InitCollider(BgMoriHashigo* this, GlobalContext* globalCtx) {
     Collider_InitJntSph(globalCtx, &this->collider);
     Collider_SetJntSph(globalCtx, &this->collider, &this->dyna.actor, &sJntSphInit, this->colliderItems);
 
-    this->collider.list[0].dim.worldSphere.center.x = (s16)this->dyna.actor.posRot.pos.x;
-    this->collider.list[0].dim.worldSphere.center.y = (s16)this->dyna.actor.posRot.pos.y + 21;
-    this->collider.list[0].dim.worldSphere.center.z = (s16)this->dyna.actor.posRot.pos.z;
+    this->collider.list[0].dim.worldSphere.center.x = (s16)this->dyna.actor.world.pos.x;
+    this->collider.list[0].dim.worldSphere.center.y = (s16)this->dyna.actor.world.pos.y + 21;
+    this->collider.list[0].dim.worldSphere.center.z = (s16)this->dyna.actor.world.pos.z;
     this->collider.list[0].dim.worldSphere.radius = 19;
 }
 
@@ -109,13 +109,13 @@ s32 BgMoriHashigo_SpawnLadder(BgMoriHashigo* this, GlobalContext* globalCtx) {
     cs = Math_Coss(this->dyna.actor.shape.rot.y);
     sn = Math_Sins(this->dyna.actor.shape.rot.y);
 
-    pos.x = 6.0f * sn + this->dyna.actor.posRot.pos.x;
-    pos.y = -210.0f + this->dyna.actor.posRot.pos.y;
-    pos.z = 6.0f * cs + this->dyna.actor.posRot.pos.z;
+    pos.x = 6.0f * sn + this->dyna.actor.world.pos.x;
+    pos.y = -210.0f + this->dyna.actor.world.pos.y;
+    pos.z = 6.0f * cs + this->dyna.actor.world.pos.z;
 
     ladder = Actor_SpawnAsChild(&globalCtx->actorCtx, &this->dyna.actor, globalCtx, ACTOR_BG_MORI_HASHIGO, pos.x, pos.y,
-                                pos.z, this->dyna.actor.posRot.rot.x, this->dyna.actor.posRot.rot.y,
-                                this->dyna.actor.posRot.rot.z, 0);
+                                pos.z, this->dyna.actor.world.rot.x, this->dyna.actor.world.rot.y,
+                                this->dyna.actor.world.rot.z, 0);
     if (ladder != NULL) {
         return true;
     } else {
@@ -256,7 +256,7 @@ void BgMoriHashigo_SetupLadderRest(BgMoriHashigo* this) {
     this->actionFunc = NULL;
     this->dyna.actor.gravity = 0.0f;
     this->dyna.actor.velocity.y = 0.0f;
-    this->dyna.actor.posRot.pos.y = this->dyna.actor.groundY;
+    this->dyna.actor.world.pos.y = this->dyna.actor.groundY;
 }
 
 void BgMoriHashigo_Update(Actor* thisx, GlobalContext* globalCtx) {

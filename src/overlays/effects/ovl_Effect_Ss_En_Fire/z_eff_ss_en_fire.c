@@ -44,10 +44,10 @@ u32 EffectSsEnFire_Init(GlobalContext* globalCtx, u32 index, EffectSs* this, voi
     this->rUnused = -15;
 
     if (initParams->bodyPart < 0) {
-        this->rYaw = Math_Vec3f_Yaw(&initParams->actor->posRot.pos, &initParams->pos) - initParams->actor->shape.rot.y;
+        this->rYaw = Math_Vec3f_Yaw(&initParams->actor->world.pos, &initParams->pos) - initParams->actor->shape.rot.y;
         this->rPitch =
-            Math_Vec3f_Pitch(&initParams->actor->posRot.pos, &initParams->pos) - initParams->actor->shape.rot.x;
-        this->vec.z = Math_Vec3f_DistXYZ(&initParams->pos, &initParams->actor->posRot.pos);
+            Math_Vec3f_Pitch(&initParams->actor->world.pos, &initParams->pos) - initParams->actor->shape.rot.x;
+        this->vec.z = Math_Vec3f_DistXYZ(&initParams->pos, &initParams->actor->world.pos);
     }
 
     this->rScaleMax = initParams->scale;
@@ -127,7 +127,7 @@ void EffectSsEnFire_Update(GlobalContext* globalCtx, u32 index, EffectSs* this) 
             Math_SmoothScaleMaxMinS(&this->rScale, this->rScaleMax, 1, this->rScaleMax >> 3, 0);
 
             if (this->rBodyPart < 0) {
-                Matrix_Translate(this->actor->posRot.pos.x, this->actor->posRot.pos.y, this->actor->posRot.pos.z,
+                Matrix_Translate(this->actor->world.pos.x, this->actor->world.pos.y, this->actor->world.pos.z,
                                  MTXMODE_NEW);
                 Matrix_RotateY((this->rYaw + this->actor->shape.rot.y) * 0.0000958738f, MTXMODE_APPLY);
                 Matrix_RotateX((this->rPitch + this->actor->shape.rot.x) * 0.0000958738f, MTXMODE_APPLY);

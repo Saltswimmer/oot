@@ -12,7 +12,7 @@ void BgJyaBigmirror_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Jya_Bigmirror_InitVars = {
     ACTOR_BG_JYA_BIGMIRROR,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_JYA_OBJ,
     sizeof(BgJyaBigmirror),

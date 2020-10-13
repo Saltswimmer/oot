@@ -11,7 +11,7 @@ void DoorKiller_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Door_Killer_InitVars = {
     ACTOR_DOOR_KILLER,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_DOOR_KILLER,
     sizeof(DoorKiller),

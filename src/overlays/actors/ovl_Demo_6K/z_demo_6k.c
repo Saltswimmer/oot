@@ -11,7 +11,7 @@ void Demo6K_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Demo_6K_InitVars = {
     ACTOR_DEMO_6K,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(Demo6K),

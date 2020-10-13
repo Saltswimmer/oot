@@ -18,7 +18,7 @@ void ObjectKankyo_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Object_Kankyo_InitVars = {
     ACTOR_OBJECT_KANKYO,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(ObjectKankyo),

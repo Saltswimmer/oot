@@ -24,7 +24,7 @@ void EnDog_Wait(EnDog* this, GlobalContext* globalCtx);
 
 const ActorInit En_Dog_InitVars = {
     ACTOR_EN_DOG,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_DOG,
     sizeof(EnDog),
@@ -211,7 +211,7 @@ s32 EnDog_Orient(EnDog* this, GlobalContext* globalCtx) {
     f32 waypointDistSq;
 
     waypointDistSq = Path_OrientAndGetDistSq(&this->actor, this->path, this->waypoint, &targetYaw);
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, targetYaw, 10, 1000, 1);
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, targetYaw, 10, 1000, 1);
 
     if ((waypointDistSq > 0.0f) && (waypointDistSq < 1000.0f)) {
         return EnDog_UpdateWaypoint(this, globalCtx);
@@ -300,7 +300,7 @@ void EnDog_FollowPath(EnDog* this, GlobalContext* globalCtx) {
         }
         Math_SmoothScaleMaxMinF(&this->actor.speedXZ, speed, 0.4f, 1.0f, 0.0f);
         EnDog_Orient(this, globalCtx);
-        this->actor.shape.rot = this->actor.posRot.rot;
+        this->actor.shape.rot = this->actor.world.rot;
 
         // Used to change between two text boxes for Richard's owner in the Market Day scene
         // depending on where he is on his path. En_Hy checks these event flags.
@@ -373,19 +373,19 @@ void EnDog_FollowLink(EnDog* this, GlobalContext* globalCtx) {
     Math_SmoothScaleMaxF(&this->actor.speedXZ, speed, 0.6f, 1.0f);
 
     if (!(this->actor.xzDistFromLink > 400.0f)) {
-        Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, this->actor.yawTowardsLink, 10, 1000, 1);
-        this->actor.shape.rot = this->actor.posRot.rot;
+        Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, this->actor.yawTowardsLink, 10, 1000, 1);
+        this->actor.shape.rot = this->actor.world.rot;
     }
 }
 
 void EnDog_RunAway(EnDog* this, GlobalContext* globalCtx) {
     if (this->actor.xzDistFromLink < 200.0f) {
         Math_SmoothScaleMaxF(&this->actor.speedXZ, 4.0f, 0.6f, 1.0f);
-        Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, (this->actor.yawTowardsLink ^ 0x8000), 10, 1000, 1);
+        Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, (this->actor.yawTowardsLink ^ 0x8000), 10, 1000, 1);
     } else {
         this->actionFunc = EnDog_FaceLink;
     }
-    this->actor.shape.rot = this->actor.posRot.rot;
+    this->actor.shape.rot = this->actor.world.rot;
 }
 
 void EnDog_FaceLink(EnDog* this, GlobalContext* globalCtx) {
@@ -400,10 +400,10 @@ void EnDog_FaceLink(EnDog* this, GlobalContext* globalCtx) {
         Math_SmoothScaleMaxF(&this->actor.speedXZ, 1.0f, 0.6f, 1.0f);
 
         rotTowardLink = this->actor.yawTowardsLink;
-        prevRotY = this->actor.posRot.rot.y;
-        Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, rotTowardLink, 10, 1000, 1);
+        prevRotY = this->actor.world.rot.y;
+        Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, rotTowardLink, 10, 1000, 1);
 
-        absAngleDiff = this->actor.posRot.rot.y;
+        absAngleDiff = this->actor.world.rot.y;
         absAngleDiff -= prevRotY;
         absAngleDiff = fabsf(absAngleDiff);
         if (absAngleDiff < 200.0f) {
@@ -415,7 +415,7 @@ void EnDog_FaceLink(EnDog* this, GlobalContext* globalCtx) {
         this->nextBehavior = DOG_RUN;
         this->actionFunc = EnDog_RunAway;
     }
-    this->actor.shape.rot = this->actor.posRot.rot;
+    this->actor.shape.rot = this->actor.world.rot;
 }
 
 void EnDog_Wait(EnDog* this, GlobalContext* globalCtx) {

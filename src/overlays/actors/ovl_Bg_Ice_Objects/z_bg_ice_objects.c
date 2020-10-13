@@ -18,7 +18,7 @@ void BgIceObjects_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Ice_Objects_InitVars = {
     ACTOR_BG_ICE_OBJECTS,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_ICE_OBJECTS,
     sizeof(BgIceObjects),

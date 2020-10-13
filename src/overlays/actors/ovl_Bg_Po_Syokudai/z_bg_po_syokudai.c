@@ -46,7 +46,7 @@ static Color_RGBA8 sEnvColors[] = {
 
 const ActorInit Bg_Po_Syokudai_InitVars = {
     ACTOR_BG_PO_SYOKUDAI,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_SYOKUDAI,
     sizeof(BgPoSyokudai),
@@ -75,15 +75,15 @@ void BgPoSyokudai_Init(Actor* thisx, GlobalContext* globalCtx) {
     this->actor.colChkInfo.mass = 0xFF;
 
     this->lightNode = LightContext_InsertLight(globalCtx, &globalCtx->lightCtx, &this->lightInfo);
-    Lights_PointGlowSetInfo(&this->lightInfo, this->actor.posRot.pos.x, (s16)this->actor.posRot.pos.y + 65,
-                            this->actor.posRot.pos.z, 0, 0, 0, 0);
+    Lights_PointGlowSetInfo(&this->lightInfo, this->actor.world.pos.x, (s16)this->actor.world.pos.y + 65,
+                            this->actor.world.pos.z, 0, 0, 0, 0);
 
     Collider_InitCylinder(globalCtx, &this->collider);
     Collider_SetCylinder(globalCtx, &this->collider, &this->actor, &sCylinderInit);
 
-    this->collider.dim.pos.x = this->actor.posRot.pos.x;
-    this->collider.dim.pos.y = this->actor.posRot.pos.y;
-    this->collider.dim.pos.z = this->actor.posRot.pos.z;
+    this->collider.dim.pos.x = this->actor.world.pos.x;
+    this->collider.dim.pos.y = this->actor.world.pos.y;
+    this->collider.dim.pos.z = this->actor.world.pos.z;
 
     if (this->flameColor == POE_FLAME_PURPLE && Flags_GetSwitch(globalCtx, POE_TORCH_FLAG + POE_FLAME_GREEN) &&
         Flags_GetSwitch(globalCtx, POE_TORCH_FLAG + POE_FLAME_BLUE) &&
@@ -95,8 +95,8 @@ void BgPoSyokudai_Init(Actor* thisx, GlobalContext* globalCtx) {
 
     } else if (!Flags_GetSwitch(globalCtx, POE_TORCH_FLAG + POE_FLAME_PURPLE) && !Flags_GetSwitch(globalCtx, 0x1B)) {
 
-        Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_PO_SISTERS, this->actor.posRot.pos.x,
-                    this->actor.posRot.pos.y + 52.0f, this->actor.posRot.pos.z, 0, 0, 0,
+        Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_PO_SISTERS, this->actor.world.pos.x,
+                    this->actor.world.pos.y + 52.0f, this->actor.world.pos.z, 0, 0, 0,
                     (this->flameColor << 8) + this->actor.params + 0x1000);
 
     } else if (!Flags_GetSwitch(globalCtx, this->actor.params)) {

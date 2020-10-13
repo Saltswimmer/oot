@@ -12,7 +12,7 @@ void BossDodongo_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Boss_Dodongo_InitVars = {
     ACTOR_EN_DODONGO,
-    ACTORTYPE_BOSS,
+    ACTORCAT_BOSS,
     FLAGS,
     OBJECT_KINGDODONGO,
     sizeof(BossDodongo),

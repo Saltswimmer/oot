@@ -1323,13 +1323,13 @@ void func_80832630(GlobalContext* globalCtx) {
 }
 
 void func_8083264C(Player* this, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    if (this->actor.type == ACTORTYPE_PLAYER) {
+    if (this->actor.category == ACTORCAT_PLAYER) {
         func_800AA000(arg4, arg1, arg2, arg3);
     }
 }
 
 void func_80832698(Player* this, u16 sfxId) {
-    if (this->actor.type == ACTORTYPE_PLAYER) {
+    if (this->actor.category == ACTORCAT_PLAYER) {
         func_8002F7DC(&this->actor, sfxId + this->ageProperties->unk_92);
     } else {
         func_800F4190(&this->actor.projectedPos, sfxId);
@@ -1514,15 +1514,15 @@ void func_80832E48(Player* this, s32 flags) {
             pos.x *= 0.64f;
             pos.z *= 0.64f;
         }
-        this->actor.posRot.pos.x += pos.x * this->actor.scale.x;
-        this->actor.posRot.pos.z += pos.z * this->actor.scale.z;
+        this->actor.world.pos.x += pos.x * this->actor.scale.x;
+        this->actor.world.pos.z += pos.z * this->actor.scale.z;
     }
 
     if (flags & 2) {
         if (!(flags & 4)) {
             pos.y *= this->ageProperties->unk_08;
         }
-        this->actor.posRot.pos.y += pos.y * this->actor.scale.y;
+        this->actor.world.pos.y += pos.y * this->actor.scale.y;
     }
 
     func_808322FC(this);
@@ -1776,7 +1776,7 @@ void func_808337D4(GlobalContext* globalCtx, Player* this) {
     explosiveInfo = &sExplosiveInfos[explosiveType];
 
     spawnedActor = Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, explosiveInfo->actorId,
-                                      this->actor.posRot.pos.x, this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0,
+                                      this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0,
                                       this->actor.shape.rot.y, 0, 0);
     if (spawnedActor != NULL) {
         if ((explosiveType != 0) && (globalCtx->bombchuBowlingAmmo != 0)) {
@@ -1801,8 +1801,8 @@ void func_80833910(GlobalContext* globalCtx, Player* this) {
     this->unk_860 = -3;
 
     this->heldActor =
-        Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_ARMS_HOOK, this->actor.posRot.pos.x,
-                           this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, this->actor.shape.rot.y, 0, 0);
+        Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_ARMS_HOOK, this->actor.world.pos.x,
+                           this->actor.world.pos.y, this->actor.world.pos.z, 0, this->actor.shape.rot.y, 0, 0);
 }
 
 void func_80833984(GlobalContext* globalCtx, Player* this) {
@@ -2028,7 +2028,7 @@ void func_808340DC(Player* this, GlobalContext* globalCtx) {
 #endif
 
 void func_80834298(Player* this, GlobalContext* globalCtx) {
-    if ((this->actor.type == ACTORTYPE_PLAYER) && !(this->stateFlags1 & 0x100) &&
+    if ((this->actor.category == ACTORCAT_PLAYER) && !(this->stateFlags1 & 0x100) &&
         ((this->heldItemActionParam == this->itemActionParam) || (this->stateFlags1 & 0x400000)) &&
         (gSaveContext.health != 0) && (globalCtx->csCtx.state == 0) && (this->csMode == 0) &&
         (globalCtx->unk_11E5C == 0) && (globalCtx->activeCamera == 0) && (globalCtx->sceneLoadFlag != 0x14) &&
@@ -2090,8 +2090,8 @@ s32 func_8083442C(Player* this, GlobalContext* globalCtx) {
                     }
 
                     this->heldActor = Actor_SpawnAsChild(
-                        &globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ARROW, this->actor.posRot.pos.x,
-                        this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, this->actor.shape.rot.y, 0, arrowType);
+                        &globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ARROW, this->actor.world.pos.x,
+                        this->actor.world.pos.y, this->actor.world.pos.z, 0, this->actor.shape.rot.y, 0, arrowType);
                 }
             }
         }
@@ -2551,7 +2551,7 @@ s32 func_808356E8(Player* this, GlobalContext* globalCtx) {
         if ((heldActor->id == ACTOR_EN_NIW) && (this->actor.velocity.y <= 0.0f)) {
             this->actor.minVelocityY = -2.0f;
             this->actor.gravity = -0.5f;
-            this->fallStartHeight = this->actor.posRot.pos.y;
+            this->fallStartHeight = this->actor.world.pos.y;
         }
 
         return 1;
@@ -2616,12 +2616,12 @@ s32 func_808359FC(Player* this, GlobalContext* globalCtx) {
         func_80833638(this, func_80835B60);
         this->unk_834 = 0;
     } else if (func_800A4530(&this->skelAnime2, 6.0f)) {
-        f32 posX = (Math_Sins(this->actor.shape.rot.y) * 10.0f) + this->actor.posRot.pos.x;
-        f32 posZ = (Math_Coss(this->actor.shape.rot.y) * 10.0f) + this->actor.posRot.pos.z;
+        f32 posX = (Math_Sins(this->actor.shape.rot.y) * 10.0f) + this->actor.world.pos.x;
+        f32 posZ = (Math_Coss(this->actor.shape.rot.y) * 10.0f) + this->actor.world.pos.z;
         s32 yaw = (this->unk_664 != NULL) ? this->actor.shape.rot.y + 14000 : this->actor.shape.rot.y;
         EnBoom* boomerang =
-            (EnBoom*)Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_BOOM, posX, this->actor.posRot.pos.y + 30.0f,
-                                 posZ, this->actor.posRot2.rot.x, yaw, 0, 0);
+            (EnBoom*)Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_BOOM, posX, this->actor.world.pos.y + 30.0f,
+                                 posZ, this->actor.head.rot.x, yaw, 0, 0);
 
         this->boomerangActor = &boomerang->actor;
         if (boomerang != NULL) {
@@ -2770,7 +2770,7 @@ void func_80835F44(GlobalContext* globalCtx, Player* this, s32 item) {
                  ((actionParam == PLAYER_AP_BEAN) && (AMMO(ITEM_BEAN) == 0)) ||
                  (temp = Player_ActionToExplosive(this, actionParam),
                   ((temp >= 0) && ((AMMO(sExplosiveInfos[temp].itemId) == 0) ||
-                                   (globalCtx->actorCtx.actorList[ACTORTYPE_EXPLOSIVES].length >= 3)))))) {
+                                   (globalCtx->actorCtx.actorList[ACTORCAT_EXPLOSIVE].length >= 3)))))) {
                 func_80078884(NA_SE_SY_ERROR);
                 return;
             }
@@ -2870,7 +2870,7 @@ void func_80836448(GlobalContext* globalCtx, Player* this, LinkAnimetionEntry* a
     func_80832224(this);
     func_80832698(this, NA_SE_VO_LI_DOWN);
 
-    if (this->actor.type == ACTORTYPE_PLAYER) {
+    if (this->actor.category == ACTORCAT_PLAYER) {
         func_800F47BC();
 
         if (Inventory_ConsumeFairy(globalCtx)) {
@@ -2954,9 +2954,9 @@ void func_808368EC(Player* this, GlobalContext* globalCtx) {
 
     if (!(this->stateFlags2 & 0x60)) {
         if ((this->unk_664 != NULL) &&
-            ((globalCtx->actorCtx.targetCtx.unk_4B != 0) || (this->actor.type != ACTORTYPE_PLAYER))) {
+            ((globalCtx->actorCtx.targetCtx.unk_4B != 0) || (this->actor.category != ACTORCAT_PLAYER))) {
             Math_ApproxUpdateScaledS(&this->actor.shape.rot.y,
-                                     Math_Vec3f_Yaw(&this->actor.posRot.pos, &this->unk_664->posRot2.pos), 4000);
+                                     Math_Vec3f_Yaw(&this->actor.world.pos, &this->unk_664->head.pos), 4000);
         } else if ((this->stateFlags1 & 0x20000) && !(this->stateFlags2 & 0x60)) {
             Math_ApproxUpdateScaledS(&this->actor.shape.rot.y, this->targetYaw, 4000);
         }
@@ -2993,17 +2993,17 @@ s32 func_80836AB8(Player* this, s32 arg1) {
 
     var = this->actor.shape.rot.y;
     if (arg1 != 0) {
-        var = this->actor.posRot2.rot.y;
-        this->unk_6BC = this->actor.posRot2.rot.x;
+        var = this->actor.head.rot.y;
+        this->unk_6BC = this->actor.head.rot.x;
         this->unk_6AE |= 0x41;
     } else {
         func_808369C8(
             &this->unk_6BC,
-            func_808369C8(&this->unk_6B6, this->actor.posRot2.rot.x, 600, 10000, this->actor.posRot2.rot.x, 0), 200,
+            func_808369C8(&this->unk_6B6, this->actor.head.rot.x, 600, 10000, this->actor.head.rot.x, 0), 200,
             4000, this->unk_6B6, 10000);
-        sp36 = this->actor.posRot2.rot.y - var;
+        sp36 = this->actor.head.rot.y - var;
         func_808369C8(&sp36, 0, 200, 24000, this->unk_6BE, 8000);
-        var = this->actor.posRot2.rot.y - sp36;
+        var = this->actor.head.rot.y - sp36;
         func_808369C8(&this->unk_6B8, sp36 - this->unk_6BE, 200, 8000, sp36, 8000);
         func_808369C8(&this->unk_6BE, sp36, 200, 8000, this->unk_6B8, 8000);
         this->unk_6AE |= 0xD9;
@@ -3050,17 +3050,17 @@ void func_80836BEC(Player* this, GlobalContext* globalCtx) {
                 ((this->heldItemActionParam != PLAYER_AP_FISHING_POLE) || (this->unk_860 == 0)) &&
                 CHECK_BTN_ALL(sControlInput->press.button, BTN_Z)) {
 
-                if (this->actor.type == ACTORTYPE_PLAYER) {
+                if (this->actor.category == ACTORCAT_PLAYER) {
                     actorToTarget = globalCtx->actorCtx.targetCtx.arrowPointedActor;
                 } else {
                     actorToTarget = &PLAYER->actor;
                 }
 
-                holdTarget = (gSaveContext.zTargetingSetting != 0) || (this->actor.type != ACTORTYPE_PLAYER);
+                holdTarget = (gSaveContext.zTargetingSetting != 0) || (this->actor.category != ACTORCAT_PLAYER);
                 this->stateFlags1 |= 0x8000;
 
                 if ((actorToTarget != NULL) && !(actorToTarget->flags & 0x8000000)) {
-                    if ((actorToTarget == this->unk_664) && (this->actor.type == ACTORTYPE_PLAYER)) {
+                    if ((actorToTarget == this->unk_664) && (this->actor.category == ACTORCAT_PLAYER)) {
                         actorToTarget = globalCtx->actorCtx.targetCtx.unk_94;
                     }
 
@@ -3086,7 +3086,7 @@ void func_80836BEC(Player* this, GlobalContext* globalCtx) {
             }
 
             if (this->unk_664 != NULL) {
-                if ((this->actor.type == ACTORTYPE_PLAYER) && (this->unk_664 != this->unk_684) &&
+                if ((this->actor.category == ACTORCAT_PLAYER) && (this->unk_664 != this->unk_684) &&
                     func_8002F0C8(this->unk_664, this, sp1C)) {
                     func_8008EDF0(this);
                     this->stateFlags1 |= 0x40000000;
@@ -3172,7 +3172,7 @@ s32 func_80837268(Player* this, f32* arg1, s16* arg2, f32 arg3, GlobalContext* g
 
         if (this->unk_664 != NULL) {
             if ((globalCtx->actorCtx.targetCtx.unk_4B != 0) && !(this->stateFlags2 & 0x40)) {
-                *arg2 = Math_Vec3f_Yaw(&this->actor.posRot.pos, &this->unk_664->posRot2.pos);
+                *arg2 = Math_Vec3f_Yaw(&this->actor.world.pos, &this->unk_664->head.pos);
                 return 0;
             }
         } else if (func_80833B2C(this)) {
@@ -3262,7 +3262,7 @@ void func_80837530(GlobalContext* globalCtx, Player* this, s32 arg2) {
 
     this->stateFlags1 |= 0x1000;
 
-    if (this->actor.type == ACTORTYPE_PLAYER) {
+    if (this->actor.category == ACTORCAT_PLAYER) {
         Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_M_THUNDER, this->bodyPartsPos[0].x,
                     this->bodyPartsPos[0].y, this->bodyPartsPos[0].z, 0, 0, 0, Player_GetSwordHeld(this) | arg2);
     }
@@ -3444,7 +3444,7 @@ void func_80837AFC(Player* this, s32 timer) {
 }
 
 s32 func_80837B18(GlobalContext* globalCtx, Player* this, s32 damage) {
-    if ((this->invincibilityTimer != 0) || (this->actor.type != ACTORTYPE_PLAYER)) {
+    if ((this->invincibilityTimer != 0) || (this->actor.category != ACTORCAT_PLAYER)) {
         return 1;
     }
 
@@ -3550,7 +3550,7 @@ void func_80837C0C(GlobalContext* globalCtx, Player* this, s32 arg2, f32 arg3, f
                     sp2C = &D_04002DB0;
                 }
 
-                if ((this->actor.type != ACTORTYPE_PLAYER) && (this->actor.colChkInfo.health == 0)) {
+                if ((this->actor.category != ACTORCAT_PLAYER) && (this->actor.colChkInfo.health == 0)) {
                     func_80832698(this, NA_SE_VO_BL_DOWN);
                 } else {
                     func_80832698(this, NA_SE_VO_LI_FALL_L);
@@ -3595,7 +3595,7 @@ void func_80837C0C(GlobalContext* globalCtx, Player* this, s32 arg2, f32 arg3, f
 
         this->actor.shape.rot.y += arg5;
         this->currentYaw = this->actor.shape.rot.y;
-        this->actor.posRot.rot.y = this->actor.shape.rot.y;
+        this->actor.world.rot.y = this->actor.shape.rot.y;
         if (ABS(arg5) > 0x4000) {
             this->actor.shape.rot.y += 0x8000;
         }
@@ -3626,8 +3626,8 @@ s32 func_8083816C(s32 arg0) {
 
 void func_8083819C(Player* this, GlobalContext* globalCtx) {
     if (this->currentShield == PLAYER_SHIELD_DEKU) {
-        Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_ITEM_SHIELD, this->actor.posRot.pos.x,
-                    this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 1);
+        Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_ITEM_SHIELD, this->actor.world.pos.x,
+                    this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 1);
         Inventory_DeleteEquipment(globalCtx, EQUIP_SHIELD);
         func_8010B680(globalCtx, 0x305F, NULL); // "Your shield is gone!"
     }
@@ -3903,9 +3903,9 @@ s32 func_80838A14(Player* this, GlobalContext* globalCtx) {
 
                 this->actor.shape.unk_08 -= sp34 * 100.0f;
 
-                this->actor.posRot.pos.x -= sp24 * sp2C;
-                this->actor.posRot.pos.y += this->wallHeight;
-                this->actor.posRot.pos.z -= sp24 * sp28;
+                this->actor.world.pos.x -= sp24 * sp2C;
+                this->actor.world.pos.y += this->wallHeight;
+                this->actor.world.pos.z -= sp24 * sp28;
 
                 func_80832224(this);
             }
@@ -3937,8 +3937,8 @@ void func_80838E70(GlobalContext* globalCtx, Player* this, f32 arg2, s16 arg3) {
     this->unk_84F = 1;
     this->unk_850 = 1;
 
-    this->unk_450.x = (Math_Sins(arg3) * arg2) + this->actor.posRot.pos.x;
-    this->unk_450.z = (Math_Coss(arg3) * arg2) + this->actor.posRot.pos.z;
+    this->unk_450.x = (Math_Sins(arg3) * arg2) + this->actor.world.pos.x;
+    this->unk_450.z = (Math_Coss(arg3) * arg2) + this->actor.world.pos.z;
 
     func_80832264(globalCtx, this, func_80833338(this));
 }
@@ -3983,7 +3983,7 @@ s32 func_80839034(GlobalContext* globalCtx, Player* this, CollisionPoly* arg2, u
 
     if (1) {}
 
-    if (this->actor.type == ACTORTYPE_PLAYER) {
+    if (this->actor.category == ACTORCAT_PLAYER) {
         sp3C = 0;
 
         if (!(this->stateFlags1 & 0x80) && (globalCtx->sceneLoadFlag == 0) && (this->csMode == 0) &&
@@ -3991,7 +3991,7 @@ s32 func_80839034(GlobalContext* globalCtx, Player* this, CollisionPoly* arg2, u
             (((arg2 != NULL) && (sp3C = func_80041D28(&globalCtx->colCtx, arg2, arg3), sp3C != 0)) ||
              (func_8083816C(D_808535E4) && (this->unk_A7A == 12)))) {
 
-            sp34 = this->unk_A84 - (s32)this->actor.posRot.pos.y;
+            sp34 = this->unk_A84 - (s32)this->actor.world.pos.y;
 
             if (!(this->stateFlags1 & 0x28800000) && !(this->actor.bgCheckFlags & 1) && (sp34 < 100) &&
                 (D_80853600 > 100.0f)) {
@@ -4037,7 +4037,7 @@ s32 func_80839034(GlobalContext* globalCtx, Player* this, CollisionPoly* arg2, u
                     linearVel = this->linearVelocity;
 
                     if (linearVel < 0.0f) {
-                        this->actor.posRot.rot.y += 0x8000;
+                        this->actor.world.rot.y += 0x8000;
                         linearVel = -linearVel;
                     }
 
@@ -4050,7 +4050,7 @@ s32 func_80839034(GlobalContext* globalCtx, Player* this, CollisionPoly* arg2, u
                     if (D_808535F4 != 0) {
                         yaw = D_808535FC;
                     } else {
-                        yaw = this->actor.posRot.rot.y;
+                        yaw = this->actor.world.rot.y;
                     }
                     func_80838E70(globalCtx, this, 400.0f, yaw);
                 }
@@ -4068,7 +4068,7 @@ s32 func_80839034(GlobalContext* globalCtx, Player* this, CollisionPoly* arg2, u
         } else {
             if (globalCtx->sceneLoadFlag == 0) {
 
-                if ((this->actor.posRot.pos.y < -4000.0f) ||
+                if ((this->actor.world.pos.y < -4000.0f) ||
                     (((this->unk_A7A == 5) || (this->unk_A7A == 12)) &&
                      ((D_80853600 < 100.0f) || (this->fallDistance > 400.0f) ||
                       ((globalCtx->sceneNum != SCENE_HAKADAN) && (this->fallDistance > 200.0f)))) ||
@@ -4093,7 +4093,7 @@ s32 func_80839034(GlobalContext* globalCtx, Player* this, CollisionPoly* arg2, u
                     }
                 }
 
-                this->unk_A84 = this->actor.posRot.pos.y;
+                this->unk_A84 = this->actor.world.pos.y;
             }
         }
     }
@@ -4119,7 +4119,7 @@ Actor* func_80839680(GlobalContext* globalCtx, Player* this, Vec3f* arg2, Vec3f*
 }
 
 f32 func_808396F4(GlobalContext* globalCtx, Player* this, Vec3f* arg2, Vec3f* arg3, CollisionPoly** arg4, s32* arg5) {
-    func_808395DC(this, &this->actor.posRot.pos, arg2, arg3);
+    func_808395DC(this, &this->actor.world.pos, arg2, arg3);
 
     func_8003C940(&globalCtx->colCtx, arg4, arg5, arg3);
 }
@@ -4135,11 +4135,11 @@ s32 func_80839768(GlobalContext* globalCtx, Player* this, Vec3f* arg2, Collision
     Vec3f sp44;
     Vec3f sp38;
 
-    sp44.x = this->actor.posRot.pos.x;
-    sp44.y = this->actor.posRot.pos.y + arg2->y;
-    sp44.z = this->actor.posRot.pos.z;
+    sp44.x = this->actor.world.pos.x;
+    sp44.y = this->actor.world.pos.y + arg2->y;
+    sp44.z = this->actor.world.pos.z;
 
-    func_808395DC(this, &this->actor.posRot.pos, arg2, &sp38);
+    func_808395DC(this, &this->actor.world.pos, arg2, &sp38);
 
     return func_8003DE84(&globalCtx->colCtx, &sp44, &sp38, arg5, arg3, 1, 0, 0, 1, arg4);
 }
@@ -4177,7 +4177,7 @@ s32 func_80839800(Player* this, GlobalContext* globalCtx) {
             if (this->doorType == 2) {
                 doorShutter = (DoorShutter*)doorActor;
 
-                this->currentYaw = doorShutter->actor.initPosRot.rot.y;
+                this->currentYaw = doorShutter->actor.home.rot.y;
                 if (sp7C > 0) {
                     this->currentYaw -= 0x8000;
                 }
@@ -4193,10 +4193,10 @@ s32 func_80839800(Player* this, GlobalContext* globalCtx) {
                 this->unk_447 = this->doorType;
                 this->stateFlags1 |= 0x20000000;
 
-                this->unk_450.x = this->actor.posRot.pos.x + ((sp7C * 20.0f) * sp74);
-                this->unk_450.z = this->actor.posRot.pos.z + ((sp7C * 20.0f) * sp78);
-                this->unk_45C.x = this->actor.posRot.pos.x + ((sp7C * -120.0f) * sp74);
-                this->unk_45C.z = this->actor.posRot.pos.z + ((sp7C * -120.0f) * sp78);
+                this->unk_450.x = this->actor.world.pos.x + ((sp7C * 20.0f) * sp74);
+                this->unk_450.z = this->actor.world.pos.z + ((sp7C * 20.0f) * sp78);
+                this->unk_45C.x = this->actor.world.pos.x + ((sp7C * -120.0f) * sp74);
+                this->unk_45C.z = this->actor.world.pos.z + ((sp7C * -120.0f) * sp78);
 
                 doorShutter->unk_164 = 1;
                 func_80832224(this);
@@ -4209,7 +4209,7 @@ s32 func_80839800(Player* this, GlobalContext* globalCtx) {
                     this->linearVelocity = 0.1f;
                 }
 
-                if (doorShutter->actor.type == ACTORTYPE_DOOR) {
+                if (doorShutter->actor.category == ACTORCAT_DOOR) {
                     this->unk_46A = globalCtx->transitionActorList[(u16)doorShutter->actor.params >> 10]
                                         .sides[(sp7C > 0) ? 0 : 1]
                                         .effects;
@@ -4243,8 +4243,8 @@ s32 func_80839800(Player* this, GlobalContext* globalCtx) {
                 this->currentYaw = this->actor.shape.rot.y;
 
                 sp6C = (sp7C * 22.0f);
-                this->actor.posRot.pos.x = doorActor->posRot.pos.x + sp6C * sp74;
-                this->actor.posRot.pos.z = doorActor->posRot.pos.z + sp6C * sp78;
+                this->actor.world.pos.x = doorActor->world.pos.x + sp6C * sp74;
+                this->actor.world.pos.z = doorActor->world.pos.z + sp6C * sp78;
 
                 func_8083328C(globalCtx, this, sp5C);
 
@@ -4266,9 +4266,9 @@ s32 func_80839800(Player* this, GlobalContext* globalCtx) {
                     func_800304B0(globalCtx);
 
                     if (((doorActor->params >> 7) & 7) == 3) {
-                        sp4C.x = doorActor->posRot.pos.x - (sp6C * sp74);
-                        sp4C.y = doorActor->posRot.pos.y + 10.0f;
-                        sp4C.z = doorActor->posRot.pos.z - (sp6C * sp78);
+                        sp4C.x = doorActor->world.pos.x - (sp6C * sp74);
+                        sp4C.y = doorActor->world.pos.y + 10.0f;
+                        sp4C.z = doorActor->world.pos.z - (sp6C * sp78);
 
                         func_8003C890(&globalCtx->colCtx, &sp58, &sp4C);
 
@@ -4286,7 +4286,7 @@ s32 func_80839800(Player* this, GlobalContext* globalCtx) {
                 }
             }
 
-            if ((this->doorType != 3) && (doorActor->type == ACTORTYPE_DOOR)) {
+            if ((this->doorType != 3) && (doorActor->category == ACTORCAT_DOOR)) {
                 frontRoom = globalCtx->transitionActorList[(u16)doorActor->params >> 10].sides[(sp7C > 0) ? 0 : 1].room;
 
                 if ((frontRoom >= 0) && (frontRoom != globalCtx->roomCtx.curRoom.num)) {
@@ -4393,10 +4393,10 @@ void func_8083A0F4(GlobalContext* globalCtx, Player* this) {
             } else if (((interactActorId == ACTOR_EN_BOMBF) || (interactActorId == ACTOR_EN_KUSA)) &&
                        (Player_GetStrength() <= PLAYER_STR_NONE)) {
                 func_80835C58(globalCtx, this, func_80846408, 0);
-                this->actor.posRot.pos.x =
-                    (Math_Sins(interactRangeActor->yawTowardsLink) * 20.0f) + interactRangeActor->posRot.pos.x;
-                this->actor.posRot.pos.z =
-                    (Math_Coss(interactRangeActor->yawTowardsLink) * 20.0f) + interactRangeActor->posRot.pos.z;
+                this->actor.world.pos.x =
+                    (Math_Sins(interactRangeActor->yawTowardsLink) * 20.0f) + interactRangeActor->world.pos.x;
+                this->actor.world.pos.z =
+                    (Math_Coss(interactRangeActor->yawTowardsLink) * 20.0f) + interactRangeActor->world.pos.z;
                 this->currentYaw = this->actor.shape.rot.y = interactRangeActor->yawTowardsLink + 0x8000;
                 anim = &D_04003060;
             } else {
@@ -4493,8 +4493,8 @@ void func_8083A5C4(GlobalContext* globalCtx, Player* this, CollisionPoly* arg2, 
     func_80832564(globalCtx, this);
     func_80832264(globalCtx, this, arg4);
 
-    this->actor.posRot.pos.x -= (arg3 + 1.0f) * sp24;
-    this->actor.posRot.pos.z -= (arg3 + 1.0f) * sp20;
+    this->actor.world.pos.x -= (arg3 + 1.0f) * sp24;
+    this->actor.world.pos.z -= (arg3 + 1.0f) * sp20;
     this->actor.shape.rot.y = this->currentYaw = atan2s(sp20, sp24);
 
     func_80832224(this);
@@ -4509,8 +4509,8 @@ s32 func_8083A6AC(Player* this, GlobalContext* globalCtx) {
     f32 temp1;
 
     if ((this->actor.waterY < -80.0f) && (ABS(this->unk_898) < 2730) && (ABS(this->unk_89A) < 2730)) {
-        sp74.x = this->actor.pos4.x - this->actor.posRot.pos.x;
-        sp74.z = this->actor.pos4.z - this->actor.posRot.pos.z;
+        sp74.x = this->actor.prevPos.x - this->actor.world.pos.x;
+        sp74.z = this->actor.prevPos.z - this->actor.world.pos.z;
 
         temp1 = sqrtf(SQ(sp74.x) + SQ(sp74.z));
         if (temp1 != 0.0f) {
@@ -4519,11 +4519,11 @@ s32 func_8083A6AC(Player* this, GlobalContext* globalCtx) {
             temp1 = 0.0f;
         }
 
-        sp74.x = this->actor.pos4.x + (sp74.x * temp1);
-        sp74.y = this->actor.posRot.pos.y;
-        sp74.z = this->actor.pos4.z + (sp74.z * temp1);
+        sp74.x = this->actor.prevPos.x + (sp74.x * temp1);
+        sp74.y = this->actor.world.pos.y;
+        sp74.z = this->actor.prevPos.z + (sp74.z * temp1);
 
-        if (func_8003DE84(&globalCtx->colCtx, &this->actor.posRot.pos, &sp74, &sp68, &sp84, 1, 0, 0, 1, &sp80) &&
+        if (func_8003DE84(&globalCtx->colCtx, &this->actor.world.pos, &sp74, &sp68, &sp84, 1, 0, 0, 1, &sp80) &&
             (ABS(sp84->norm.y) < 600)) {
             f32 nx = sp84->norm.x * (1.0f / 32767.0f);
             f32 ny = sp84->norm.y * (1.0f / 32767.0f);
@@ -4531,7 +4531,7 @@ s32 func_8083A6AC(Player* this, GlobalContext* globalCtx) {
             f32 sp54;
             s32 sp50;
 
-            sp54 = Math3D_UDistPlaneToPos(nx, ny, nz, sp84->dist, &this->actor.posRot.pos);
+            sp54 = Math3D_UDistPlaneToPos(nx, ny, nz, sp84->dist, &this->actor.world.pos);
 
             sp50 = D_80853604 == 6;
             if (!sp50 && (func_80041DB8(&globalCtx->colCtx, sp84, sp80) & 8)) {
@@ -4581,13 +4581,13 @@ void func_8083AA10(Player* this, GlobalContext* globalCtx) {
     f32 sp40;
     f32 sp3C;
 
-    this->fallDistance = this->fallStartHeight - (s32)this->actor.posRot.pos.y;
+    this->fallDistance = this->fallStartHeight - (s32)this->actor.world.pos.y;
 
     if (!(this->stateFlags1 & 0x28000000) && !(this->actor.bgCheckFlags & 1)) {
         if (!func_80838FB8(globalCtx, this)) {
             if (D_80853604 == 8) {
-                this->actor.posRot.pos.x = this->actor.pos4.x;
-                this->actor.posRot.pos.z = this->actor.pos4.z;
+                this->actor.world.pos.x = this->actor.prevPos.x;
+                this->actor.world.pos.z = this->actor.prevPos.z;
                 return;
             }
 
@@ -4595,7 +4595,7 @@ void func_8083AA10(Player* this, GlobalContext* globalCtx) {
                 (func_80844A44 != this->func_674)) {
 
                 if ((D_80853604 == 7) || (this->swordState != 0)) {
-                    Math_Vec3f_Copy(&this->actor.posRot.pos, &this->actor.pos4);
+                    Math_Vec3f_Copy(&this->actor.world.pos, &this->actor.prevPos);
                     func_80832210(this);
                     return;
                 }
@@ -4620,7 +4620,7 @@ void func_8083AA10(Player* this, GlobalContext* globalCtx) {
                     if ((D_80853604 == 11) && !(this->stateFlags1 & 0x800)) {
 
                         sp40 = func_808396F4(globalCtx, this, &D_8085451C, &sp44, &sp58, &sp54);
-                        sp3C = this->actor.posRot.pos.y;
+                        sp3C = this->actor.world.pos.y;
 
                         if (func_8004213C(globalCtx, &globalCtx->colCtx, sp44.x, sp44.z, &sp3C, &sp50) &&
                             ((sp3C - sp40) > 50.0f)) {
@@ -4642,7 +4642,7 @@ void func_8083AA10(Player* this, GlobalContext* globalCtx) {
             }
         }
     } else {
-        this->fallStartHeight = this->actor.posRot.pos.y;
+        this->fallStartHeight = this->actor.world.pos.y;
     }
 }
 
@@ -4718,10 +4718,10 @@ void func_8083AF44(GlobalContext* globalCtx, Player* this, s32 magicSpell) {
 }
 
 void func_8083B010(Player* this) {
-    this->actor.posRot2.rot.x = this->actor.posRot2.rot.z = this->unk_6B6 = this->unk_6B8 = this->unk_6BA =
+    this->actor.head.rot.x = this->actor.head.rot.z = this->unk_6B6 = this->unk_6B8 = this->unk_6BA =
         this->unk_6BC = this->unk_6BE = this->unk_6C0 = 0;
 
-    this->actor.posRot2.rot.y = this->actor.shape.rot.y;
+    this->actor.head.rot.y = this->actor.shape.rot.y;
 }
 
 u8 D_80854528[] = {
@@ -5007,7 +5007,7 @@ void func_8083BA90(GlobalContext* globalCtx, Player* this, s32 arg2, f32 xzVeloc
 s32 func_8083BB20(Player* this) {
     if (!(this->stateFlags1 & 0x400000) && (Player_GetSwordHeld(this) != 0)) {
         if (D_80853614 ||
-            ((this->actor.type != ACTORTYPE_PLAYER) && CHECK_BTN_ALL(sControlInput->press.button, BTN_B))) {
+            ((this->actor.category != ACTORCAT_PLAYER) && CHECK_BTN_ALL(sControlInput->press.button, BTN_B))) {
             return 1;
         }
     }
@@ -5065,7 +5065,7 @@ s32 func_8083BDBC(Player* this, GlobalContext* globalCtx) {
 
         if (sp2C <= 0) {
             if (func_80833BCC(this)) {
-                if (this->actor.type != ACTORTYPE_PLAYER) {
+                if (this->actor.category != ACTORCAT_PLAYER) {
                     if (sp2C < 0) {
                         func_808389E8(this, &D_04002FE0, REG(69) / 100.0f, globalCtx);
                     } else {
@@ -5281,10 +5281,10 @@ s32 func_8083C6B8(GlobalContext* globalCtx, Player* this) {
         }
 
         if (this->heldItemActionParam == PLAYER_AP_FISHING_POLE) {
-            sp24 = this->actor.posRot.pos;
+            sp24 = this->actor.world.pos;
             sp24.y += 50.0f;
 
-            if (!(this->actor.bgCheckFlags & 1) || (this->actor.posRot.pos.z > 1300.0f) ||
+            if (!(this->actor.bgCheckFlags & 1) || (this->actor.world.pos.z > 1300.0f) ||
                 func_8003E30C(&globalCtx->colCtx, &sp24, 20.0f)) {
                 func_80078884(NA_SE_SY_ERROR);
                 return 0;
@@ -5328,10 +5328,10 @@ s32 func_8083C910(GlobalContext* globalCtx, Player* this, f32 arg2) {
     UNK_TYPE sp2C;
     f32 sp28;
 
-    sp28 = this->actor.posRot.pos.y;
-    if (func_8004213C(globalCtx, &globalCtx->colCtx, this->actor.posRot.pos.x, this->actor.posRot.pos.z, &sp28,
+    sp28 = this->actor.world.pos.y;
+    if (func_8004213C(globalCtx, &globalCtx->colCtx, this->actor.world.pos.x, this->actor.world.pos.z, &sp28,
                       &sp2C) != 0) {
-        sp28 -= this->actor.posRot.pos.y;
+        sp28 -= this->actor.world.pos.y;
         if (this->ageProperties->unk_24 <= sp28) {
             func_80835C58(globalCtx, this, func_8084D7C4, 0);
             func_80832C6C(globalCtx, this, &D_040032F0);
@@ -5463,9 +5463,9 @@ s32 func_8083CFA8(GlobalContext* globalCtx, Player* this, f32 arg2, s32 splashSc
     if (sp3C > 2.0f) {
         splashPos.x = this->bodyPartsPos[0].x;
         splashPos.z = this->bodyPartsPos[0].z;
-        sp34 = this->actor.posRot.pos.y;
+        sp34 = this->actor.world.pos.y;
         if (func_8004213C(globalCtx, &globalCtx->colCtx, splashPos.x, splashPos.z, &sp34, &sp38)) {
-            if ((sp34 - this->actor.posRot.pos.y) < 100.0f) {
+            if ((sp34 - this->actor.world.pos.y) < 100.0f) {
                 splashType = (sp3C <= 10.0f) ? 0 : 1;
                 splashPos.y = sp34;
                 EffectSsGSplash_Spawn(globalCtx, &splashPos, NULL, NULL, splashType, splashScale);
@@ -5675,13 +5675,13 @@ void func_8083D6EC(GlobalContext* globalCtx, Player* this) {
             if (this->unk_854 > 15.0f) {
                 this->unk_854 = 0.0f;
 
-                ripplePos.x = (Math_Rand_ZeroOne() * 10.0f) + this->actor.posRot.pos.x;
-                ripplePos.y = this->actor.posRot.pos.y + this->actor.waterY;
-                ripplePos.z = (Math_Rand_ZeroOne() * 10.0f) + this->actor.posRot.pos.z;
+                ripplePos.x = (Math_Rand_ZeroOne() * 10.0f) + this->actor.world.pos.x;
+                ripplePos.y = this->actor.world.pos.y + this->actor.waterY;
+                ripplePos.z = (Math_Rand_ZeroOne() * 10.0f) + this->actor.world.pos.z;
                 EffectSsGRipple_Spawn(globalCtx, &ripplePos, 100, 500, 0);
 
                 if ((this->linearVelocity > 4.0f) && !func_808332B8(this) &&
-                    ((this->actor.posRot.pos.y + this->actor.waterY) < this->bodyPartsPos[0].y)) {
+                    ((this->actor.world.pos.y + this->actor.waterY) < this->bodyPartsPos[0].y)) {
                     func_8083CFA8(globalCtx, this, 20.0f,
                                   (fabsf(this->linearVelocity) * 50.0f) + (this->actor.waterY * 5.0f));
                 }
@@ -5701,7 +5701,7 @@ void func_8083D6EC(GlobalContext* globalCtx, Player* this) {
             }
 
             for (i = 0; i < numBubbles; i++) {
-                EffectSsBubble_Spawn(globalCtx, &this->actor.posRot.pos, 20.0f, 10.0f, 20.0f, 0.13f);
+                EffectSsBubble_Spawn(globalCtx, &this->actor.world.pos, 20.0f, 10.0f, 20.0f, 0.13f);
             }
         }
     }
@@ -5713,13 +5713,13 @@ s32 func_8083DB98(Player* this, s32 arg1) {
     s16 sp2E;
     s16 sp2C;
 
-    sp30.x = this->actor.posRot.pos.x;
+    sp30.x = this->actor.world.pos.x;
     sp30.y = this->bodyPartsPos[7].y + 3.0f;
-    sp30.z = this->actor.posRot.pos.z;
-    sp2E = Math_Vec3f_Pitch(&sp30, &unk_664->posRot2.pos);
-    sp2C = Math_Vec3f_Yaw(&sp30, &unk_664->posRot2.pos);
-    Math_SmoothScaleMaxMinS(&this->actor.posRot2.rot.y, sp2C, 4, 10000, 0);
-    Math_SmoothScaleMaxMinS(&this->actor.posRot2.rot.x, sp2E, 4, 10000, 0);
+    sp30.z = this->actor.world.pos.z;
+    sp2E = Math_Vec3f_Pitch(&sp30, &unk_664->head.pos);
+    sp2C = Math_Vec3f_Yaw(&sp30, &unk_664->head.pos);
+    Math_SmoothScaleMaxMinS(&this->actor.head.rot.y, sp2C, 4, 10000, 0);
+    Math_SmoothScaleMaxMinS(&this->actor.head.rot.x, sp2E, 4, 10000, 0);
     this->unk_6AE |= 2;
 
     return func_80836AB8(this, arg1);
@@ -5743,16 +5743,16 @@ void func_8083DC54(Player* this, GlobalContext* globalCtx) {
     }
 
     if (D_808535E4 == 11) {
-        Math_SmoothScaleMaxMinS(&this->actor.posRot2.rot.x, -20000, 10, 4000, 800);
+        Math_SmoothScaleMaxMinS(&this->actor.head.rot.x, -20000, 10, 4000, 800);
     } else {
         sp46 = 0;
         temp1 = func_8083973C(globalCtx, this, &D_8085456C, &sp34);
         if (temp1 > -32000.0f) {
-            temp2 = atan2s(40.0f, this->actor.posRot.pos.y - temp1);
+            temp2 = atan2s(40.0f, this->actor.world.pos.y - temp1);
             sp46 = CLAMP(temp2, -4000, 4000);
         }
-        this->actor.posRot2.rot.y = this->actor.shape.rot.y;
-        Math_SmoothScaleMaxMinS(&this->actor.posRot2.rot.x, sp46, 14, 4000, 30);
+        this->actor.head.rot.y = this->actor.shape.rot.y;
+        Math_SmoothScaleMaxMinS(&this->actor.head.rot.x, sp46, 14, 4000, 30);
     }
 
     func_80836AB8(this, func_8002DD78(this) || func_808334B4(this));
@@ -5829,12 +5829,12 @@ s32 func_8083E0FC(Player* this, GlobalContext* globalCtx) {
 
         unk_04 = D_80854578[temp].unk_04;
         unk_08 = D_80854578[temp].unk_08;
-        this->actor.posRot.pos.x =
-            rideActor->actor.posRot.pos.x + rideActor->unk_258.x + ((unk_04 * sp38) + (unk_08 * sp34));
-        this->actor.posRot.pos.z =
-            rideActor->actor.posRot.pos.z + rideActor->unk_258.z + ((unk_08 * sp38) - (unk_04 * sp34));
+        this->actor.world.pos.x =
+            rideActor->actor.world.pos.x + rideActor->unk_258.x + ((unk_04 * sp38) + (unk_08 * sp34));
+        this->actor.world.pos.z =
+            rideActor->actor.world.pos.z + rideActor->unk_258.z + ((unk_08 * sp38) - (unk_04 * sp34));
 
-        this->unk_878 = rideActor->actor.posRot.pos.y - this->actor.posRot.pos.y;
+        this->unk_878 = rideActor->actor.world.pos.y - this->actor.world.pos.y;
         this->currentYaw = this->actor.shape.rot.y = rideActor->actor.shape.rot.y;
 
         func_8002DECC(globalCtx, this, &rideActor->actor);
@@ -5910,7 +5910,7 @@ void func_8083E4C4(GlobalContext* globalCtx, Player* this, GetItemEntry* giEntry
     s32 sp1C = giEntry->field & 0x1F;
 
     if (!(giEntry->field & 0x80)) {
-        Item_DropCollectible(globalCtx, &this->actor.posRot.pos, sp1C | 0x8000);
+        Item_DropCollectible(globalCtx, &this->actor.world.pos, sp1C | 0x8000);
         if ((sp1C != 4) && (sp1C != 8) && (sp1C != 9) && (sp1C != 0xA) && (sp1C != 0) && (sp1C != 1) && (sp1C != 2) &&
             (sp1C != 0x14) && (sp1C != 0x13)) {
             Item_Give(globalCtx, giEntry->itemId);
@@ -5976,10 +5976,10 @@ s32 func_8083E5A8(Player* this, GlobalContext* globalCtx) {
                 func_80836898(globalCtx, this, func_8083A434);
                 this->stateFlags1 |= 0x20000C00;
                 func_8083AE40(this, giEntry->objectId);
-                this->actor.posRot.pos.x =
-                    chest->dyna.actor.posRot.pos.x - (Math_Sins(chest->dyna.actor.shape.rot.y) * 29.434299469f);
-                this->actor.posRot.pos.z =
-                    chest->dyna.actor.posRot.pos.z - (Math_Coss(chest->dyna.actor.shape.rot.y) * 29.434299469f);
+                this->actor.world.pos.x =
+                    chest->dyna.actor.world.pos.x - (Math_Sins(chest->dyna.actor.shape.rot.y) * 29.434299469f);
+                this->actor.world.pos.z =
+                    chest->dyna.actor.world.pos.z - (Math_Coss(chest->dyna.actor.shape.rot.y) * 29.434299469f);
                 this->currentYaw = this->actor.shape.rot.y = chest->dyna.actor.shape.rot.y;
                 func_80832224(this);
 
@@ -6085,8 +6085,8 @@ s32 func_8083EC18(Player* this, GlobalContext* globalCtx, u32 arg2) {
                 phi_f20 = phi_f12 = 0.0f;
 
                 if (sp8C != 0) {
-                    sp80 = this->actor.posRot.pos.x;
-                    sp7C = this->actor.posRot.pos.z;
+                    sp80 = this->actor.world.pos.x;
+                    sp7C = this->actor.world.pos.z;
                 } else {
                     f32 sp48;
                     Vec3f* sp44 = &sp50[0];
@@ -6119,9 +6119,9 @@ s32 func_8083EC18(Player* this, GlobalContext* globalCtx, u32 arg2) {
                     sp80 = (sp80 + phi_f12) * 0.5f;
                     sp7C = (sp7C + phi_f14) * 0.5f;
 
-                    phi_f12 = ((this->actor.posRot.pos.x - sp80) * (sp84->norm.z * (1.0f / 32767.0f))) -
-                              ((this->actor.posRot.pos.z - sp7C) * (sp84->norm.x * (1.0f / 32767.0f)));
-                    sp48 = this->actor.posRot.pos.y - phi_f20;
+                    phi_f12 = ((this->actor.world.pos.x - sp80) * (sp84->norm.z * (1.0f / 32767.0f))) -
+                              ((this->actor.world.pos.z - sp7C) * (sp84->norm.x * (1.0f / 32767.0f)));
+                    sp48 = this->actor.world.pos.y - phi_f20;
 
                     phi_f20 = ((f32)(s32)((sp48 / 15.000000223517418) + 0.5) * 15.000000223517418) - sp48;
                     phi_f12 = fabsf(phi_f12);
@@ -6150,7 +6150,7 @@ s32 func_8083EC18(Player* this, GlobalContext* globalCtx, u32 arg2) {
                             sp34 = sp34 - 1.0f;
                         }
                         this->unk_850 = -2;
-                        this->actor.posRot.pos.y += phi_f20;
+                        this->actor.world.pos.y += phi_f20;
                         this->actor.shape.rot.y = this->currentYaw = this->actor.wallPolyRot + 0x8000;
                     } else {
                         sp30 = this->ageProperties->unk_A8;
@@ -6158,10 +6158,10 @@ s32 func_8083EC18(Player* this, GlobalContext* globalCtx, u32 arg2) {
                         this->actor.shape.rot.y = this->currentYaw = this->actor.wallPolyRot;
                     }
 
-                    this->actor.posRot.pos.x = (sp34 * sp3C) + sp80;
-                    this->actor.posRot.pos.z = (sp34 * sp38) + sp7C;
+                    this->actor.world.pos.x = (sp34 * sp3C) + sp80;
+                    this->actor.world.pos.z = (sp34 * sp38) + sp7C;
                     func_80832224(this);
-                    Math_Vec3f_Copy(&this->actor.pos4, &this->actor.posRot.pos);
+                    Math_Vec3f_Copy(&this->actor.prevPos, &this->actor.world.pos);
                     func_80832264(globalCtx, this, sp30);
                     func_80832F54(globalCtx, this, 0x9F);
 
@@ -6217,8 +6217,8 @@ s32 func_8083F0C8(Player* this, GlobalContext* globalCtx, u32 arg2) {
         sp4C = (sp4C + phi_f2) * 0.5f;
         sp44 = (sp44 + phi_f12) * 0.5f;
 
-        if (fabsf(((this->actor.posRot.pos.x - sp4C) * (wallPoly->norm.z * (1.0f / 32767.0f))) -
-                  ((this->actor.posRot.pos.z - sp44) * (wallPoly->norm.x * (1.0f / 32767.0f)))) < 8.0f) {
+        if (fabsf(((this->actor.world.pos.x - sp4C) * (wallPoly->norm.z * (1.0f / 32767.0f))) -
+                  ((this->actor.world.pos.z - sp44) * (wallPoly->norm.x * (1.0f / 32767.0f)))) < 8.0f) {
 
             this->stateFlags2 |= 0x10000;
 
@@ -6230,10 +6230,10 @@ s32 func_8083F0C8(Player* this, GlobalContext* globalCtx, u32 arg2) {
                 func_80836898(globalCtx, this, func_8083A40C);
                 this->stateFlags2 |= 0x40000;
                 this->actor.shape.rot.y = this->currentYaw = this->actor.wallPolyRot + 0x8000;
-                this->actor.posRot.pos.x = sp4C + (sp30 * sp38);
-                this->actor.posRot.pos.z = sp44 + (sp30 * sp34);
+                this->actor.world.pos.x = sp4C + (sp30 * sp38);
+                this->actor.world.pos.z = sp44 + (sp30 * sp34);
                 func_80832224(this);
-                this->actor.pos4 = this->actor.posRot.pos;
+                this->actor.prevPos = this->actor.world.pos;
                 func_80832264(globalCtx, this, &D_04002708);
                 func_80832F54(globalCtx, this, 0x9D);
 
@@ -6263,11 +6263,11 @@ s32 func_8083F360(GlobalContext* globalCtx, Player* this, f32 arg1, f32 arg2, f3
     yawCos = Math_Coss(this->actor.shape.rot.y);
     yawSin = Math_Sins(this->actor.shape.rot.y);
 
-    sp6C.x = this->actor.posRot.pos.x + (arg4 * yawSin);
-    sp6C.z = this->actor.posRot.pos.z + (arg4 * yawCos);
-    sp60.x = this->actor.posRot.pos.x + (arg3 * yawSin);
-    sp60.z = this->actor.posRot.pos.z + (arg3 * yawCos);
-    sp60.y = sp6C.y = this->actor.posRot.pos.y + arg1;
+    sp6C.x = this->actor.world.pos.x + (arg4 * yawSin);
+    sp6C.z = this->actor.world.pos.z + (arg4 * yawCos);
+    sp60.x = this->actor.world.pos.x + (arg3 * yawSin);
+    sp60.z = this->actor.world.pos.z + (arg3 * yawCos);
+    sp60.y = sp6C.y = this->actor.world.pos.y + arg1;
 
     if (func_8003DE84(&globalCtx->colCtx, &sp6C, &sp60, &sp54, &this->actor.wallPoly, 1, 0, 0, 1, &sp78)) {
         wallPoly = this->actor.wallPoly;
@@ -6283,8 +6283,8 @@ s32 func_8083F360(GlobalContext* globalCtx, Player* this, f32 arg1, f32 arg2, f3
         Math_ApproxUpdateScaledS(&this->actor.shape.rot.y, temp, 800);
 
         this->currentYaw = this->actor.shape.rot.y;
-        this->actor.posRot.pos.x = sp54.x - (Math_Sins(this->actor.shape.rot.y) * arg2);
-        this->actor.posRot.pos.z = sp54.z - (Math_Coss(this->actor.shape.rot.y) * arg2);
+        this->actor.world.pos.x = sp54.x - (Math_Sins(this->actor.shape.rot.y) * arg2);
+        this->actor.world.pos.z = sp54.z - (Math_Coss(this->actor.shape.rot.y) * arg2);
 
         return 1;
     }
@@ -6484,7 +6484,7 @@ s32 func_8083FD78(Player* this, f32* arg1, s16* arg2, GlobalContext* globalCtx) 
         if (this->unk_664 != NULL) {
             func_8083DB98(this, 1);
         } else {
-            Math_SmoothScaleMaxMinS(&this->actor.posRot2.rot.x, sControlInput->rel.stick_y * 240.0f, 14, 4000, 30);
+            Math_SmoothScaleMaxMinS(&this->actor.head.rot.x, sControlInput->rel.stick_y * 240.0f, 14, 4000, 30);
             func_80836AB8(this, 1);
         }
     } else {
@@ -7687,7 +7687,7 @@ void func_80843188(Player* this, GlobalContext* globalCtx) {
             sp4C = 3500;
         }
 
-        sp48 = ABS(sp4C - this->actor.posRot2.rot.x) * 0.25f;
+        sp48 = ABS(sp4C - this->actor.head.rot.x) * 0.25f;
         if (sp48 < 100) {
             sp48 = 100;
         }
@@ -7697,8 +7697,8 @@ void func_80843188(Player* this, GlobalContext* globalCtx) {
             sp46 = 50;
         }
 
-        Math_ApproxUpdateScaledS(&this->actor.posRot2.rot.x, sp4C, sp48);
-        this->unk_6BC = this->actor.posRot2.rot.x;
+        Math_ApproxUpdateScaledS(&this->actor.head.rot.x, sp4C, sp48);
+        this->unk_6BC = this->actor.head.rot.x;
         Math_ApproxUpdateScaledS(&this->unk_6BE, sp4A, sp46);
 
         if (this->unk_84F != 0) {
@@ -7896,7 +7896,7 @@ void func_80843AE8(GlobalContext* globalCtx, Player* this) {
         }
     } else if (this->unk_84F != 0) {
         this->unk_850 = 60;
-        func_80839680(globalCtx, this, &this->actor.posRot.pos, &D_808545E4, 5);
+        func_80839680(globalCtx, this, &this->actor.world.pos, &D_808545E4, 5);
         func_8002F7DC(&this->actor, NA_SE_EV_FIATY_HEAL - SFX_FLAG);
         func_800800F8(globalCtx, 0x26B4, 125, &this->actor, 0);
     } else if (globalCtx->unk_10A20 == 2) {
@@ -7923,7 +7923,7 @@ void func_80843CEC(Player* this, GlobalContext* globalCtx) {
     func_8083721C(this);
 
     if (func_800A3BC0(globalCtx, &this->skelAnime)) {
-        if (this->actor.type == ACTORTYPE_PLAYER) {
+        if (this->actor.category == ACTORCAT_PLAYER) {
             func_80843AE8(globalCtx, this);
         }
         return;
@@ -8012,7 +8012,7 @@ void func_8084409C(GlobalContext* globalCtx, Player* this, f32 speedXZ, f32 velo
     Actor* heldActor = this->heldActor;
 
     if (!func_80835644(globalCtx, this, heldActor)) {
-        heldActor->posRot.rot.y = this->actor.shape.rot.y;
+        heldActor->world.rot.y = this->actor.shape.rot.y;
         heldActor->speedXZ = speedXZ;
         heldActor->velocity.y = velocityY;
         func_80834644(globalCtx, this);
@@ -8074,7 +8074,7 @@ void func_8084411C(Player* this, GlobalContext* globalCtx) {
                         if ((this->wallHeight >= 150.0f) && (this->unk_84B[this->unk_846] == 0)) {
                             func_8083EC18(this, globalCtx, D_808535F0);
                         } else if ((this->unk_88C >= 2) && (this->wallHeight < 150.0f) &&
-                                   (((this->actor.posRot.pos.y - this->actor.groundY) + this->wallHeight) >
+                                   (((this->actor.world.pos.y - this->actor.groundY) + this->wallHeight) >
                                     (70.0f * this->ageProperties->unk_08))) {
                             func_800A3310(globalCtx);
                             if (this->stateFlags1 & 4) {
@@ -8082,7 +8082,7 @@ void func_8084411C(Player* this, GlobalContext* globalCtx) {
                             } else {
                                 func_80832698(this, NA_SE_VO_LI_HANG);
                             }
-                            this->actor.posRot.pos.y += this->wallHeight;
+                            this->actor.world.pos.y += this->wallHeight;
                             func_8083A5C4(globalCtx, this, this->actor.wallPoly, this->wallDistance,
                                           D_80853CBC[this->modelAnimType]);
                             this->actor.shape.rot.y = this->currentYaw += 0x8000;
@@ -8169,14 +8169,14 @@ void func_80844708(Player* this, GlobalContext* globalCtx) {
                     ((this->cylinder.base.maskA & 2) &&
                      (cylinderOc = this->cylinder.base.oc,
                       ((cylinderOc->id == ACTOR_EN_WOOD02) &&
-                       (ABS((s16)(this->actor.posRot.rot.y - cylinderOc->yawTowardsLink)) > 0x6000))))) {
+                       (ABS((s16)(this->actor.world.rot.y - cylinderOc->yawTowardsLink)) > 0x6000))))) {
 
                     if (cylinderOc != NULL) {
-                        cylinderOc->initPosRot.rot.y = 1;
+                        cylinderOc->home.rot.y = 1;
                     } else if (this->actor.wallPolySource != 50) {
                         wallPolyActor = DynaPolyInfo_GetActor(&globalCtx->colCtx, this->actor.wallPolySource);
                         if ((wallPolyActor != NULL) && (wallPolyActor->actor.id == ACTOR_OBJ_KIBAKO2)) {
-                            wallPolyActor->actor.initPosRot.rot.z = 1;
+                            wallPolyActor->actor.home.rot.z = 1;
                         }
                     }
 
@@ -8582,8 +8582,8 @@ s32 func_80845964(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg2
 
     if (arg5 != 2) {
         f32 sp34 = R_UPDATE_RATE * 0.5f;
-        f32 selfDistX = arg2->endPos.x - this->actor.posRot.pos.x;
-        f32 selfDistZ = arg2->endPos.z - this->actor.posRot.pos.z;
+        f32 selfDistX = arg2->endPos.x - this->actor.world.pos.x;
+        f32 selfDistZ = arg2->endPos.z - this->actor.world.pos.z;
         f32 sp28 = sqrtf(SQ(selfDistX) + SQ(selfDistZ)) / sp34;
         s32 sp24 = (arg2->endFrame - globalCtx->csCtx.frames) + 1;
 
@@ -8621,10 +8621,10 @@ s32 func_80845964(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg2
 #endif
 
 s32 func_80845BA0(GlobalContext* arg0, Player* arg1, f32* arg2, s32 arg3) {
-    f32 dx = arg1->unk_450.x - arg1->actor.posRot.pos.x;
-    f32 dz = arg1->unk_450.z - arg1->actor.posRot.pos.z;
+    f32 dx = arg1->unk_450.x - arg1->actor.world.pos.x;
+    f32 dz = arg1->unk_450.z - arg1->actor.world.pos.z;
     s32 sp2C = sqrtf(SQ(dx) + SQ(dz));
-    s16 yaw = Math_Vec3f_Yaw(&arg1->actor.posRot.pos, &arg1->unk_450);
+    s16 yaw = Math_Vec3f_Yaw(&arg1->actor.world.pos, &arg1->unk_450);
 
     if (sp2C < arg3) {
         *arg2 = 0.0f;
@@ -8679,8 +8679,8 @@ void func_80845CA4(Player* this, GlobalContext* globalCtx) {
                 sp34 = gSaveContext.unk_13BC;
 
                 if (D_808535F4 != 0) {
-                    this->unk_450.x = (Math_Sins(D_808535FC) * 400.0f) + this->actor.posRot.pos.x;
-                    this->unk_450.z = (Math_Coss(D_808535FC) * 400.0f) + this->actor.posRot.pos.z;
+                    this->unk_450.x = (Math_Sins(D_808535FC) * 400.0f) + this->actor.world.pos.x;
+                    this->unk_450.z = (Math_Coss(D_808535FC) * 400.0f) + this->actor.world.pos.z;
                 }
             } else if (this->unk_850 < 0) {
                 this->unk_850++;
@@ -8840,7 +8840,7 @@ void func_80846358(Player* this, GlobalContext* globalCtx) {
     if (func_800A4530(&this->skelAnime, 6.0f)) {
         Actor* heldActor = this->heldActor;
 
-        heldActor->posRot.rot.y = this->actor.shape.rot.y;
+        heldActor->world.rot.y = this->actor.shape.rot.y;
         heldActor->speedXZ = 10.0f;
         heldActor->velocity.y = 20.0f;
         func_80834644(globalCtx, this);
@@ -8938,7 +8938,7 @@ void func_80846660(GlobalContext* globalCtx, Player* this) {
     }
     this->stateFlags1 |= 0x20000000;
     SkelAnime_ChangeLinkAnim(globalCtx, &this->skelAnime, &D_04003298, 2.0f / 3.0f, 0.0f, 24.0f, 2, 0.0f);
-    this->actor.posRot.pos.y += 800.0f;
+    this->actor.world.pos.y += 800.0f;
 }
 
 u8 D_808546F0[] = { ITEM_SWORD_MASTER, ITEM_SWORD_KOKIRI };
@@ -8966,7 +8966,7 @@ Vec3f D_808546F4 = { -1.0f, 69.0f, 20.0f };
 void func_808467D4(GlobalContext* globalCtx, Player* this) {
     func_80835C58(globalCtx, this, func_8084E9AC, 0);
     this->stateFlags1 |= 0x20000000;
-    Math_Vec3f_Copy(&this->actor.posRot.pos, &D_808546F4);
+    Math_Vec3f_Copy(&this->actor.world.pos, &D_808546F4);
     this->currentYaw = this->actor.shape.rot.y = -0x8000;
     SkelAnime_ChangeLinkAnim(globalCtx, &this->skelAnime, this->ageProperties->unk_A0, 2.0f / 3.0f, 0.0f, 0.0f, 2,
                              0.0f);
@@ -8986,7 +8986,7 @@ void func_808468E8(GlobalContext* globalCtx, Player* this) {
     func_808389E8(this, &D_04002FE0, 12.0f, globalCtx);
     func_80835C58(globalCtx, this, func_8084F9C0, 0);
     this->stateFlags1 |= 0x20000000;
-    this->fallStartHeight = this->actor.posRot.pos.y;
+    this->fallStartHeight = this->actor.world.pos.y;
     func_800800F8(globalCtx, 0x13F6, 40, &this->actor, 0);
 }
 
@@ -9003,8 +9003,8 @@ void func_808469BC(GlobalContext* globalCtx, Player* this) {
 s16 D_80854700[] = { ACTOR_MAGIC_WIND, ACTOR_MAGIC_DARK, ACTOR_MAGIC_FIRE };
 
 Actor* func_80846A00(GlobalContext* globalCtx, Player* this, s32 arg2) {
-    return Actor_Spawn(&globalCtx->actorCtx, globalCtx, D_80854700[arg2], this->actor.posRot.pos.x,
-                       this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 0);
+    return Actor_Spawn(&globalCtx->actorCtx, globalCtx, D_80854700[arg2], this->actor.world.pos.x,
+                       this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0);
 }
 
 void func_80846A68(GlobalContext* globalCtx, Player* this) {
@@ -9028,7 +9028,7 @@ void Player_InitCommon(Player* this, GlobalContext* globalCtx, SkeletonHeader* s
     this->ageProperties = &sAgeProperties[gSaveContext.linkAge];
     Actor_ProcessInitChain(&this->actor, D_80854708);
     this->swordEffectIndex = TOTAL_EFFECT_COUNT;
-    this->currentYaw = this->actor.posRot.rot.y;
+    this->currentYaw = this->actor.world.rot.y;
     func_80834644(globalCtx, this);
 
     SkelAnime_InitLinkAnimetion(globalCtx, &this->skelAnime, skelHeader, D_80853914[this->modelAnimType], 9,
@@ -9111,10 +9111,10 @@ void Player_Init(Actor* thisx, GlobalContext* globalCtx) {
                 sp4C = 0;
             } else {
                 sp4C = temp;
-                Math_Vec3f_Copy(&this->actor.posRot.pos, &gSaveContext.respawn[sp50 - 1].pos);
-                Math_Vec3f_Copy(&this->actor.initPosRot.pos, &this->actor.posRot.pos);
-                Math_Vec3f_Copy(&this->actor.pos4, &this->actor.posRot.pos);
-                this->fallStartHeight = this->actor.posRot.pos.y;
+                Math_Vec3f_Copy(&this->actor.world.pos, &gSaveContext.respawn[sp50 - 1].pos);
+                Math_Vec3f_Copy(&this->actor.home.pos, &this->actor.world.pos);
+                Math_Vec3f_Copy(&this->actor.prevPos, &this->actor.world.pos);
+                this->fallStartHeight = this->actor.world.pos.y;
                 this->currentYaw = this->actor.shape.rot.y = gSaveContext.respawn[temp].yaw;
                 this->actor.params = gSaveContext.respawn[temp].playerParams;
             }
@@ -9164,7 +9164,7 @@ void Player_Init(Actor* thisx, GlobalContext* globalCtx) {
 
     if (initMode != 0) {
         if ((gSaveContext.gameMode == 0) || (gSaveContext.gameMode == 3)) {
-            this->naviActor = func_80839680(globalCtx, this, &this->actor.posRot.pos, &D_80854778, 0);
+            this->naviActor = func_80839680(globalCtx, this, &this->actor.world.pos, &D_80854778, 0);
             if (gSaveContext.dogParams != 0) {
                 gSaveContext.dogParams |= 0x8000;
             }
@@ -9203,13 +9203,13 @@ void func_80847298(Player* this) {
     s16 sp26;
 
     if (!(this->unk_6AE & 2)) {
-        sp26 = this->actor.posRot2.rot.y - this->actor.shape.rot.y;
+        sp26 = this->actor.head.rot.y - this->actor.shape.rot.y;
         func_808471F4(&sp26);
-        this->actor.posRot2.rot.y = this->actor.shape.rot.y + sp26;
+        this->actor.head.rot.y = this->actor.shape.rot.y + sp26;
     }
 
     if (!(this->unk_6AE & 1)) {
-        func_808471F4(&this->actor.posRot2.rot.x);
+        func_808471F4(&this->actor.head.rot.x);
     }
 
     if (!(this->unk_6AE & 8)) {
@@ -9221,7 +9221,7 @@ void func_80847298(Player* this) {
     }
 
     if (!(this->unk_6AE & 4)) {
-        func_808471F4(&this->actor.posRot2.rot.z);
+        func_808471F4(&this->actor.head.rot.z);
     }
 
     if (!(this->unk_6AE & 0x10)) {
@@ -9252,7 +9252,7 @@ f32 D_80854784[] = { 120.0f, 240.0f, 360.0f };
 u8 D_80854790[] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
 
 void func_808473D4(GlobalContext* globalCtx, Player* this) {
-    if ((func_8010BDBC(&globalCtx->msgCtx) == 0) && (this->actor.type == ACTORTYPE_PLAYER)) {
+    if ((func_8010BDBC(&globalCtx->msgCtx) == 0) && (this->actor.category == ACTORCAT_PLAYER)) {
         Actor* heldActor = this->heldActor;
         Actor* interactRangeActor = this->interactRangeActor;
         s32 sp24;
@@ -9288,7 +9288,7 @@ void func_808473D4(GlobalContext* globalCtx, Player* this) {
                 } else if ((this->stateFlags1 & 0x800000) && !EN_HORSE_CHECK_4((EnHorse*)this->rideActor) &&
                            (func_8084D3E4 != this->func_674)) {
                     if ((this->stateFlags2 & 2) && (this->targetActor != NULL)) {
-                        if (this->targetActor->type == ACTORTYPE_NPC) {
+                        if (this->targetActor->category == ACTORCAT_NPC) {
                             doAction = 0xF;
                         } else {
                             doAction = 1;
@@ -9297,7 +9297,7 @@ void func_808473D4(GlobalContext* globalCtx, Player* this) {
                         doAction = 8;
                     }
                 } else if ((this->stateFlags2 & 2) && (this->targetActor != NULL)) {
-                    if (this->targetActor->type == ACTORTYPE_NPC) {
+                    if (this->targetActor->category == ACTORCAT_NPC) {
                         doAction = 0xF;
                     } else {
                         doAction = 1;
@@ -9422,7 +9422,7 @@ void func_80847BA0(GlobalContext* globalCtx, Player* this) {
         if (this->stateFlags1 & 0x80000000) {
             this->actor.bgCheckFlags &= ~1;
             spA4 = 0x38;
-        } else if ((this->stateFlags1 & 1) && ((this->unk_A84 - (s32)this->actor.posRot.pos.y) >= 100)) {
+        } else if ((this->stateFlags1 & 1) && ((this->unk_A84 - (s32)this->actor.world.pos.y) >= 100)) {
             spA4 = 0x39;
         } else if (!(this->stateFlags1 & 1) &&
                    ((func_80845EF8 == this->func_674) || (func_80845CA4 == this->func_674))) {
@@ -9443,14 +9443,14 @@ void func_80847BA0(GlobalContext* globalCtx, Player* this) {
         this->stateFlags3 |= 0x10;
     }
 
-    Math_Vec3f_Copy(&spB4, &this->actor.posRot.pos);
+    Math_Vec3f_Copy(&spB4, &this->actor.world.pos);
     func_8002E4B4(globalCtx, &this->actor, spAC, spB0, spA8, spA4);
 
     if (this->actor.bgCheckFlags & 0x10) {
         this->actor.velocity.y = 0.0f;
     }
 
-    D_80853600 = this->actor.posRot.pos.y - this->actor.groundY;
+    D_80853600 = this->actor.world.pos.y - this->actor.groundY;
     D_808535F4 = 0;
 
     spC0 = this->actor.floorPoly;
@@ -9473,7 +9473,7 @@ void func_80847BA0(GlobalContext* globalCtx, Player* this) {
             }
         }
 
-        if (this->actor.type == ACTORTYPE_PLAYER) {
+        if (this->actor.category == ACTORCAT_PLAYER) {
             func_800F66DC(func_80041FC4(&globalCtx->colCtx, spC0, this->actor.floorPolySource));
 
             if (this->actor.floorPolySource == 50) {
@@ -9552,22 +9552,22 @@ void func_80847BA0(GlobalContext* globalCtx, Player* this) {
                 f32 sp60;
                 s32 temp3;
 
-                this->wallDistance = Math3D_UDistPlaneToPos(sp8C, sp88, sp84, wallPoly->dist, &this->actor.posRot.pos);
+                this->wallDistance = Math3D_UDistPlaneToPos(sp8C, sp88, sp84, wallPoly->dist, &this->actor.world.pos);
 
                 temp2 = this->wallDistance + 10.0f;
-                sp68.x = this->actor.posRot.pos.x - (temp2 * sp8C);
-                sp68.z = this->actor.posRot.pos.z - (temp2 * sp84);
-                sp68.y = this->actor.posRot.pos.y + this->ageProperties->unk_0C;
+                sp68.x = this->actor.world.pos.x - (temp2 * sp8C);
+                sp68.z = this->actor.world.pos.z - (temp2 * sp84);
+                sp68.y = this->actor.world.pos.y + this->ageProperties->unk_0C;
 
                 sp64 = func_8003C890(&globalCtx->colCtx, &sp7C, &sp68);
-                this->wallHeight = sp64 - this->actor.posRot.pos.y;
+                this->wallHeight = sp64 - this->actor.world.pos.y;
 
                 if ((this->wallHeight < 18.0f) ||
-                    func_8003D7A0(&globalCtx->colCtx, &sp60, &this->actor.posRot.pos,
-                                  (sp64 - this->actor.posRot.pos.y) + 20.0f, &sp78, &sp74, &this->actor)) {
+                    func_8003D7A0(&globalCtx->colCtx, &sp60, &this->actor.world.pos,
+                                  (sp64 - this->actor.world.pos.y) + 20.0f, &sp78, &sp74, &this->actor)) {
                     this->wallHeight = 399.96002f;
                 } else {
-                    D_80854798.y = (sp64 + 5.0f) - this->actor.posRot.pos.y;
+                    D_80854798.y = (sp64 + 5.0f) - this->actor.world.pos.y;
 
                     if (func_80839768(globalCtx, this, &D_80854798, &sp78, &sp74, &D_80858AA8) &&
                         (temp3 = this->actor.wallPolyRot - atan2s(sp78->norm.z, sp78->norm.x), ABS(temp3) < 0x4000) &&
@@ -9659,7 +9659,7 @@ void func_808486A8(GlobalContext* globalCtx, Player* this) {
     Actor* unk_664;
     s32 sp18;
 
-    if (this->actor.type == ACTORTYPE_PLAYER) {
+    if (this->actor.category == ACTORCAT_PLAYER) {
         sp27 = 0;
 
         if (this->csMode != 0) {
@@ -9786,9 +9786,9 @@ void func_80848B44(GlobalContext* globalCtx, Player* this) {
         }
 
         randBodyPart = this->bodyPartsPos + (s32)Math_Rand_ZeroFloat(17.9f);
-        shockPos.x = (Math_Rand_CenteredFloat(5.0f) + randBodyPart->x) - this->actor.posRot.pos.x;
-        shockPos.y = (Math_Rand_CenteredFloat(5.0f) + randBodyPart->y) - this->actor.posRot.pos.y;
-        shockPos.z = (Math_Rand_CenteredFloat(5.0f) + randBodyPart->z) - this->actor.posRot.pos.z;
+        shockPos.x = (Math_Rand_CenteredFloat(5.0f) + randBodyPart->x) - this->actor.world.pos.x;
+        shockPos.y = (Math_Rand_CenteredFloat(5.0f) + randBodyPart->y) - this->actor.world.pos.y;
+        shockPos.z = (Math_Rand_CenteredFloat(5.0f) + randBodyPart->z) - this->actor.world.pos.z;
 
         EffectSsFhgFlash_SpawnShock(globalCtx, &this->actor, &shockPos, shockScale, FHGFLASH_SHOCK_PLAYER);
         func_8002F8F0(&this->actor, NA_SE_PL_SPARK - SFX_FLAG);
@@ -9906,7 +9906,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
         }
     }
 
-    Math_Vec3f_Copy(&this->actor.pos4, &this->actor.initPosRot.pos);
+    Math_Vec3f_Copy(&this->actor.prevPos, &this->actor.home.pos);
 
     if (this->unk_A73 != 0) {
         this->unk_A73--;
@@ -10019,7 +10019,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
                 ((this->currentBoots == PLAYER_BOOTS_HOVER) && !(this->stateFlags1 & 0x28000000))) {
                 f32 sp70 = this->linearVelocity;
                 s16 sp6E = this->currentYaw;
-                s16 yawDiff = this->actor.posRot.rot.y - sp6E;
+                s16 yawDiff = this->actor.world.rot.y - sp6E;
                 s32 pad;
 
                 if ((ABS(yawDiff) > 0x6000) && (this->actor.speedXZ != 0.0f)) {
@@ -10028,7 +10028,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
                 }
 
                 if (Math_ApproxF(&this->actor.speedXZ, sp70, 0.35f) && (sp70 == 0.0f)) {
-                    this->actor.posRot.rot.y = this->currentYaw;
+                    this->actor.world.rot.y = this->currentYaw;
                 }
 
                 if (this->linearVelocity != 0.0f) {
@@ -10037,7 +10037,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
                     phi_v0 = (fabsf(this->linearVelocity) * 700.0f) - (fabsf(this->actor.speedXZ) * 100.0f);
                     phi_v0 = CLAMP(phi_v0, 0, 1350);
 
-                    Math_ApproxUpdateScaledS(&this->actor.posRot.rot.y, sp6E, phi_v0);
+                    Math_ApproxUpdateScaledS(&this->actor.world.rot.y, sp6E, phi_v0);
                 }
 
                 if ((this->linearVelocity == 0.0f) && (this->actor.speedXZ != 0.0f)) {
@@ -10045,7 +10045,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
                 }
             } else {
                 this->actor.speedXZ = this->linearVelocity;
-                this->actor.posRot.rot.y = this->currentYaw;
+                this->actor.world.rot.y = this->currentYaw;
             }
 
             func_8002D868(&this->actor);
@@ -10114,7 +10114,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
         if (!Player_InBlockingCsMode(globalCtx, this) && !(this->stateFlags2 & 0x40000)) {
             func_8083D53C(globalCtx, this);
 
-            if ((this->actor.type == ACTORTYPE_PLAYER) && (gSaveContext.health == 0)) {
+            if ((this->actor.category == ACTORCAT_PLAYER) && (gSaveContext.health == 0)) {
                 if (this->stateFlags1 & 0x206000) {
                     func_80832440(globalCtx, this);
                     func_80837B9C(this, globalCtx);
@@ -10128,14 +10128,14 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
                     ((globalCtx->sceneLoadFlag == 0x14) || (this->unk_A87 != 0) || !func_808382DC(this, globalCtx))) {
                     func_8083AA10(this, globalCtx);
                 } else {
-                    this->fallStartHeight = this->actor.posRot.pos.y;
+                    this->fallStartHeight = this->actor.world.pos.y;
                 }
                 func_80848EF8(this);
             }
         }
 
         if ((globalCtx->csCtx.state != 0) && (this->csMode != 6) && !(this->stateFlags1 & 0x800000) &&
-            !(this->stateFlags2 & 0x80) && (this->actor.type == ACTORTYPE_PLAYER)) {
+            !(this->stateFlags2 & 0x80) && (this->actor.category == ACTORCAT_PLAYER)) {
 
             if ((globalCtx->csCtx.linkAction != NULL) && (D_808547C4[globalCtx->csCtx.linkAction->action] != 0)) {
                 func_8002DF54(globalCtx, NULL, 6);
@@ -10218,7 +10218,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
         this->stateFlags2 &= ~0x800000;
         this->unk_6A4 = FLT_MAX;
 
-        temp_f0 = this->actor.posRot.pos.y - this->actor.pos4.y;
+        temp_f0 = this->actor.world.pos.y - this->actor.prevPos.y;
 
         this->doorType = 0;
         this->unk_8A1 = 0;
@@ -10234,7 +10234,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
             this->cylinder.dim.height = -this->cylinder.dim.height;
         }
 
-        this->cylinder.dim.yShift = phi_f12 - this->actor.posRot.pos.y;
+        this->cylinder.dim.yShift = phi_f12 - this->actor.world.pos.y;
 
         if (this->stateFlags1 & 0x400000) {
             this->cylinder.dim.height = this->cylinder.dim.height * 0.8f;
@@ -10259,7 +10259,7 @@ void Player_UpdateCommon(Player* this, GlobalContext* globalCtx, Input* input) {
         func_800A32F4(globalCtx);
     }
 
-    Math_Vec3f_Copy(&this->actor.initPosRot.pos, &this->actor.posRot.pos);
+    Math_Vec3f_Copy(&this->actor.home.pos, &this->actor.world.pos);
     Math_Vec3f_Copy(&this->unk_A88, &this->bodyPartsPos[0]);
 
     if (this->stateFlags1 & 0x30000080) {
@@ -10298,7 +10298,7 @@ void Player_Update(Actor* thisx, GlobalContext* globalCtx) {
                 gSaveContext.dogParams = 0;
             } else {
                 gSaveContext.dogParams &= 0x7FFF;
-                func_808395DC(this, &this->actor.posRot.pos, &D_80854838, &sDogSpawnPos);
+                func_808395DC(this, &this->actor.world.pos, &D_80854838, &sDogSpawnPos);
                 dogParams = gSaveContext.dogParams;
 
                 dog = Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_DOG, sDogSpawnPos.x, sDogSpawnPos.y,
@@ -10330,10 +10330,10 @@ void Player_Update(Actor* thisx, GlobalContext* globalCtx) {
         Player_UpdateCommon(this, globalCtx, &sp44);
     }
 
-    MREG(52) = this->actor.posRot.pos.x;
-    MREG(53) = this->actor.posRot.pos.y;
-    MREG(54) = this->actor.posRot.pos.z;
-    MREG(55) = this->actor.posRot.rot.y;
+    MREG(52) = this->actor.world.pos.x;
+    MREG(53) = this->actor.world.pos.y;
+    MREG(54) = this->actor.world.pos.z;
+    MREG(55) = this->actor.world.rot.y;
 }
 
 s16 D_80858AC8[5];
@@ -10402,7 +10402,7 @@ void func_8084A0E8(GlobalContext* globalCtx, Player* this, s32 lod, Gfx* cullDLi
                 D_8085486C = D_8085486C * (sp5C * 0.11111111f);
             }
 
-            func_800D1694(this->actor.posRot.pos.x, this->actor.posRot.pos.y + 2.0f, this->actor.posRot.pos.z,
+            func_800D1694(this->actor.world.pos.x, this->actor.world.pos.y + 2.0f, this->actor.world.pos.z,
                           &D_80854864);
             Matrix_Scale(4.0f, 4.0f, 4.0f, MTXMODE_APPLY);
 
@@ -10454,7 +10454,7 @@ void Player_Draw(Actor* thisx, GlobalContext* globalCtx) {
         if (this->unk_6AD != 0) {
             Vec3f sp7C;
 
-            SkinMatrix_Vec3fMtxFMultXYZ(&globalCtx->mf_11D60, &this->actor.posRot2.pos, &sp7C);
+            SkinMatrix_Vec3fMtxFMultXYZ(&globalCtx->mf_11D60, &this->actor.head.pos, &sp7C);
             if (sp7C.z < -4.0f) {
                 overrideLimbDraw = func_800902F0;
             }
@@ -10470,10 +10470,10 @@ void Player_Draw(Actor* thisx, GlobalContext* globalCtx) {
 
             Matrix_Push();
             this->actor.scale.y = -this->actor.scale.y;
-            func_800D1694(this->actor.posRot.pos.x,
-                          (this->actor.groundY + (this->actor.groundY - this->actor.posRot.pos.y)) +
+            func_800D1694(this->actor.world.pos.x,
+                          (this->actor.groundY + (this->actor.groundY - this->actor.world.pos.y)) +
                               (this->actor.shape.unk_08 * this->actor.scale.y),
-                          this->actor.posRot.pos.z, &this->actor.shape.rot);
+                          this->actor.world.pos.z, &this->actor.shape.rot);
             Matrix_Scale(this->actor.scale.x, this->actor.scale.y, this->actor.scale.z, MTXMODE_APPLY);
             Matrix_RotateX(sp78, MTXMODE_APPLY);
             Matrix_RotateY(sp74, MTXMODE_APPLY);
@@ -10539,22 +10539,22 @@ s16 func_8084ABD8(GlobalContext* globalCtx, Player* this, s32 arg2, s16 arg3) {
 
     if (!func_8002DD78(this) && !func_808334B4(this) && (arg2 == 0)) {
         temp2 = sControlInput->rel.stick_y * 240.0f;
-        Math_SmoothScaleMaxMinS(&this->actor.posRot2.rot.x, temp2, 14, 4000, 30);
+        Math_SmoothScaleMaxMinS(&this->actor.head.rot.x, temp2, 14, 4000, 30);
 
         temp2 = sControlInput->rel.stick_x * -16.0f;
         temp2 = CLAMP(temp2, -3000, 3000);
-        this->actor.posRot2.rot.y += temp2;
+        this->actor.head.rot.y += temp2;
     } else {
         temp1 = (this->stateFlags1 & 0x800000) ? 3500 : 14000;
-        this->actor.posRot2.rot.x += (s32)((1.0f - Math_Coss(sControlInput->rel.stick_y * 200)) * 1500.0f) *
+        this->actor.head.rot.x += (s32)((1.0f - Math_Coss(sControlInput->rel.stick_y * 200)) * 1500.0f) *
                                      ((sControlInput->rel.stick_y >= 0) ? 1 : -1);
-        this->actor.posRot2.rot.x = CLAMP(this->actor.posRot2.rot.x, -temp1, temp1);
+        this->actor.head.rot.x = CLAMP(this->actor.head.rot.x, -temp1, temp1);
 
         temp1 = 19114;
-        temp2 = this->actor.posRot2.rot.y - this->actor.shape.rot.y;
+        temp2 = this->actor.head.rot.y - this->actor.shape.rot.y;
         temp2 += (s32)((1.0f - Math_Coss(sControlInput->rel.stick_x * 200)) * -1500.0f) *
                  ((sControlInput->rel.stick_x >= 0) ? 1 : -1);
-        this->actor.posRot2.rot.y = CLAMP(temp2, -temp1, temp1) + this->actor.shape.rot.y;
+        this->actor.head.rot.y = CLAMP(temp2, -temp1, temp1) + this->actor.shape.rot.y;
     }
 
     this->unk_6AE |= 2;
@@ -10761,7 +10761,7 @@ void func_8084B530(Player* this, GlobalContext* globalCtx) {
     } else if (!func_8008E9C4(this) && func_800A3BC0(globalCtx, &this->skelAnime)) {
         if (this->skelAnime.flags != 0) {
             func_80832DBC(this);
-            if ((this->targetActor->type == ACTORTYPE_NPC) && (this->heldItemActionParam != PLAYER_AP_FISHING_POLE)) {
+            if ((this->targetActor->category == ACTORCAT_NPC) && (this->heldItemActionParam != PLAYER_AP_FISHING_POLE)) {
                 func_808322D0(globalCtx, this, &D_040031A0);
             } else {
                 func_80832284(globalCtx, this, func_80833338(this));
@@ -10802,7 +10802,7 @@ void func_8084B840(GlobalContext* globalCtx, Player* this, f32 arg2) {
         DynaPolyActor* dynaActor = DynaPolyInfo_GetActor(&globalCtx->colCtx, this->actor.wallPolySource);
 
         if (dynaActor != NULL) {
-            func_8002DFA4(dynaActor, arg2, this->actor.posRot.rot.y);
+            func_8002DFA4(dynaActor, arg2, this->actor.world.rot.y);
         }
     }
 }
@@ -10897,10 +10897,10 @@ void func_8084B9E4(Player* this, GlobalContext* globalCtx) {
     }
 
     if (this->stateFlags2 & 0x10) {
-        temp2 = func_8083973C(globalCtx, this, &D_80854880, &sp5C) - this->actor.posRot.pos.y;
+        temp2 = func_8083973C(globalCtx, this, &D_80854880, &sp5C) - this->actor.world.pos.y;
         if (fabsf(temp2) < 20.0f) {
-            sp44.x = this->actor.posRot.pos.x;
-            sp44.z = this->actor.posRot.pos.z;
+            sp44.x = this->actor.world.pos.x;
+            sp44.z = this->actor.world.pos.z;
             sp44.y = sp5C.y;
             if (func_8003DE84(&globalCtx->colCtx, &sp44, &sp5C, &sp38, &sp54, 1, 0, 0, 1, &sp50) == 0) {
                 func_8084B840(globalCtx, this, -2.0f);
@@ -11005,7 +11005,7 @@ void func_8084BF1C(Player* this, GlobalContext* globalCtx) {
     sp84 = sControlInput->rel.stick_y;
     sp80 = sControlInput->rel.stick_x;
 
-    this->fallStartHeight = this->actor.posRot.pos.y;
+    this->fallStartHeight = this->actor.world.pos.y;
     this->stateFlags2 |= 0x40;
 
     if ((this->unk_84F != 0) && (ABS(sp84) < ABS(sp80))) {
@@ -11034,8 +11034,8 @@ void func_8084BF1C(Player* this, GlobalContext* globalCtx) {
         if ((this->actor.wallPoly != NULL) && (this->actor.wallPolySource != 50)) {
             DynaPolyActor* wallPolyActor = DynaPolyInfo_GetActor(&globalCtx->colCtx, this->actor.wallPolySource);
             if (wallPolyActor != NULL) {
-                Math_Vec3f_Diff(&wallPolyActor->actor.posRot.pos, &wallPolyActor->actor.pos4, &sp6C);
-                Math_Vec3f_Sum(&this->actor.posRot.pos, &sp6C, &this->actor.posRot.pos);
+                Math_Vec3f_Diff(&wallPolyActor->actor.world.pos, &wallPolyActor->actor.prevPos, &sp6C);
+                Math_Vec3f_Sum(&this->actor.world.pos, &sp6C, &this->actor.world.pos);
             }
         }
 
@@ -11057,9 +11057,9 @@ void func_8084BF1C(Player* this, GlobalContext* globalCtx) {
                     D_8085488C.y = this->ageProperties->unk_40;
                     temp_f0 = func_8083973C(globalCtx, this, &D_8085488C, &sp5C);
 
-                    if (this->actor.posRot.pos.y < temp_f0) {
+                    if (this->actor.world.pos.y < temp_f0) {
                         if (this->unk_84F != 0) {
-                            this->actor.posRot.pos.y = temp_f0;
+                            this->actor.world.pos.y = temp_f0;
                             this->stateFlags1 &= ~0x200000;
                             func_8083A5C4(globalCtx, this, this->actor.wallPoly, this->ageProperties->unk_3C,
                                           &D_04003000);
@@ -11077,7 +11077,7 @@ void func_8084BF1C(Player* this, GlobalContext* globalCtx) {
                 } else {
                     sp68 ^= 1;
 
-                    if ((this->actor.posRot.pos.y - this->actor.groundY) < 15.0f) {
+                    if ((this->actor.world.pos.y - this->actor.groundY) < 15.0f) {
                         if (this->unk_84F != 0) {
                             func_8083FB7C(this, globalCtx);
                         } else {
@@ -11172,9 +11172,9 @@ void func_8084C5F8(Player* this, GlobalContext* globalCtx) {
     }
 
     if (func_800A4530(&this->skelAnime, sp38[0]) || func_800A4530(&this->skelAnime, sp38[1])) {
-        sp24.x = this->actor.posRot.pos.x;
-        sp24.y = this->actor.posRot.pos.y + 20.0f;
-        sp24.z = this->actor.posRot.pos.z;
+        sp24.x = this->actor.world.pos.x;
+        sp24.y = this->actor.world.pos.y + 20.0f;
+        sp24.z = this->actor.world.pos.z;
         if (func_8003C940(&globalCtx->colCtx, &sp34, &sp30, &sp24) != 0.0f) {
             this->unk_89E = func_80041F10(&globalCtx->colCtx, sp34, sp30);
             func_808328A0(this);
@@ -11248,8 +11248,8 @@ s32 func_8084C89C(GlobalContext* globalCtx, Player* this, s32 arg2, f32* arg3) {
     CollisionPoly* sp30;
     u32 sp2C;
 
-    sp50 = rideActor->actor.posRot.pos.y + 20.0f;
-    sp4C = rideActor->actor.posRot.pos.y - 20.0f;
+    sp50 = rideActor->actor.world.pos.y + 20.0f;
+    sp4C = rideActor->actor.world.pos.y - 20.0f;
 
     *arg3 = func_8083973C(globalCtx, this, &D_808548FC[arg2], &sp40);
 
@@ -11284,7 +11284,7 @@ s32 func_8084C9BC(Player* this, GlobalContext* globalCtx) {
                 (EN_HORSE_CHECK_4(rideActor) && CHECK_BTN_ALL(sControlInput->press.button, BTN_A))) {
                 rideActor->actor.child = NULL;
                 func_80835DAC(globalCtx, this, func_8084D3E4, 0);
-                this->unk_878 = sp34 - rideActor->actor.posRot.pos.y;
+                this->unk_878 = sp34 - rideActor->actor.world.pos.y;
                 func_80832264(globalCtx, this, (this->unk_43C < 0) ? &D_04003390 : &D_040033A0);
                 return 1;
             }
@@ -11309,7 +11309,7 @@ void func_8084CBF4(Player* this, f32 arg1, f32 arg2) {
         } else {
             temp = this->unk_878;
         }
-        this->actor.posRot.pos.y += temp;
+        this->actor.world.pos.y += temp;
         this->unk_878 -= temp;
     }
 }
@@ -11427,9 +11427,9 @@ void func_8084CC98(Player* this, GlobalContext* globalCtx) {
         }
     }
 
-    this->actor.posRot.pos.x = rideActor->actor.posRot.pos.x + rideActor->unk_258.x;
-    this->actor.posRot.pos.y = (rideActor->actor.posRot.pos.y + rideActor->unk_258.y) - 27.0f;
-    this->actor.posRot.pos.z = rideActor->actor.posRot.pos.z + rideActor->unk_258.z;
+    this->actor.world.pos.x = rideActor->actor.world.pos.x + rideActor->unk_258.x;
+    this->actor.world.pos.y = (rideActor->actor.world.pos.y + rideActor->unk_258.y) - 27.0f;
+    this->actor.world.pos.z = rideActor->actor.world.pos.z + rideActor->unk_258.z;
 
     this->currentYaw = this->actor.shape.rot.y = rideActor->actor.shape.rot.y;
 
@@ -11496,7 +11496,7 @@ void func_8084CC98(Player* this, GlobalContext* globalCtx) {
                 if (func_8002DD78(this) != 0) {
                     this->unk_6BE = func_8083DB98(this, 1) - this->actor.shape.rot.y;
                     this->unk_6BE = CLAMP(this->unk_6BE, -0x4AAA, 0x4AAA);
-                    this->actor.posRot2.rot.y = this->actor.shape.rot.y + this->unk_6BE;
+                    this->actor.head.rot.y = this->actor.shape.rot.y + this->unk_6BE;
                     this->unk_6BE += 5000;
                     this->unk_6AE |= 0x80;
                 } else {
@@ -11532,9 +11532,9 @@ void func_8084D3E4(Player* this, GlobalContext* globalCtx) {
         AREG(6) = 0;
 
         if (Flags_GetEventChkInf(0x18) || (DREG(1) != 0)) {
-            gSaveContext.horseData.pos.x = rideActor->actor.posRot.pos.x;
-            gSaveContext.horseData.pos.y = rideActor->actor.posRot.pos.y;
-            gSaveContext.horseData.pos.z = rideActor->actor.posRot.pos.z;
+            gSaveContext.horseData.pos.x = rideActor->actor.world.pos.x;
+            gSaveContext.horseData.pos.y = rideActor->actor.world.pos.y;
+            gSaveContext.horseData.pos.z = rideActor->actor.world.pos.z;
             gSaveContext.horseData.angle = rideActor->actor.shape.rot.y;
         }
     } else {
@@ -11993,8 +11993,8 @@ void func_8084E6D4(Player* this, GlobalContext* globalCtx) {
                 this->stateFlags1 &= ~0xC00;
 
                 if (this->getItemId != GI_ICE_TRAP) {
-                    Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_CLEAR_TAG, this->actor.posRot.pos.x,
-                                this->actor.posRot.pos.y + 100.0f, this->actor.posRot.pos.z, 0, 0, 0, 0);
+                    Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_CLEAR_TAG, this->actor.world.pos.x,
+                                this->actor.world.pos.y + 100.0f, this->actor.world.pos.z, 0, 0, 0, 0);
                     func_8083C0E8(this, globalCtx);
                 } else {
                     this->actor.colChkInfo.damage = 0;
@@ -12427,9 +12427,9 @@ void func_8084F710(Player* this, GlobalContext* globalCtx) {
     }
 
     if ((globalCtx->csCtx.state != 0) && (globalCtx->csCtx.linkAction != NULL)) {
-        f32 sp28 = this->actor.posRot.pos.y;
+        f32 sp28 = this->actor.world.pos.y;
         func_808529D0(globalCtx, this, globalCtx->csCtx.linkAction);
-        this->actor.posRot.pos.y = sp28;
+        this->actor.world.pos.y = sp28;
     }
 }
 
@@ -12503,7 +12503,7 @@ void func_8084FB10(Player* this, GlobalContext* globalCtx) {
 
         if (func_80832594(this, 1, 100)) {
             this->unk_84F = -1;
-            EffectSsIcePiece_SpawnBurst(globalCtx, &this->actor.posRot.pos, this->actor.scale.x);
+            EffectSsIcePiece_SpawnBurst(globalCtx, &this->actor.world.pos, this->actor.scale.x);
             func_8002F7DC(&this->actor, NA_SE_PL_ICE_BROKEN);
         } else {
             this->stateFlags2 |= 0x4000;
@@ -12561,9 +12561,9 @@ s32 func_8084FCAC(Player* this, GlobalContext* globalCtx) {
 
         if (!CHECK_BTN_ALL(sControlInput->cur.button, BTN_L)) {
             if (CHECK_BTN_ALL(sControlInput->cur.button, BTN_B)) {
-                this->actor.posRot.pos.y += speed;
+                this->actor.world.pos.y += speed;
             } else if (CHECK_BTN_ALL(sControlInput->cur.button, BTN_A)) {
-                this->actor.posRot.pos.y -= speed;
+                this->actor.world.pos.y -= speed;
             }
 
             if (CHECK_BTN_ANY(sControlInput->cur.button, BTN_DUP | BTN_DLEFT | BTN_DDOWN | BTN_DRIGHT)) {
@@ -12580,8 +12580,8 @@ s32 func_8084FCAC(Player* this, GlobalContext* globalCtx) {
                     angle = temp - 0x4000;
                 }
 
-                this->actor.posRot.pos.x += speed * Math_Sins(angle);
-                this->actor.posRot.pos.z += speed * Math_Coss(angle);
+                this->actor.world.pos.x += speed * Math_Sins(angle);
+                this->actor.world.pos.z += speed * Math_Coss(angle);
             }
         }
 
@@ -12596,7 +12596,7 @@ s32 func_8084FCAC(Player* this, GlobalContext* globalCtx) {
             Flags_SetTempClear(globalCtx, globalCtx->roomCtx.curRoom.num);
         }
 
-        Math_Vec3f_Copy(&this->actor.initPosRot.pos, &this->actor.posRot.pos);
+        Math_Vec3f_Copy(&this->actor.home.pos, &this->actor.world.pos);
 
         return 0;
     }
@@ -12630,7 +12630,7 @@ void func_8085002C(Player* this) {
     D_80858AC8[3] += -D_80858AC8[0] >> 2;
     D_80858AC8[4] += -D_80858AC8[1] >> 2;
 
-    sp26 = this->actor.posRot.rot.y - this->actor.shape.rot.y;
+    sp26 = this->actor.world.rot.y - this->actor.shape.rot.y;
 
     sp28 = this->actor.speedXZ * -200.0f * Math_Coss(sp26) * (Math_Rand_CenteredFloat(2.0f) + 10.0f);
     sp2A = this->actor.speedXZ * 100.0f * Math_Sins(sp26) * (Math_Rand_CenteredFloat(2.0f) + 10.0f);
@@ -12736,9 +12736,9 @@ void func_808502D0(Player* this, GlobalContext* globalCtx) {
                 f32 sp2C;
 
                 shockwavePos.y = func_8083973C(globalCtx, this, &D_80854A40, &shockwavePos);
-                sp2C = this->actor.posRot.pos.y - shockwavePos.y;
+                sp2C = this->actor.world.pos.y - shockwavePos.y;
 
-                Math_ApproxUpdateScaledS(&this->actor.posRot2.rot.x, atan2s(45.0f, sp2C), 800);
+                Math_ApproxUpdateScaledS(&this->actor.head.rot.x, atan2s(45.0f, sp2C), 800);
                 func_80836AB8(this, 1);
 
                 if ((((this->swordAnimation == 0x16) && func_800A4530(&this->skelAnime, 7.0f)) ||
@@ -12801,7 +12801,7 @@ void func_8085076C(Player* this, GlobalContext* globalCtx) {
 
     if (this->unk_850 > 20) {
         this->actor.draw = Player_Draw;
-        this->actor.posRot.pos.y += 60.0f;
+        this->actor.world.pos.y += 60.0f;
         func_80837B9C(this, globalCtx);
         return;
     }
@@ -12929,19 +12929,19 @@ void func_80850AEC(Player* this, GlobalContext* globalCtx) {
         func_80832284(globalCtx, this, &D_04002C98);
     }
 
-    Math_Vec3f_Sum(&this->actor.posRot.pos, &this->actor.velocity, &this->actor.posRot.pos);
+    Math_Vec3f_Sum(&this->actor.world.pos, &this->actor.velocity, &this->actor.world.pos);
 
     if (func_80834FBC(this)) {
-        Math_Vec3f_Copy(&this->actor.pos4, &this->actor.posRot.pos);
+        Math_Vec3f_Copy(&this->actor.prevPos, &this->actor.world.pos);
         func_80847BA0(globalCtx, this);
 
-        temp = this->actor.posRot.pos.y - this->actor.groundY;
+        temp = this->actor.world.pos.y - this->actor.groundY;
         if (temp > 20.0f) {
             temp = 20.0f;
         }
 
-        this->actor.posRot.rot.x = this->actor.shape.rot.x = 0;
-        this->actor.posRot.pos.y -= temp;
+        this->actor.world.rot.x = this->actor.shape.rot.x = 0;
+        this->actor.world.pos.y -= temp;
         this->linearVelocity = 1.0f;
         this->actor.velocity.y = 0.0f;
         func_80837B9C(this, globalCtx);
@@ -12953,7 +12953,7 @@ void func_80850AEC(Player* this, GlobalContext* globalCtx) {
 
     if ((this->skelAnime.linkAnimetionSeg != &D_04002C90) || (4.0f <= this->skelAnime.animCurrentFrame)) {
         this->actor.gravity = 0.0f;
-        Math_ApproxUpdateScaledS(&this->actor.shape.rot.x, this->actor.posRot.rot.x, 0x800);
+        Math_ApproxUpdateScaledS(&this->actor.shape.rot.x, this->actor.world.rot.x, 0x800);
         func_8083264C(this, 100, 2, 100, 0);
     }
 }
@@ -13290,8 +13290,8 @@ void func_80851750(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg
 void func_80851788(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg2) {
     this->stateFlags1 &= ~0x2000000;
 
-    this->currentYaw = this->actor.shape.rot.y = this->actor.posRot.rot.y =
-        Math_Vec3f_Yaw(&this->actor.posRot.pos, &this->unk_450);
+    this->currentYaw = this->actor.shape.rot.y = this->actor.world.rot.y =
+        Math_Vec3f_Yaw(&this->actor.world.pos, &this->unk_450);
 
     if (this->linearVelocity <= 0.0f) {
         this->linearVelocity = 0.1f;
@@ -13359,7 +13359,7 @@ LinkAnimetionEntry* D_80855190[] = {
 Vec3f D_80855198 = { -1.0f, 70.0f, 20.0f };
 
 void func_808519EC(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg2) {
-    Math_Vec3f_Copy(&this->actor.posRot.pos, &D_80855198);
+    Math_Vec3f_Copy(&this->actor.world.pos, &D_80855198);
     this->actor.shape.rot.y = -0x8000;
     func_808322D0(globalCtx, this, this->ageProperties->unk_9C);
     func_80832F54(globalCtx, this, 0x28F);
@@ -13542,9 +13542,9 @@ void func_808520BC(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg
     f32 distZ = (arg2->endPos.z - startZ);
     f32 sp4 = (f32)(globalCtx->csCtx.frames - arg2->startFrame) / (f32)(arg2->endFrame - arg2->startFrame);
 
-    this->actor.posRot.pos.x = distX * sp4 + startX;
-    this->actor.posRot.pos.y = distY * sp4 + startY;
-    this->actor.posRot.pos.z = distZ * sp4 + startZ;
+    this->actor.world.pos.x = distX * sp4 + startX;
+    this->actor.world.pos.y = distY * sp4 + startY;
+    this->actor.world.pos.z = distZ * sp4 + startZ;
 }
 
 struct_80832924 D_808551D8[] = {
@@ -13780,19 +13780,19 @@ void func_80852944(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg
 }
 
 void func_808529D0(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg2) {
-    this->actor.posRot.pos.x = arg2->startPos.x;
-    this->actor.posRot.pos.y = arg2->startPos.y;
+    this->actor.world.pos.x = arg2->startPos.x;
+    this->actor.world.pos.y = arg2->startPos.y;
     if ((globalCtx->sceneNum == SCENE_SPOT04) && LINK_IS_CHILD) {
-        this->actor.posRot.pos.y -= 1.0f;
+        this->actor.world.pos.y -= 1.0f;
     }
-    this->actor.posRot.pos.z = arg2->startPos.z;
+    this->actor.world.pos.z = arg2->startPos.z;
     this->currentYaw = this->actor.shape.rot.y = arg2->rot.y;
 }
 
 void func_80852A54(GlobalContext* globalCtx, Player* this, CsCmdActorAction* arg2) {
-    f32 dx = arg2->startPos.x - (s32)this->actor.posRot.pos.x;
-    f32 dy = arg2->startPos.y - (s32)this->actor.posRot.pos.y;
-    f32 dz = arg2->startPos.z - (s32)this->actor.posRot.pos.z;
+    f32 dx = arg2->startPos.x - (s32)this->actor.world.pos.x;
+    f32 dy = arg2->startPos.y - (s32)this->actor.world.pos.y;
+    f32 dz = arg2->startPos.z - (s32)this->actor.world.pos.z;
     f32 dist = sqrtf(SQ(dx) + SQ(dy) + SQ(dz));
     s16 yawDiff = arg2->rot.y - this->actor.shape.rot.y;
 
@@ -13977,7 +13977,7 @@ void func_80853148(GlobalContext* globalCtx, Actor* actor) {
             if (func_808332B8(this)) {
                 func_80836898(globalCtx, this, func_8083A2F8);
                 func_80832C6C(globalCtx, this, &D_04003328);
-            } else if ((actor->type != ACTORTYPE_NPC) || (this->heldItemActionParam == PLAYER_AP_FISHING_POLE)) {
+            } else if ((actor->category != ACTORCAT_NPC) || (this->heldItemActionParam == PLAYER_AP_FISHING_POLE)) {
                 func_8083A2F8(globalCtx, this);
 
                 if (!func_8008E9C4(this)) {

@@ -19,7 +19,7 @@ void func_8087D8C0(BgHakaHuta* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Haka_Huta_InitVars = {
     ACTOR_BG_HAKA_HUTA,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HAKACH_OBJECTS,
     sizeof(BgHakaHuta),

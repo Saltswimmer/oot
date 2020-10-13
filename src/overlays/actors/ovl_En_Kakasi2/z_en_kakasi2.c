@@ -33,7 +33,7 @@ extern AnimationHeader D_06000214;
 
 const ActorInit En_Kakasi2_InitVars = {
     ACTOR_EN_KAKASI2,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_KA,
     sizeof(EnKakasi2),
@@ -55,7 +55,7 @@ void EnKakasi2_Init(Actor* thisx, GlobalContext* globalCtx) {
 
     this->switchFlag = this->actor.params & 0x3F;
     spawnRangeY = (this->actor.params >> 6) & 0xFF;
-    spawnRangeXZ = this->actor.posRot.rot.z;
+    spawnRangeXZ = this->actor.world.rot.z;
     if (this->switchFlag == 0x3F) {
         this->switchFlag = -1;
     }
@@ -107,7 +107,7 @@ void func_80A90264(EnKakasi2* this, GlobalContext* globalCtx) {
     this->unk_194++;
 
     if ((BREG(1) != 0) && (this->actor.xzDistFromLink < this->maxSpawnDistance.x) &&
-        (fabsf(player->actor.posRot.pos.y - this->actor.posRot.pos.y) < this->maxSpawnDistance.y)) {
+        (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < this->maxSpawnDistance.y)) {
 
         this->actor.draw = func_80A90948;
         Collider_InitCylinder(globalCtx, &this->collider);
@@ -124,7 +124,7 @@ void func_80A90264(EnKakasi2* this, GlobalContext* globalCtx) {
         osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ SAVE 終了 ☆☆☆☆☆ %d\n" VT_RST, this->switchFlag);
         this->actionFunc = func_80A904D8;
     } else if ((this->actor.xzDistFromLink < this->maxSpawnDistance.x) &&
-               (fabsf(player->actor.posRot.pos.y - this->actor.posRot.pos.y) < this->maxSpawnDistance.y) &&
+               (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < this->maxSpawnDistance.y) &&
                (gSaveContext.eventChkInf[9] & 0x1000)) {
 
         this->unk_194 = 0;
@@ -193,7 +193,7 @@ void EnKakasi2_Update(Actor* thisx, GlobalContext* globalCtx) {
     EnKakasi2* this = THIS;
     GlobalContext* globalCtx2 = globalCtx;
 
-    this->actor.posRot.rot = this->actor.shape.rot;
+    this->actor.world.rot = this->actor.shape.rot;
     Actor_SetHeight(&this->actor, this->height);
     this->actionFunc(this, globalCtx2);
     Actor_MoveForward(&this->actor);
@@ -212,13 +212,13 @@ void EnKakasi2_Update(Actor* thisx, GlobalContext* globalCtx) {
         if (this->actor.draw == NULL) {
             if (this->unk_194 != 0) {
                 if ((this->unk_194 % 2) == 0) {
-                    DebugDisplay_AddObject(this->actor.posRot.pos.x, this->actor.posRot.pos.y, this->actor.posRot.pos.z,
-                                           this->actor.posRot.rot.x, this->actor.posRot.rot.y, this->actor.posRot.rot.z,
+                    DebugDisplay_AddObject(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z,
+                                           this->actor.world.rot.x, this->actor.world.rot.y, this->actor.world.rot.z,
                                            1.0f, 1.0f, 1.0f, 70, 70, 70, 255, 4, globalCtx2->state.gfxCtx);
                 }
             } else {
-                DebugDisplay_AddObject(this->actor.posRot.pos.x, this->actor.posRot.pos.y, this->actor.posRot.pos.z,
-                                       this->actor.posRot.rot.x, this->actor.posRot.rot.y, this->actor.posRot.rot.z,
+                DebugDisplay_AddObject(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z,
+                                       this->actor.world.rot.x, this->actor.world.rot.y, this->actor.world.rot.z,
                                        1.0f, 1.0f, 1.0f, 0, 255, 255, 255, 4, globalCtx2->state.gfxCtx);
             }
         }

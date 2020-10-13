@@ -17,7 +17,7 @@ void func_80AABD0C(EnMd* this, GlobalContext* globalCtx);
 
 const ActorInit En_Md_InitVars = {
     ACTOR_EN_MD,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_MD,
     sizeof(EnMd),
@@ -504,7 +504,7 @@ void func_80AAB158(EnMd* this, GlobalContext* globalCtx) {
         this->unk_1E0.unk_14 = 40.0f;
         temp = 2;
     } else {
-        this->unk_1E0.unk_18 = player->actor.posRot.pos;
+        this->unk_1E0.unk_18 = player->actor.world.pos;
         this->unk_1E0.unk_14 = (gSaveContext.linkAge > 0) ? 0.0f : -18.0f;
     }
 
@@ -531,9 +531,9 @@ u8 EnMd_FollowPath(EnMd* this, GlobalContext* globalCtx) {
     pointPos = SEGMENTED_TO_VIRTUAL(path->points);
     pointPos += this->waypoint;
 
-    pathDiffX = pointPos->x - this->actor.posRot.pos.x;
-    pathDiffZ = pointPos->z - this->actor.posRot.pos.z;
-    Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.y, Math_atan2f(pathDiffX, pathDiffZ) * (65536.0f / (2 * M_PI)), 4,
+    pathDiffX = pointPos->x - this->actor.world.pos.x;
+    pathDiffZ = pointPos->z - this->actor.world.pos.z;
+    Math_SmoothScaleMaxMinS(&this->actor.world.rot.y, Math_atan2f(pathDiffX, pathDiffZ) * (65536.0f / (2 * M_PI)), 4,
                             4000, 1);
 
     if ((SQ(pathDiffX) + SQ(pathDiffZ)) < 100.0f) {
@@ -558,9 +558,9 @@ u8 EnMd_SetMovedPos(EnMd* this, GlobalContext* globalCtx) {
     lastPointPos = SEGMENTED_TO_VIRTUAL(path->points);
     lastPointPos += path->count - 1;
 
-    this->actor.posRot.pos.x = lastPointPos->x;
-    this->actor.posRot.pos.y = lastPointPos->y;
-    this->actor.posRot.pos.z = lastPointPos->z;
+    this->actor.world.pos.x = lastPointPos->x;
+    this->actor.world.pos.y = lastPointPos->y;
+    this->actor.world.pos.z = lastPointPos->z;
 
     return 1;
 }
@@ -601,14 +601,14 @@ void EnMd_Init(Actor* thisx, GlobalContext* globalCtx) {
     Actor_SetScale(&this->actor, 0.01f);
     this->actor.unk_1F = 6;
     this->alpha = 255;
-    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ELF, this->actor.posRot.pos.x,
-                       this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 3);
+    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ELF, this->actor.world.pos.x,
+                       this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 3);
 
     if (((globalCtx->sceneNum == SCENE_SPOT04) && !(gSaveContext.eventChkInf[0] & 0x10)) ||
         ((globalCtx->sceneNum == SCENE_SPOT04) && (gSaveContext.eventChkInf[0] & 0x10) &&
          CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) ||
         ((globalCtx->sceneNum == SCENE_SPOT10) && !(gSaveContext.eventChkInf[0] & 0x400))) {
-        this->actor.initPosRot.pos = this->actor.posRot.pos;
+        this->actor.home.pos = this->actor.world.pos;
         this->actionFunc = func_80AAB948;
         return;
     }
@@ -651,16 +651,16 @@ void func_80AAB948(EnMd* this, GlobalContext* globalCtx) {
     func_80AAAA24(this);
 
     if (this->unk_1E0.unk_00 == 0) {
-        this->actor.posRot.rot.y = this->actor.yawTowardsLink;
+        this->actor.world.rot.y = this->actor.yawTowardsLink;
         this->actor.shape.rot.y = this->actor.yawTowardsLink;
 
-        yaw = Math_Vec3f_Yaw(&this->actor.initPosRot.pos, &actorToBlock->posRot.pos);
+        yaw = Math_Vec3f_Yaw(&this->actor.home.pos, &actorToBlock->world.pos);
 
-        this->actor.posRot.pos.x = this->actor.initPosRot.pos.x;
-        this->actor.posRot.pos.x += 60.0f * Math_Sins(yaw);
+        this->actor.world.pos.x = this->actor.home.pos.x;
+        this->actor.world.pos.x += 60.0f * Math_Sins(yaw);
 
-        this->actor.posRot.pos.z = this->actor.initPosRot.pos.z;
-        this->actor.posRot.pos.z += 60.0f * Math_Coss(yaw);
+        this->actor.world.pos.z = this->actor.home.pos.z;
+        this->actor.world.pos.z += 60.0f * Math_Coss(yaw);
 
         temp = fabsf((f32)this->actor.yawTowardsLink - yaw) * 0.001f * 3.0f;
         this->skelAnime.animPlaybackSpeed = CLAMP(temp, 1.0f, 3.0f);
@@ -730,7 +730,7 @@ void func_80AABD0C(EnMd* this, GlobalContext* globalCtx) {
     func_80AAA93C(this);
 
     if (!(EnMd_FollowPath(this, globalCtx)) || (this->waypoint != 0)) {
-        this->actor.shape.rot = this->actor.posRot.rot;
+        this->actor.shape.rot = this->actor.world.rot;
         return;
     }
 
@@ -746,7 +746,7 @@ void func_80AABD0C(EnMd* this, GlobalContext* globalCtx) {
 
     this->skelAnime.animPlaybackSpeed = 0.0f;
     this->actor.speedXZ = 0.0f;
-    this->actor.initPosRot.pos = this->actor.posRot.pos;
+    this->actor.home.pos = this->actor.world.pos;
     this->actionFunc = func_80AAB8F8;
 }
 
@@ -796,7 +796,7 @@ void EnMd_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
     Vec3f vec = { 400.0f, 0.0f, 0.0f };
 
     if (limbIndex == 16) {
-        Matrix_MultVec3f(&vec, &thisx->posRot2.pos);
+        Matrix_MultVec3f(&vec, &thisx->head.pos);
     }
 }
 

@@ -12,7 +12,7 @@ void EnShopnuts_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Shopnuts_InitVars = {
     ACTOR_EN_SHOPNUTS,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_SHOPNUTS,
     sizeof(EnShopnuts),

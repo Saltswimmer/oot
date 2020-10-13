@@ -18,7 +18,7 @@ void EnToryo_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Toryo_InitVars = {
     ACTOR_EN_TORYO,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_TORYO,
     sizeof(EnToryo),

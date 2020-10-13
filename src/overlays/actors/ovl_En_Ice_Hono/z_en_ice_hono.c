@@ -23,7 +23,7 @@ extern Gfx D_0404D4E0[];
 
 const ActorInit En_Ice_Hono_InitVars = {
     ACTOR_EN_ICE_HONO,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnIceHono),
@@ -96,8 +96,8 @@ void EnIceHono_InitDroppedFlame(Actor* thisx, GlobalContext* globalCtx) {
     this->actor.gravity = -0.3f;
     this->actor.minVelocityY = -4.0f;
     this->actor.shape.unk_08 = 0.0f;
-    this->actor.shape.rot.x = this->actor.shape.rot.y = this->actor.shape.rot.z = this->actor.posRot.rot.x =
-        this->actor.posRot.rot.y = this->actor.posRot.rot.z = 0;
+    this->actor.shape.rot.x = this->actor.shape.rot.y = this->actor.shape.rot.z = this->actor.world.rot.x =
+        this->actor.world.rot.y = this->actor.world.rot.z = 0;
 
     Collider_InitCylinder(globalCtx, &this->collider);
     Collider_SetCylinder(globalCtx, &this->collider, &this->actor, &sCylinderInitDroppedFlame);
@@ -139,8 +139,8 @@ void EnIceHono_Init(Actor* thisx, GlobalContext* globalCtx) {
     }
 
     if ((this->actor.params == -1) || (this->actor.params == 0)) {
-        Lights_PointNoGlowSetInfo(&this->lightInfo, this->actor.posRot.pos.x, (s16)this->actor.posRot.pos.y + 10,
-                                  this->actor.posRot.pos.z, 155, 210, 255, 0);
+        Lights_PointNoGlowSetInfo(&this->lightInfo, this->actor.world.pos.x, (s16)this->actor.world.pos.y + 10,
+                                  this->actor.world.pos.z, 155, 210, 255, 0);
         this->lightNode = LightContext_InsertLight(globalCtx, &globalCtx->lightCtx, &this->lightInfo);
         this->unk_154 = Math_Rand_ZeroOne() * (0x1FFFF / 2.0f);
         this->unk_156 = Math_Rand_ZeroOne() * (0x1FFFF / 2.0f);
@@ -163,10 +163,10 @@ u32 EnIceHono_LinkCloseAndFacing(EnIceHono* this, GlobalContext* globalCtx) {
 
     if (this->actor.xzDistFromLink < 60.0f) {
         Vec3f tempPos;
-        tempPos.x = Math_Sins(this->actor.yawTowardsLink + 0x8000) * 40.0f + player->actor.posRot.pos.x;
-        tempPos.y = player->actor.posRot.pos.y;
-        tempPos.z = Math_Coss(this->actor.yawTowardsLink + 0x8000) * 40.0f + player->actor.posRot.pos.z;
-        if (EnIceHono_SquareDist(&tempPos, &this->actor.posRot.pos) <= SQ(40.0f)) {
+        tempPos.x = Math_Sins(this->actor.yawTowardsLink + 0x8000) * 40.0f + player->actor.world.pos.x;
+        tempPos.y = player->actor.world.pos.y;
+        tempPos.z = Math_Coss(this->actor.yawTowardsLink + 0x8000) * 40.0f + player->actor.world.pos.z;
+        if (EnIceHono_SquareDist(&tempPos, &this->actor.world.pos) <= SQ(40.0f)) {
             return 1;
         }
     }
@@ -208,8 +208,8 @@ void EnIceHono_DropFlame(EnIceHono* this, GlobalContext* globalCtx) {
     if (bgFlag != 0) {
         s32 i;
         for (i = 0; i < 8; i++) {
-            Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_ICE_HONO, this->actor.posRot.pos.x,
-                        this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0,
+            Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_ICE_HONO, this->actor.world.pos.x,
+                        this->actor.world.pos.y, this->actor.world.pos.z, 0,
                         ((s32)(Math_Rand_ZeroOne() * 1000.0f) + i * 0x2000) - 0x1F4, 0, 1);
         }
         EnIceHono_SetupActionSpreadFlames(this);
@@ -259,8 +259,8 @@ void EnIceHono_SpreadFlames(EnIceHono* this, GlobalContext* globalCtx) {
         s32 i;
         for (i = 0; i < 10; i++) {
             s32 rot = i * 0x1999;
-            Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_ICE_HONO, this->actor.posRot.pos.x,
-                        this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0,
+            Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_ICE_HONO, this->actor.world.pos.x,
+                        this->actor.world.pos.y, this->actor.world.pos.z, 0,
                         ((s32)(Math_Rand_ZeroOne() * 1000.0f) + rot) - 0x1F4, 0, 2);
         }
     }
@@ -329,8 +329,8 @@ void EnIceHono_Update(Actor* thisx, GlobalContext* globalCtx) {
             // Translates to: "impossible value(ratio = %f)"
             osSyncPrintf("ありえない値(ratio = %f)\n", (f64)intensity);
         }
-        Lights_PointNoGlowSetInfo(&this->lightInfo, this->actor.posRot.pos.x, (s16)this->actor.posRot.pos.y + 10,
-                                  this->actor.posRot.pos.z, (s32)(155.0f * intensity), (s32)(210.0f * intensity),
+        Lights_PointNoGlowSetInfo(&this->lightInfo, this->actor.world.pos.x, (s16)this->actor.world.pos.y + 10,
+                                  this->actor.world.pos.z, (s32)(155.0f * intensity), (s32)(210.0f * intensity),
                                   (s32)(255.0f * intensity), 1400);
     }
 

@@ -12,7 +12,7 @@ void EnFdFire_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Fd_Fire_InitVars = {
     ACTOR_EN_FD_FIRE,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_GAMEPLAY_DANGEON_KEEP,
     sizeof(EnFdFire),

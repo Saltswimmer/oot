@@ -25,7 +25,7 @@ void EnDha_UpdateHealth(EnDha* this, GlobalContext* globalCtx);
 
 const ActorInit En_Dha_InitVars = {
     ACTOR_EN_DHA,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_DH,
     sizeof(EnDha),
@@ -90,8 +90,8 @@ void EnDha_Init(Actor* thisx, GlobalContext* globalCtx) {
     SkelAnime_InitSV(globalCtx, &this->skelAnime, &D_06000BD8, &D_060015B0, this->limbDrawTable,
                      this->transitionDrawTable, 4);
     ActorShape_Init(&this->actor.shape, 0, ActorShadow_DrawFunc_Teardrop, 90.0f);
-    this->actor.posRot2.pos = this->actor.posRot.pos;
-    this->actor.posRot2.pos.y += 50.0f;
+    this->actor.head.pos = this->actor.world.pos;
+    this->actor.head.pos.y += 50.0f;
     this->actor.colChkInfo.mass = 0xFE;
     this->actor.colChkInfo.health = 8;
     this->unk_1CE = -0x4000;
@@ -112,8 +112,8 @@ void func_809EC9C8(EnDha* this) {
     this->unk_1C0 = 0;
     this->unk_1C8 = ((Math_Rand_ZeroOne() * 10.0f) + 5.0f);
     this->actor.speedXZ = 0.0f;
-    this->actor.posRot.rot.y = this->actor.shape.rot.y;
-    this->actor.initPosRot.rot.z = 1;
+    this->actor.world.rot.y = this->actor.shape.rot.y;
+    this->actor.home.rot.z = 1;
     EnDha_SetupAction(this, func_809ECA50);
 }
 
@@ -131,7 +131,7 @@ void func_809ECA50(EnDha* this, GlobalContext* globalCtx) {
     s32 result;
     s32 resultAbs;
     s32 pad3;
-    playerPos = player->actor.posRot.pos;
+    playerPos = player->actor.world.pos;
 
     playerPos.x += (Math_Sins(player->actor.shape.rot.y) * -5.0f);
     playerPos.z += (Math_Coss(player->actor.shape.rot.y) * -5.0f);
@@ -177,12 +177,12 @@ void func_809ECA50(EnDha* this, GlobalContext* globalCtx) {
                     player->unk_850 = 200;
                 }
             }
-            if (this->actor.initPosRot.rot.z != 0) {
+            if (this->actor.home.rot.z != 0) {
                 Audio_PlayActorSound2(&this->actor, NA_SE_EN_DEADHAND_HAND_AT);
-                this->actor.initPosRot.rot.z = 0;
+                this->actor.home.rot.z = 0;
             }
         }
-        this->actor.shape.rot.y = Math_Vec3f_Yaw(&this->actor.posRot, &playerPos);
+        this->actor.shape.rot.y = Math_Vec3f_Yaw(&this->actor.world, &playerPos);
         Math_SmoothScaleMaxMinF(&this->unk_1DC, playerPos.x, 1.0f, 16.0f, 0.0f);
         Math_SmoothScaleMaxMinF(&this->unk_1DC.y, playerPos.y, 1.0f, 16.0f, 0.0f);
         Math_SmoothScaleMaxMinF(&this->unk_1DC.z, playerPos.z, 1.0f, 16.0f, 0.0f);
@@ -190,12 +190,12 @@ void func_809ECA50(EnDha* this, GlobalContext* globalCtx) {
         Matrix_Translate(this->unk_1DC.x, this->unk_1DC.y, this->unk_1DC.z, 0);
         Matrix_RotateRPY(unkVar3, unkVar2, 0, 1);
         Matrix_MultVec3f(&D_809ED758, &this->unk_1F4);
-        Matrix_Translate(this->actor.posRot.pos.x, this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0);
-        func_80035844(&this->actor.posRot, &this->unk_1F4, &unkVar3, 0);
+        Matrix_Translate(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0);
+        func_80035844(&this->actor.world, &this->unk_1F4, &unkVar3, 0);
         Matrix_RotateRPY(unkVar3, unkVar2, 0, 1);
         Matrix_MultVec3f(&D_809ED74C, &this->unk_1F4);
-        this->unk_1CE = Math_Vec3f_Pitch(&this->actor.posRot, &this->unk_1F4);
-        result = (s16)(Math_Vec3f_Yaw(&this->actor.posRot, &this->unk_1F4) - this->actor.shape.rot.y);
+        this->unk_1CE = Math_Vec3f_Pitch(&this->actor.world, &this->unk_1F4);
+        result = (s16)(Math_Vec3f_Yaw(&this->actor.world, &this->unk_1F4) - this->actor.shape.rot.y);
         resultAbs = ABS(result);
         if (resultAbs >= 0x4000) {
             this->unk_1CE = -0x8000 - this->unk_1CE;
@@ -215,7 +215,7 @@ void func_809ECA50(EnDha* this, GlobalContext* globalCtx) {
                 player->unk_850 = 200;
             }
         }
-        this->actor.initPosRot.rot.z = 1;
+        this->actor.home.rot.z = 1;
         Math_SmoothScaleMaxMinS(&this->unk_1D0, 0, 1, 0x3E8, 0);
         Math_SmoothScaleMaxMinS(&this->unk_1CE, -0x4000, 1, 0x3E8, 0);
         SkelAnime_FrameUpdateMatrix(&this->skelAnime);
@@ -278,7 +278,7 @@ void EnDha_Die(EnDha* this, GlobalContext* globalCtx) {
     result = Math_SmoothScaleMaxMinS(&this->unk_1CE, -0x4000, 1, 0x7D0, 0);
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
     if (result == 0) {
-        vector = this->actor.posRot.pos;
+        vector = this->actor.world.pos;
 
         if (this->unk_1C8 != 0) {
             if (-12000.0f < this->actor.shape.unk_08) {
@@ -313,7 +313,7 @@ void EnDha_UpdateHealth(EnDha* this, GlobalContext* globalCtx) {
             if (Actor_ApplyDamage(&this->actor) == 0) {
                 EnDha_SetupDeath(this);
                 this->actor.colChkInfo.health = 8;
-                Item_DropCollectibleRandom(globalCtx, &this->actor, &this->actor.posRot.pos, 0xE0);
+                Item_DropCollectibleRandom(globalCtx, &this->actor, &this->actor.world.pos, 0xE0);
             } else {
                 Audio_PlayActorSound2(this, NA_SE_EN_DEADHAND_DAMAGE);
                 this->unk_1C0 = 9;
@@ -335,7 +335,7 @@ void EnDha_Update(Actor* thisx, GlobalContext* globalCtx) {
     colChkCtx = &globalCtx->colChkCtx;
 
     if (this->actor.parent == NULL) {
-        this->actor.parent = Actor_FindNearby(globalCtx, &this->actor, ACTOR_EN_DH, ACTORTYPE_ENEMY, 10000.0f);
+        this->actor.parent = Actor_FindNearby(globalCtx, &this->actor, ACTOR_EN_DH, ACTORCAT_ENEMY, 10000.0f);
     }
     EnDha_UpdateHealth(this, globalCtx);
     this->actionFunc(this, globalCtx);

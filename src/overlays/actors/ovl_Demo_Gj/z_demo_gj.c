@@ -12,7 +12,7 @@ void DemoGj_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Demo_Gj_InitVars = {
     ACTOR_DEMO_GJ,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GJ,
     sizeof(DemoGj),

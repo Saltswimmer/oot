@@ -27,7 +27,7 @@ extern CutsceneData D_808BBD90[];
 
 const ActorInit Bg_Toki_Swd_InitVars = {
     ACTOR_BG_TOKI_SWD,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_TOKI_OBJECTS,
     sizeof(BgTokiSwd),

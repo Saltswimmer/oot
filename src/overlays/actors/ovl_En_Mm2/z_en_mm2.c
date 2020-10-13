@@ -12,7 +12,7 @@ void EnMm2_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Mm2_InitVars = {
     ACTOR_EN_MM2,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_MM,
     sizeof(EnMm2),

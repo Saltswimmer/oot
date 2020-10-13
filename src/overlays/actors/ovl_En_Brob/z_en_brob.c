@@ -18,7 +18,7 @@ void EnBrob_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Brob_InitVars = {
     ACTOR_EN_BROB,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_BROB,
     sizeof(EnBrob),

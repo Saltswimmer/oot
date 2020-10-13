@@ -19,7 +19,7 @@ void EnDs_Wait(EnDs* this, GlobalContext* globalCtx);
 
 const ActorInit En_Ds_InitVars = {
     ACTOR_EN_DS,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_DS,
     sizeof(EnDs),
@@ -245,7 +245,7 @@ void EnDs_Update(Actor* thisx, GlobalContext* globalCtx) {
     this->actionFunc(this, globalCtx);
 
     if (this->unk_1E8 & 1) {
-        func_80038290(globalCtx, this, &this->unk_1D8, &this->unk_1DE, this->actor.posRot2.pos);
+        func_80038290(globalCtx, this, &this->unk_1D8, &this->unk_1DE, this->actor.head.pos);
     } else {
         Math_SmoothScaleMaxMinS(&this->unk_1D8.x, 0, 6, 0x1838, 100);
         Math_SmoothScaleMaxMinS(&this->unk_1D8.y, 0, 6, 0x1838, 100);
@@ -268,7 +268,7 @@ void EnDs_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
     static Vec3f sMultVec = { 1100.0f, 500.0f, 0.0f };
 
     if (limbIndex == 5) {
-        Matrix_MultVec3f(&sMultVec, &thisx->posRot2.pos);
+        Matrix_MultVec3f(&sMultVec, &thisx->head.pos);
     }
 }
 

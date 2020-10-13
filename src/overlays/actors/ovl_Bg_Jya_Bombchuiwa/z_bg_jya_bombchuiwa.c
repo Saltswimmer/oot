@@ -12,7 +12,7 @@ void BgJyaBombchuiwa_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Jya_Bombchuiwa_InitVars = {
     ACTOR_BG_JYA_BOMBCHUIWA,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_JYA_OBJ,
     sizeof(BgJyaBombchuiwa),

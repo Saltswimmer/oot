@@ -23,7 +23,7 @@ void EnMs_TalkAfterPurchase(EnMs* this, GlobalContext* globalCtx);
 
 const ActorInit En_Ms_InitVars = {
     ACTOR_EN_MS,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_MS,
     sizeof(EnMs),

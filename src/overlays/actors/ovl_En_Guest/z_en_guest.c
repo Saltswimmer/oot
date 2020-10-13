@@ -22,7 +22,7 @@ void func_80A505CC(Actor* thisx, GlobalContext* globalCtx);
 
 const ActorInit En_Guest_InitVars = {
     ACTOR_EN_GUEST,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_BOJ,
     sizeof(EnGuest),
@@ -156,7 +156,7 @@ void func_80A505CC(Actor* thisx, GlobalContext* globalCtx) {
     func_80A5046C(this);
     this->actionFunc(this, globalCtx);
 
-    this->unk_2A0.unk_18 = player->actor.posRot.pos;
+    this->unk_2A0.unk_18 = player->actor.world.pos;
     if (LINK_IS_ADULT) {
         this->unk_2A0.unk_14 = 10.0f;
     } else {

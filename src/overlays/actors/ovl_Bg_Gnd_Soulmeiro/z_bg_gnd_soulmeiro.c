@@ -22,7 +22,7 @@ void func_8087B350(BgGndSoulmeiro* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Gnd_Soulmeiro_InitVars = {
     ACTOR_BG_GND_SOULMEIRO,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_DEMO_KEKKAI,
     sizeof(BgGndSoulmeiro),

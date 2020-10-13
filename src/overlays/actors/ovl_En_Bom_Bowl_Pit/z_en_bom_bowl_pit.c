@@ -11,7 +11,7 @@ void EnBomBowlPit_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Bom_Bowl_Pit_InitVars = {
     ACTOR_EN_BOM_BOWL_PIT,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnBomBowlPit),

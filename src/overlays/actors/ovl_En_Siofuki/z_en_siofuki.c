@@ -12,7 +12,7 @@ void EnSiofuki_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Siofuki_InitVars = {
     ACTOR_EN_SIOFUKI,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_SIOFUKI,
     sizeof(EnSiofuki),

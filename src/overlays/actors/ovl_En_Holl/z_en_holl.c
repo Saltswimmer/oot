@@ -27,7 +27,7 @@ void func_80A59618(EnHoll* this, GlobalContext* globalCtx);
 
 const ActorInit En_Holl_InitVars = {
     ACTOR_EN_HOLL,
-    ACTORTYPE_DOOR,
+    ACTORCAT_DOOR,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnHoll),
@@ -141,7 +141,7 @@ void func_80A58DD4(EnHoll* this, GlobalContext* globalCtx) {
     f32 absZ;
     s32 transitionActorIdx;
 
-    func_8002DBD0(&this->actor, &vec, &player->actor.posRot.pos);
+    func_8002DBD0(&this->actor, &vec, &player->actor.world.pos);
     this->side = (vec.z < 0.0f) ? 0 : 1;
     absZ = fabsf(vec.z);
     if (vec.y > PLANE_Y_MIN && vec.y < PLANE_Y_MAX && fabsf(vec.x) < PLANE_HALFWIDTH &&
@@ -185,7 +185,7 @@ void func_80A59014(EnHoll* this, GlobalContext* globalCtx) {
     s32 side;
     Player* player = PLAYER;
 
-    func_8002DBD0(&this->actor, &vec, (useViewEye) ? &globalCtx->view.eye : &player->actor.posRot.pos);
+    func_8002DBD0(&this->actor, &vec, (useViewEye) ? &globalCtx->view.eye : &player->actor.world.pos);
     planeHalfWidth = (((this->actor.params >> 6) & 7) == 6) ? PLANE_HALFWIDTH : PLANE_HALFWIDTH_2;
     if (EnHoll_IsKokiriSetup8() || (vec.y > PLANE_Y_MIN && vec.y < PLANE_Y_MAX && fabsf(vec.x) < planeHalfWidth &&
                                     (absZ = fabsf(vec.z), (absZ < 100.0f && absZ > 50.0f)))) {
@@ -220,8 +220,8 @@ void func_80A591C0(EnHoll* this, GlobalContext* globalCtx) {
         }
         if (absY < 95.0f) {
             this->actor.room = globalCtx->transitionActorList[transitionActorIdx].sides[1].room;
-            Math_SmoothScaleMaxMinF(&player->actor.posRot.pos.x, this->actor.posRot.pos.x, 1.0f, 50.0f, 10.0f);
-            Math_SmoothScaleMaxMinF(&player->actor.posRot.pos.z, this->actor.posRot.pos.z, 1.0f, 50.0f, 10.0f);
+            Math_SmoothScaleMaxMinF(&player->actor.world.pos.x, this->actor.world.pos.x, 1.0f, 50.0f, 10.0f);
+            Math_SmoothScaleMaxMinF(&player->actor.world.pos.z, this->actor.world.pos.z, 1.0f, 50.0f, 10.0f);
             if (this->actor.room != globalCtx->roomCtx.curRoom.num &&
                 func_8009728C(globalCtx, &globalCtx->roomCtx, this->actor.room) != 0) {
                 EnHoll_SetupAction(this, EnHoll_NextAction);
@@ -297,7 +297,7 @@ void func_80A59618(EnHoll* this, GlobalContext* globalCtx) {
             this->unk_14F = 0;
         }
     } else {
-        func_8002DBD0(&this->actor, &vec, &player->actor.posRot.pos);
+        func_8002DBD0(&this->actor, &vec, &player->actor.world.pos);
         absZ = fabsf(vec.z);
         if (PLANE_Y_MIN < vec.y && vec.y < PLANE_Y_MAX && fabsf(vec.x) < PLANE_HALFWIDTH_2 && absZ < 100.0f) {
             this->unk_14F = 1;

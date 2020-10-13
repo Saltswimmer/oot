@@ -11,7 +11,7 @@ void EnChanger_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Changer_InitVars = {
     ACTOR_EN_CHANGER,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnChanger),

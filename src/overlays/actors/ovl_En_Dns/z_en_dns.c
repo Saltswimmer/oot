@@ -12,7 +12,7 @@ void EnDns_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Dns_InitVars = {
     ACTOR_EN_DNS,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_SHOPNUTS,
     sizeof(EnDns),

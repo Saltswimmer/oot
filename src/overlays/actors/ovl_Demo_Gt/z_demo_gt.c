@@ -12,7 +12,7 @@ void DemoGt_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Demo_Gt_InitVars = {
     ACTOR_DEMO_GT,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GT,
     sizeof(DemoGt),

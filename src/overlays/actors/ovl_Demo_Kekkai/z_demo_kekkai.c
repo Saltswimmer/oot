@@ -12,7 +12,7 @@ void DemoKekkai_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Demo_Kekkai_InitVars = {
     ACTOR_DEMO_KEKKAI,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_DEMO_KEKKAI,
     sizeof(DemoKekkai),

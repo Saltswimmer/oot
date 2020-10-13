@@ -18,7 +18,7 @@ void EnXc_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Xc_InitVars = {
     ACTOR_EN_XC,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_XC,
     sizeof(EnXc),

@@ -11,7 +11,7 @@ void EnPoh_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Poh_InitVars = {
     ACTOR_EN_POH,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnPoh),

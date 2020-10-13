@@ -23,7 +23,7 @@ void func_8001D5C8(EnAObj* this, s16 params);
 
 const ActorInit En_A_Obj_InitVars = {
     ACTOR_EN_A_OBJ,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnAObj),
@@ -90,7 +90,7 @@ void EnAObj_Init(Actor* thisx, GlobalContext* globalCtx) {
 
     ActorShape_Init(&thisx->shape, 0.0f, ActorShadow_DrawFunc_Circle, sp28);
 
-    thisx->posRot2.pos = thisx->posRot.pos;
+    thisx->head.pos = thisx->world.pos;
     this->dyna.dynaPolyId = -1;
     this->dyna.unk_160 = 0;
     this->dyna.unk_15C = 0;
@@ -101,13 +101,13 @@ void EnAObj_Init(Actor* thisx, GlobalContext* globalCtx) {
         case A_OBJ_BLOCK_LARGE:
         case A_OBJ_BLOCK_HUGE:
             this->dyna.dynaPolyId = 1;
-            Actor_ChangeType(globalCtx, &globalCtx->actorCtx, thisx, ACTORTYPE_BG);
+            Actor_ChangeType(globalCtx, &globalCtx->actorCtx, thisx, ACTORCAT_BG);
             func_8001D5C8(this, thisx->params);
             break;
         case A_OBJ_BLOCK_SMALL_ROT:
         case A_OBJ_BLOCK_LARGE_ROT:
             this->dyna.dynaPolyId = 3;
-            Actor_ChangeType(globalCtx, &globalCtx->actorCtx, thisx, ACTORTYPE_BG);
+            Actor_ChangeType(globalCtx, &globalCtx->actorCtx, thisx, ACTORCAT_BG);
             func_8001D310(this, thisx->params);
             break;
         case A_OBJ_UNKNOWN_6:
@@ -195,8 +195,8 @@ void func_8001D25C(EnAObj* this, GlobalContext* globalCtx) {
 void func_8001D310(EnAObj* this, s16 params) {
     this->unk_16E = 0;
     this->unk_168 = 10;
-    this->dyna.actor.posRot.rot.y = 0;
-    this->dyna.actor.shape.rot = this->dyna.actor.posRot.rot;
+    this->dyna.actor.world.rot.y = 0;
+    this->dyna.actor.shape.rot = this->dyna.actor.world.rot;
     EnAObj_SetupAction(this, func_8001D360);
 }
 
@@ -228,12 +228,12 @@ void func_8001D360(EnAObj* this, GlobalContext* globalCtx) {
             this->dyna.actor.gravity = -1.0f;
 
             if (this->unk_170 == 0) {
-                this->dyna.actor.posRot.pos = this->dyna.actor.initPosRot.pos;
+                this->dyna.actor.world.pos = this->dyna.actor.home.pos;
                 this->unk_16E = 0;
                 this->unk_168 = 10;
                 this->dyna.actor.velocity.y = 0.0f;
                 this->dyna.actor.gravity = 0.0f;
-                this->dyna.actor.shape.rot = this->dyna.actor.posRot.rot;
+                this->dyna.actor.shape.rot = this->dyna.actor.world.rot;
             }
         }
     }
@@ -245,13 +245,13 @@ void func_8001D480(EnAObj* this, s16 params) {
 
 void func_8001D4A8(EnAObj* this, GlobalContext* globalCtx) {
     Math_SmoothScaleMaxMinF(&this->dyna.actor.speedXZ, 1.0f, 1.0f, 0.5f, 0.0f);
-    this->dyna.actor.shape.rot.x = this->dyna.actor.shape.rot.x + (this->dyna.actor.posRot.rot.x >> 1);
-    this->dyna.actor.shape.rot.z = this->dyna.actor.shape.rot.z + (this->dyna.actor.posRot.rot.z >> 1);
+    this->dyna.actor.shape.rot.x = this->dyna.actor.shape.rot.x + (this->dyna.actor.world.rot.x >> 1);
+    this->dyna.actor.shape.rot.z = this->dyna.actor.shape.rot.z + (this->dyna.actor.world.rot.z >> 1);
 
     if ((this->dyna.actor.speedXZ != 0.0f) && (this->dyna.actor.bgCheckFlags & 0x8)) {
         if (1) { // Necessary to match
-            this->dyna.actor.posRot.rot.y =
-                ((this->dyna.actor.wallPolyRot - this->dyna.actor.posRot.rot.y) + this->dyna.actor.wallPolyRot) -
+            this->dyna.actor.world.rot.y =
+                ((this->dyna.actor.wallPolyRot - this->dyna.actor.world.rot.y) + this->dyna.actor.wallPolyRot) -
                 0x8000;
         }
         this->dyna.actor.bgCheckFlags &= ~0x8;
@@ -276,7 +276,7 @@ void func_8001D5C8(EnAObj* this, s16 params) {
 
 void func_8001D608(EnAObj* this, GlobalContext* globalCtx) {
     this->dyna.actor.speedXZ += this->dyna.unk_150;
-    this->dyna.actor.posRot.rot.y = this->dyna.unk_158;
+    this->dyna.actor.world.rot.y = this->dyna.unk_158;
 
     this->dyna.actor.speedXZ = (this->dyna.actor.speedXZ < -2.5f)
                                    ? -2.5f
@@ -306,8 +306,8 @@ void EnAObj_Update(Actor* thisx, GlobalContext* globalCtx) {
         }
     }
 
-    this->dyna.actor.posRot2.pos = this->dyna.actor.posRot.pos;
-    this->dyna.actor.posRot2.pos.y += this->unk_178;
+    this->dyna.actor.head.pos = this->dyna.actor.world.pos;
+    this->dyna.actor.head.pos.y += this->unk_178;
 
     switch (this->dyna.actor.params) {
         case A_OBJ_SIGNPOST_OBLONG:

@@ -17,7 +17,7 @@ void func_8087E34C(BgHakaMeganeBG* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Haka_MeganeBG_InitVars = {
     ACTOR_BG_HAKA_MEGANEBG,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HAKA_OBJECTS,
     sizeof(BgHakaMeganeBG),

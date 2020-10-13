@@ -17,7 +17,7 @@ void func_8001E5C8(EnItem00* this, GlobalContext* globalCtx);
 
 const ActorInit En_Item00_InitVars = {
     ACTOR_EN_ITEM00,
-    ACTORTYPE_MISC,
+    ACTORCAT_MISC,
     FLAGS,
     OBJECT_GAMEPLAY_KEEP,
     sizeof(EnItem00),
@@ -95,7 +95,7 @@ void EnItem00_Init(Actor* thisx, GlobalContext* globalCtx) {
             this->unk_15C = 0.02f;
             break;
         case ITEM00_HEART:
-            this->actor.initPosRot.rot.z = Math_Rand_CenteredFloat(65535.0f);
+            this->actor.home.rot.z = Math_Rand_CenteredFloat(65535.0f);
             sp34 = 430.0f;
             Actor_SetScale(&this->actor, 0.02f);
             this->unk_15C = 0.02f;
@@ -156,7 +156,7 @@ void EnItem00_Init(Actor* thisx, GlobalContext* globalCtx) {
             this->unk_15C = 0.5f;
             sp34 = 0.0f;
             sp30 = 0.6f;
-            this->actor.posRot.rot.x = 0x4000;
+            this->actor.world.rot.x = 0x4000;
             break;
         case ITEM00_SHIELD_HYLIAN:
             this->actor.objBankIndex = Object_GetIndex(&globalCtx->objectCtx, OBJECT_GI_SHIELD_2);
@@ -165,7 +165,7 @@ void EnItem00_Init(Actor* thisx, GlobalContext* globalCtx) {
             this->unk_15C = 0.5f;
             sp34 = 0.0f;
             sp30 = 0.6f;
-            this->actor.posRot.rot.x = 0x4000;
+            this->actor.world.rot.x = 0x4000;
             break;
         case ITEM00_TUNIC_ZORA:
         case ITEM00_TUNIC_GORON:
@@ -175,14 +175,14 @@ void EnItem00_Init(Actor* thisx, GlobalContext* globalCtx) {
             this->unk_15C = 0.5f;
             sp34 = 0.0f;
             sp30 = 0.6f;
-            this->actor.posRot.rot.x = 0x4000;
+            this->actor.world.rot.x = 0x4000;
             break;
     }
 
     this->unk_156 = 0;
     ActorShape_Init(&this->actor.shape, sp34, ActorShadow_DrawFunc_Circle, sp30);
     this->actor.shape.unk_14 = 0xB4;
-    this->actor.posRot2.pos = this->actor.posRot.pos;
+    this->actor.head.pos = this->actor.world.pos;
     this->unk_152 = 0;
 
     if (!spawnParam8000) {
@@ -285,17 +285,17 @@ void func_8001DFC8(EnItem00* this, GlobalContext* globalCtx) {
     } else {
         if ((this->actor.params >= ITEM00_SHIELD_DEKU) && (this->actor.params != ITEM00_BOMBS_SPECIAL)) {
             if (this->unk_15A == -1) {
-                if (!Math_SmoothScaleMaxMinS(&this->actor.shape.rot.x, this->actor.posRot.rot.x - 0x4000, 2, 3000,
+                if (!Math_SmoothScaleMaxMinS(&this->actor.shape.rot.x, this->actor.world.rot.x - 0x4000, 2, 3000,
                                              1500)) {
                     this->unk_15A = -2;
                 }
             } else {
-                if (!Math_SmoothScaleMaxMinS(&this->actor.shape.rot.x, -this->actor.posRot.rot.x - 0x4000, 2, 3000,
+                if (!Math_SmoothScaleMaxMinS(&this->actor.shape.rot.x, -this->actor.world.rot.x - 0x4000, 2, 3000,
                                              1500)) {
                     this->unk_15A = -1;
                 }
             }
-            Math_SmoothScaleMaxMinS(&this->actor.posRot.rot.x, 0, 2, 2500, 500);
+            Math_SmoothScaleMaxMinS(&this->actor.world.rot.x, 0, 2, 2500, 500);
         }
     }
 
@@ -333,9 +333,9 @@ void func_8001E1C8(EnItem00* this, GlobalContext* globalCtx) {
     }
 
     if (globalCtx->gameplayFrames & 1) {
-        pos.x = this->actor.posRot.pos.x + Math_Rand_CenteredFloat(10.0f);
-        pos.y = this->actor.posRot.pos.y + Math_Rand_CenteredFloat(10.0f);
-        pos.z = this->actor.posRot.pos.z + Math_Rand_CenteredFloat(10.0f);
+        pos.x = this->actor.world.pos.x + Math_Rand_CenteredFloat(10.0f);
+        pos.y = this->actor.world.pos.y + Math_Rand_CenteredFloat(10.0f);
+        pos.z = this->actor.world.pos.z + Math_Rand_CenteredFloat(10.0f);
         EffectSsKiraKira_SpawnSmall(globalCtx, &pos, &D_80115518, &D_80115524, &D_80115510, &D_80115514);
     }
 
@@ -365,20 +365,20 @@ void func_8001E304(EnItem00* this, GlobalContext* globalCtx) {
             if (this->actor.velocity.y < -1.5f) {
                 this->actor.velocity.y = -1.5f;
             }
-            this->actor.initPosRot.rot.z += (s16)((this->actor.velocity.y + 3.0f) * 1000.0f);
-            this->actor.posRot.pos.x +=
-                Math_Coss(this->actor.yawTowardsLink) * (-3.0f * Math_Coss(this->actor.initPosRot.rot.z));
-            this->actor.posRot.pos.z +=
-                Math_Sins(this->actor.yawTowardsLink) * (-3.0f * Math_Coss(this->actor.initPosRot.rot.z));
+            this->actor.home.rot.z += (s16)((this->actor.velocity.y + 3.0f) * 1000.0f);
+            this->actor.world.pos.x +=
+                Math_Coss(this->actor.yawTowardsLink) * (-3.0f * Math_Coss(this->actor.home.rot.z));
+            this->actor.world.pos.z +=
+                Math_Sins(this->actor.yawTowardsLink) * (-3.0f * Math_Coss(this->actor.home.rot.z));
         }
     }
 
     if (this->actor.params <= ITEM00_RUPEE_RED) {
         this->actor.shape.rot.y += 960;
     } else if ((this->actor.params >= ITEM00_SHIELD_DEKU) && (this->actor.params != ITEM00_BOMBS_SPECIAL)) {
-        this->actor.posRot.rot.x -= 700;
+        this->actor.world.rot.x -= 700;
         this->actor.shape.rot.y += 400;
-        this->actor.shape.rot.x = this->actor.posRot.rot.x - 0x4000;
+        this->actor.shape.rot.x = this->actor.world.rot.x - 0x4000;
     }
 
     if (this->actor.velocity.y <= 2.0f) {
@@ -391,9 +391,9 @@ void func_8001E304(EnItem00* this, GlobalContext* globalCtx) {
     }
 
     if (!(globalCtx->gameplayFrames & 1)) {
-        pos.x = this->actor.posRot.pos.x + (Math_Rand_ZeroOne() - 0.5f) * 10.0f;
-        pos.y = this->actor.posRot.pos.y + (Math_Rand_ZeroOne() - 0.5f) * 10.0f;
-        pos.z = this->actor.posRot.pos.z + (Math_Rand_ZeroOne() - 0.5f) * 10.0f;
+        pos.x = this->actor.world.pos.x + (Math_Rand_ZeroOne() - 0.5f) * 10.0f;
+        pos.y = this->actor.world.pos.y + (Math_Rand_ZeroOne() - 0.5f) * 10.0f;
+        pos.z = this->actor.world.pos.z + (Math_Rand_ZeroOne() - 0.5f) * 10.0f;
         EffectSsKiraKira_SpawnSmall(globalCtx, &pos, &D_80115518, &D_80115524, &D_80115510, &D_80115514);
     }
 
@@ -422,7 +422,7 @@ void func_8001E5C8(EnItem00* this, GlobalContext* globalCtx) {
         return;
     }
 
-    this->actor.posRot.pos = player->actor.posRot.pos;
+    this->actor.world.pos = player->actor.world.pos;
 
     if (this->actor.params <= ITEM00_RUPEE_RED) {
         this->actor.shape.rot.y += 960;
@@ -430,10 +430,10 @@ void func_8001E5C8(EnItem00* this, GlobalContext* globalCtx) {
         this->actor.shape.rot.y = 0;
     }
 
-    this->actor.posRot.pos.y += 40.0f + Math_Sins(this->unk_15A * 15000) * (this->unk_15A * 0.3f);
+    this->actor.world.pos.y += 40.0f + Math_Sins(this->unk_15A * 15000) * (this->unk_15A * 0.3f);
 
     if (LINK_IS_ADULT) {
-        this->actor.posRot.pos.y += 20.0f;
+        this->actor.world.pos.y += 20.0f;
     }
 }
 
@@ -476,9 +476,9 @@ void EnItem00_Update(Actor* thisx, GlobalContext* globalCtx) {
                     if (globalCtx->colCtx.dyna.flags[i] & 1) {
                         dynaActor = globalCtx->colCtx.dyna.actorMeshArr[i].actor;
                         if ((dynaActor != NULL) && (dynaActor->update != NULL) &&
-                            ((dynaActor->posRot.pos.x != dynaActor->pos4.x) ||
-                             (dynaActor->posRot.pos.y != dynaActor->pos4.y) ||
-                             (dynaActor->posRot.pos.z != dynaActor->pos4.z))) {
+                            ((dynaActor->world.pos.x != dynaActor->prevPos.x) ||
+                             (dynaActor->world.pos.y != dynaActor->prevPos.y) ||
+                             (dynaActor->world.pos.z != dynaActor->prevPos.z))) {
                             D_80157D94++;
                             break;
                         }
@@ -891,7 +891,7 @@ EnItem00* Item_DropCollectible(GlobalContext* globalCtx, Vec3f* spawnPos, s16 pa
                 spawnedActor->actor.velocity.y = !param4000 ? 8.0f : -2.0f;
                 spawnedActor->actor.speedXZ = 2.0f;
                 spawnedActor->actor.gravity = -0.9f;
-                spawnedActor->actor.posRot.rot.y = Math_Rand_CenteredFloat(65536.0f);
+                spawnedActor->actor.world.rot.y = Math_Rand_CenteredFloat(65536.0f);
                 Actor_SetScale(&spawnedActor->actor, 0.0f);
                 EnItem00_SetupAction(spawnedActor, func_8001E304);
                 spawnedActor->unk_15A = 220;
@@ -932,7 +932,7 @@ EnItem00* Item_DropCollectible2(GlobalContext* globalCtx, Vec3f* spawnPos, s16 p
                 spawnedActor->actor.velocity.y = 0.0f;
                 spawnedActor->actor.speedXZ = 0.0f;
                 spawnedActor->actor.gravity = param4000 ? 0.0f : -0.9f;
-                spawnedActor->actor.posRot.rot.y = Math_Rand_CenteredFloat(65536.0f);
+                spawnedActor->actor.world.rot.y = Math_Rand_CenteredFloat(65536.0f);
                 spawnedActor->actor.flags |= 0x0010;
             }
         }
@@ -1044,7 +1044,7 @@ void Item_DropCollectibleRandom(GlobalContext* globalCtx, Actor* fromActor, Vec3
                         spawnedActor->actor.velocity.y = 8.0f;
                         spawnedActor->actor.speedXZ = 2.0f;
                         spawnedActor->actor.gravity = -0.9f;
-                        spawnedActor->actor.posRot.rot.y = Math_Rand_ZeroOne() * 40000.0f;
+                        spawnedActor->actor.world.rot.y = Math_Rand_ZeroOne() * 40000.0f;
                         Actor_SetScale(&spawnedActor->actor, 0.0f);
                         EnItem00_SetupAction(spawnedActor, func_8001E304);
                         spawnedActor->actor.flags |= 0x0010;

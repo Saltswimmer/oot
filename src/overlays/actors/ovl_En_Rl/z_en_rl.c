@@ -128,9 +128,9 @@ void func_80AE7590(EnRl* this, GlobalContext* globalCtx) {
         globalCtx->csCtx.npcActions[6] != NULL && globalCtx->csCtx.npcActions[6]->action == 2 &&
         !this->lightMedallionGiven) {
         player = PLAYER;
-        pos.x = player->actor.posRot.pos.x;
-        pos.y = player->actor.posRot.pos.y + 80.0f;
-        pos.z = player->actor.posRot.pos.z;
+        pos.x = player->actor.world.pos.x;
+        pos.y = player->actor.world.pos.y + 80.0f;
+        pos.z = player->actor.world.pos.z;
         Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_DEMO_EFFECT, pos.x, pos.y, pos.z, 0, 0, 0, 0xE);
         Item_Give(globalCtx, ITEM_MEDALLION_LIGHT);
         this->lightMedallionGiven = 1;
@@ -142,7 +142,7 @@ void func_80AE7668(EnRl* this, GlobalContext* globalCtx) {
 
     this->drawConfig = 1;
     this->action = 1;
-    player->actor.posRot.rot.y = player->actor.shape.rot.y = this->actor.posRot.rot.y + 0x8000;
+    player->actor.world.rot.y = player->actor.shape.rot.y = this->actor.world.rot.y + 0x8000;
 }
 
 void func_80AE7698(EnRl* this, GlobalContext* globalCtx) {
@@ -200,8 +200,8 @@ void func_80AE7878(EnRl* this, GlobalContext* globalCtx) {
 }
 
 void func_80AE78D4(EnRl* this, GlobalContext* globalCtx) {
-    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.posRot.pos.x,
-                       kREG(18) + 22.0f + this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 5);
+    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.world.pos.x,
+                       kREG(18) + 22.0f + this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 5);
 }
 
 void func_80AE7954(EnRl* this, GlobalContext* globalCtx) {
@@ -388,7 +388,7 @@ void EnRl_Draw(Actor* thisx, GlobalContext* globalCtx) {
 
 const ActorInit En_Rl_InitVars = {
     ACTOR_EN_RL,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_RL,
     sizeof(EnRl),

@@ -23,7 +23,7 @@ void func_8087A39C(BgGndIceblock* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Gnd_Iceblock_InitVars = {
     ACTOR_BG_GND_ICEBLOCK,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_DEMO_KEKKAI,
     sizeof(BgGndIceblock),

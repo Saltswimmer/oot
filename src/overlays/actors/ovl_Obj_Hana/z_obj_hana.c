@@ -17,7 +17,7 @@ void ObjHana_Draw(Actor* thisx, GlobalContext* globalCtx);
 
 const ActorInit Obj_Hana_InitVars = {
     ACTOR_OBJ_HANA,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GAMEPLAY_FIELD_KEEP,
     sizeof(ObjHana),

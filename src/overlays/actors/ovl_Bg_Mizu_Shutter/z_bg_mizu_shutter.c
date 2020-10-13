@@ -12,7 +12,7 @@ void BgMizuShutter_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Mizu_Shutter_InitVars = {
     ACTOR_BG_MIZU_SHUTTER,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_MIZU_OBJECTS,
     sizeof(BgMizuShutter),

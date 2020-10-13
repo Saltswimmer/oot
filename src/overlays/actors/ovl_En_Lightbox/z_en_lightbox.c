@@ -17,7 +17,7 @@ void EnLightbox_Draw(Actor* thisx, GlobalContext* globalCtx);
 
 const ActorInit En_Lightbox_InitVars = {
     ACTOR_EN_LIGHTBOX,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_LIGHTBOX,
     sizeof(EnLightbox),
@@ -51,7 +51,7 @@ void EnLightbox_Init(Actor* thisx, GlobalContext* globalCtx) {
             break;
     }
 
-    thisx->posRot2.pos = thisx->posRot.pos;
+    thisx->head.pos = thisx->world.pos;
     thisx->colChkInfo.unk_10 = 0x1E;
     thisx->colChkInfo.unk_12 = 0x32;
     ActorShape_Init(&thisx->shape, 0.0f, ActorShadow_DrawFunc_Circle, 6.0f);
@@ -82,7 +82,7 @@ void EnLightbox_Update(Actor* thisx, GlobalContext* globalCtx) {
         } else {
             if (thisx->speedXZ) {
                 if (thisx->bgCheckFlags & 8) {
-                    thisx->posRot.rot.y = (thisx->posRot.rot.y + thisx->wallPolyRot) - thisx->posRot.rot.y;
+                    thisx->world.rot.y = (thisx->world.rot.y + thisx->wallPolyRot) - thisx->world.rot.y;
                     Audio_PlaySoundGeneral(NA_SE_EV_BOMB_BOUND, &thisx->projectedPos, 4, &D_801333E0, &D_801333E0,
                                            &D_801333E8);
                     thisx->speedXZ *= 0.7f;
@@ -107,7 +107,7 @@ void EnLightbox_Update(Actor* thisx, GlobalContext* globalCtx) {
     }
     Actor_MoveForward(thisx);
     func_8002E4B4(globalCtx, thisx, thisx->colChkInfo.unk_12, thisx->colChkInfo.unk_10, thisx->colChkInfo.unk_10, 0x1D);
-    thisx->posRot2.pos = thisx->posRot.pos;
+    thisx->head.pos = thisx->world.pos;
 }
 
 void EnLightbox_Draw(Actor* thisx, GlobalContext* globalCtx) {

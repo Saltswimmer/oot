@@ -18,7 +18,7 @@ void EnZf_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Zf_InitVars = {
     ACTOR_EN_ZF,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_ZF,
     sizeof(EnZf),

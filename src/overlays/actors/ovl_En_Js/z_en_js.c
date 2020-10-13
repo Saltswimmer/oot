@@ -19,7 +19,7 @@ void func_80A89304(EnJs* this, GlobalContext* globalCtx);
 
 const ActorInit En_Js_InitVars = {
     ACTOR_EN_JS,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_JS,
     sizeof(EnJs),
@@ -58,8 +58,8 @@ void EnJs_Init(Actor* thisx, GlobalContext* globalCtx) {
     En_Js_SetupAction(this, func_80A89304);
     this->unk_284 = 0;
     this->actor.gravity = -1.0f;
-    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_JSJUTAN, this->actor.posRot.pos.x,
-                       this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 0);
+    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_JSJUTAN, this->actor.world.pos.x,
+                       this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0);
 }
 
 void EnJs_Destroy(Actor* thisx, GlobalContext* globalCtx) {
@@ -176,7 +176,7 @@ void EnJs_Update(Actor* thisx, GlobalContext* globalCtx) {
     }
     this->actionFunc(this, globalCtx);
     if (this->unk_284 & 1) {
-        func_80038290(globalCtx, &this->actor, &this->unk_278, &this->unk_27E, this->actor.posRot2.pos);
+        func_80038290(globalCtx, &this->actor, &this->unk_278, &this->unk_27E, this->actor.head.pos);
     } else {
         Math_SmoothScaleMaxMinS(&this->unk_278.x, 0, 6, 0x1838, 0x64);
         Math_SmoothScaleMaxMinS(&this->unk_278.y, 0, 6, 0x1838, 0x64);
@@ -209,7 +209,7 @@ void EnJs_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
     static Vec3f D_80A896DC = { 0.0f, 0.0f, 0.0f };
 
     if (limbIndex == 12) {
-        Matrix_MultVec3f(&D_80A896DC, &thisx->posRot2.pos);
+        Matrix_MultVec3f(&D_80A896DC, &thisx->head.pos);
     }
 }
 void EnJs_Draw(Actor* thisx, GlobalContext* globalCtx) {

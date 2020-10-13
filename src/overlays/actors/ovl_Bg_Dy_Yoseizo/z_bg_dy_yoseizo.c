@@ -41,7 +41,7 @@ void func_808751A0(BgDyYoseizo* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Dy_Yoseizo_InitVars = {
     ACTOR_BG_DY_YOSEIZO,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_DY_OBJ,
     sizeof(BgDyYoseizo),

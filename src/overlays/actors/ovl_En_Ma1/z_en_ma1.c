@@ -29,7 +29,7 @@ void func_80AA11C8(EnMa1* this, GlobalContext* globalCtx);
 
 const ActorInit En_Ma1_InitVars = {
     ACTOR_EN_MA1,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_MA1,
     sizeof(EnMa1),
@@ -222,7 +222,7 @@ void func_80AA0AF4(EnMa1* this, GlobalContext* globalCtx) {
         phi_a3 = 0;
     }
 
-    this->unk_1E8.unk_18 = player->actor.posRot.pos;
+    this->unk_1E8.unk_18 = player->actor.world.pos;
     this->unk_1E8.unk_18.y -= -10.0f;
 
     func_80034A14(&this->actor, &this->unk_1E8, 0, phi_a3);
@@ -424,7 +424,7 @@ void EnMa1_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Ve
     Vec3f vec = D_80AA16B8;
 
     if (limbIndex == 15) {
-        Matrix_MultVec3f(&vec, &this->actor.posRot2.pos);
+        Matrix_MultVec3f(&vec, &this->actor.head.pos);
     }
 }
 
@@ -437,7 +437,7 @@ void EnMa1_Draw(Actor* thisx, GlobalContext* globalCtx) {
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_en_ma1.c", 1226);
 
     camera = ACTIVE_CAM;
-    someFloat = Math_Vec3f_DistXZ(&this->actor.posRot.pos, &camera->eye);
+    someFloat = Math_Vec3f_DistXZ(&this->actor.world.pos, &camera->eye);
     func_800F6268(someFloat, 0x2F);
     func_80093D18(globalCtx->state.gfxCtx);
 

@@ -69,7 +69,7 @@ static DemoSaDrawFunc sDrawFuncs[] = {
 
 const ActorInit Demo_Sa_InitVars = {
     ACTOR_DEMO_SA,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_SA,
     sizeof(DemoSa),
@@ -183,10 +183,10 @@ void func_8098E6EC(DemoSa* this, GlobalContext* globalCtx, s32 actionIdx) {
     CsCmdActorAction* npcAction = DemoSa_GetNpcAction(globalCtx, actionIdx);
 
     if (npcAction != NULL) {
-        this->actor.posRot.pos.x = npcAction->startPos.x;
-        this->actor.posRot.pos.y = npcAction->startPos.y;
-        this->actor.posRot.pos.z = npcAction->startPos.z;
-        this->actor.posRot.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
+        this->actor.world.pos.x = npcAction->startPos.x;
+        this->actor.world.pos.y = npcAction->startPos.y;
+        this->actor.world.pos.z = npcAction->startPos.z;
+        this->actor.world.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
     }
 }
 
@@ -218,19 +218,19 @@ void func_8098E7FC(DemoSa* this, GlobalContext* globalCtx) {
 }
 
 void func_8098E86C(DemoSa* this, GlobalContext* globalCtx) {
-    Vec3f* posRot = &this->actor.posRot.pos;
-    f32 posX = posRot->x;
-    f32 posY = posRot->y;
-    f32 posZ = posRot->z;
+    Vec3f* world = &this->actor.world.pos;
+    f32 posX = world->x;
+    f32 posY = world->y;
+    f32 posZ = world->z;
 
     Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DOOR_WARP1, posX, posY, posZ, 0, 0, 0, 2);
 }
 
 void func_8098E8C8(DemoSa* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
-    f32 posX = player->actor.posRot.pos.x;
-    f32 posY = player->actor.posRot.pos.y + 80.0f;
-    f32 posZ = player->actor.posRot.pos.z;
+    f32 posX = player->actor.world.pos.x;
+    f32 posY = player->actor.world.pos.y + 80.0f;
+    f32 posZ = player->actor.world.pos.z;
 
     Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_EFFECT, posX, posY, posZ, 0, 0, 0,
                        0xB);
@@ -251,7 +251,7 @@ void func_8098E960(DemoSa* this, GlobalContext* globalCtx) {
         globalCtx->csCtx.segment = D_8099010C;
         gSaveContext.cutsceneTrigger = 2;
         Item_Give(globalCtx, ITEM_MEDALLION_FOREST);
-        player->actor.posRot.rot.y = player->actor.shape.rot.y = this->actor.posRot.rot.y + 0x8000;
+        player->actor.world.rot.y = player->actor.shape.rot.y = this->actor.world.rot.y + 0x8000;
     }
 }
 
@@ -371,8 +371,8 @@ void func_8098EE08(void) {
 }
 
 void func_8098EE28(DemoSa* this, GlobalContext* globalCtx) {
-    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.posRot.pos.x,
-                       (kREG(23) + 25.0f) + this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 4);
+    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.world.pos.x,
+                       (kREG(23) + 25.0f) + this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 4);
 }
 
 void func_8098EEA8(DemoSa* this, GlobalContext* globalCtx) {
@@ -601,7 +601,7 @@ void func_8098F7FC(DemoSa* this, GlobalContext* globalCtx) {
 }
 
 void func_8098F83C(DemoSa* this, GlobalContext* globalCtx) {
-    Vec3f* thisPos = &this->actor.posRot.pos;
+    Vec3f* thisPos = &this->actor.world.pos;
 
     SkelAnime_InitSV(globalCtx, &this->skelAnime, &D_0600B1A0, &D_0601113C, NULL, NULL, 0);
     Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ELF, thisPos->x, thisPos->y, thisPos->z,

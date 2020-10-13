@@ -12,7 +12,7 @@ void BgHidanHamstep_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Hidan_Hamstep_InitVars = {
     ACTOR_BG_HIDAN_HAMSTEP,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_HIDAN_OBJECTS,
     sizeof(BgHidanHamstep),

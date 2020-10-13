@@ -12,7 +12,7 @@ void DemoIk_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Demo_Ik_InitVars = {
     ACTOR_DEMO_IK,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_IK,
     sizeof(DemoIk),

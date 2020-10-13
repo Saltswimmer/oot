@@ -22,7 +22,7 @@ void func_808760DC(BgGanonOtyuka* this, GlobalContext* globalCtx);
 /*
 const ActorInit Bg_Ganon_Otyuka_InitVars = {
     ACTOR_BG_GANON_OTYUKA,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_GANON,
     sizeof(BgGanonOtyuka),

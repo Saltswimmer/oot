@@ -18,7 +18,7 @@ void ObjSwitch_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Obj_Switch_InitVars = {
     ACTOR_OBJ_SWITCH,
-    ACTORTYPE_SWITCH,
+    ACTORCAT_SWITCH,
     FLAGS,
     OBJECT_GAMEPLAY_DANGEON_KEEP,
     sizeof(ObjSwitch),

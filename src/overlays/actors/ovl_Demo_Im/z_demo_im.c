@@ -85,7 +85,7 @@ static DemoImDrawFunc sDrawFuncs[] = {
 
 const ActorInit Demo_Im_InitVars = {
     ACTOR_DEMO_IM,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_IM,
     sizeof(DemoIm),
@@ -187,7 +187,7 @@ void func_80984E58(DemoIm* this, GlobalContext* globalCtx) {
     s16 yawDiff;
     s16 phi_a3;
 
-    this->unk_2D4.unk_18 = player->actor.posRot.pos;
+    this->unk_2D4.unk_18 = player->actor.world.pos;
     this->unk_2D4.unk_14 = kREG(16) + 4.0f;
 
     yawDiff = this->actor.yawTowardsLink - this->actor.shape.rot.y;
@@ -198,7 +198,7 @@ void func_80984E58(DemoIm* this, GlobalContext* globalCtx) {
 void func_80984F10(DemoIm* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
 
-    this->unk_2D4.unk_18 = player->actor.posRot.pos;
+    this->unk_2D4.unk_18 = player->actor.world.pos;
     this->unk_2D4.unk_14 = kREG(16) + 12.0f;
 
     func_80034A14(&this->actor, &this->unk_2D4, kREG(17) + 0xC, 2);
@@ -207,7 +207,7 @@ void func_80984F10(DemoIm* this, GlobalContext* globalCtx) {
 void func_80984F94(DemoIm* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
 
-    this->unk_2D4.unk_18 = player->actor.posRot.pos;
+    this->unk_2D4.unk_18 = player->actor.world.pos;
     this->unk_2D4.unk_14 = kREG(16) + 4.0f;
     func_80034A14(&this->actor, &this->unk_2D4, kREG(17) + 0xC, 4);
 }
@@ -263,10 +263,10 @@ void func_80985180(DemoIm* this, GlobalContext* globalCtx, s32 actionIdx) {
     CsCmdActorAction* npcAction = func_809850A0(globalCtx, actionIdx);
 
     if (npcAction != NULL) {
-        this->actor.posRot.pos.x = npcAction->startPos.x;
-        this->actor.posRot.pos.y = npcAction->startPos.y;
-        this->actor.posRot.pos.z = npcAction->startPos.z;
-        this->actor.posRot.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
+        this->actor.world.pos.x = npcAction->startPos.x;
+        this->actor.world.pos.y = npcAction->startPos.y;
+        this->actor.world.pos.z = npcAction->startPos.z;
+        this->actor.world.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
     }
 }
 
@@ -274,10 +274,10 @@ void func_80985200(DemoIm* this, GlobalContext* globalCtx, s32 actionIdx) {
     CsCmdActorAction* npcAction = func_809850A0(globalCtx, actionIdx);
 
     if (npcAction != NULL) {
-        this->actor.posRot.pos.x = npcAction->startPos.x;
-        this->actor.posRot.pos.y = npcAction->startPos.y;
-        this->actor.posRot.pos.z = npcAction->startPos.z;
-        this->actor.posRot.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
+        this->actor.world.pos.x = npcAction->startPos.x;
+        this->actor.world.pos.y = npcAction->startPos.y;
+        this->actor.world.pos.z = npcAction->startPos.z;
+        this->actor.world.rot.y = this->actor.shape.rot.y = npcAction->rot.y;
     }
 }
 
@@ -306,18 +306,18 @@ void func_80985310(DemoIm* this, GlobalContext* globalCtx) {
 }
 
 void func_80985358(DemoIm* this, GlobalContext* globalCtx) {
-    f32 posX = this->actor.posRot.pos.x;
-    f32 posY = this->actor.posRot.pos.y;
-    f32 posZ = this->actor.posRot.pos.z;
+    f32 posX = this->actor.world.pos.x;
+    f32 posY = this->actor.world.pos.y;
+    f32 posZ = this->actor.world.pos.z;
 
     Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DOOR_WARP1, posX, posY, posZ, 0, 0, 0, 2);
 }
 
 void func_809853B4(DemoIm* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
-    f32 playerX = player->actor.posRot.pos.x;
-    f32 playerY = player->actor.posRot.pos.y + 80.0f;
-    f32 playerZ = player->actor.posRot.pos.z;
+    f32 playerX = player->actor.world.pos.x;
+    f32 playerY = player->actor.world.pos.y + 80.0f;
+    f32 playerZ = player->actor.world.pos.z;
 
     Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_EFFECT, playerX, playerY, playerZ, 0,
                        0, 0, 0xD);
@@ -338,7 +338,7 @@ void func_8098544C(DemoIm* this, GlobalContext* globalCtx) {
         globalCtx->csCtx.segment = D_8098786C;
         gSaveContext.cutsceneTrigger = 2;
         Item_Give(globalCtx, GI_BOMBCHUS_5);
-        player->actor.posRot.rot.y = player->actor.shape.rot.y = this->actor.posRot.rot.y + 0x8000;
+        player->actor.world.rot.y = player->actor.shape.rot.y = this->actor.world.rot.y + 0x8000;
     }
 }
 
@@ -440,8 +440,8 @@ void func_809858A8(void) {
 }
 
 void func_809858C8(DemoIm* this, GlobalContext* globalCtx) {
-    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.posRot.pos.x,
-                       (kREG(17) + 24.0f) + this->actor.posRot.pos.y, this->actor.posRot.pos.z, 0, 0, 0, 6);
+    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_DEMO_6K, this->actor.world.pos.x,
+                       (kREG(17) + 24.0f) + this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 6);
 }
 
 void func_80985948(DemoIm* this, GlobalContext* globalCtx) {
@@ -737,7 +737,7 @@ void func_809865F8(DemoIm* this, GlobalContext* globalCtx, s32 arg2) {
 
         if (*unk_278 >= 0.0f) {
             if (this->unk_27C == 0) {
-                Vec3f* thisPos = &this->actor.posRot.pos;
+                Vec3f* thisPos = &this->actor.world.pos;
                 s16 shapeRotY = this->actor.shape.rot.y;
                 f32 spawnPosX = thisPos->x + (Math_Sins(shapeRotY) * 30.0f);
                 f32 spawnPosY = thisPos->y;
@@ -832,8 +832,8 @@ void func_809869B0(DemoIm* this, GlobalContext* globalCtx) {
 
 s32 func_809869F8(DemoIm* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
-    f32 playerPosX = player->actor.posRot.pos.x;
-    f32 thisPosX = this->actor.posRot.pos.x;
+    f32 playerPosX = player->actor.world.pos.x;
+    f32 thisPosX = this->actor.world.pos.x;
 
     if ((thisPosX - (kREG(16) + 30.0f) > playerPosX) && (!(this->actor.flags & 0x40))) {
         return 1;
@@ -843,8 +843,8 @@ s32 func_809869F8(DemoIm* this, GlobalContext* globalCtx) {
 
 s32 func_80986A5C(DemoIm* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
-    f32 playerPosX = player->actor.posRot.pos.x;
-    f32 thisPosX = this->actor.posRot.pos.x;
+    f32 playerPosX = player->actor.world.pos.x;
+    f32 thisPosX = this->actor.world.pos.x;
 
     if ((thisPosX - (kREG(17) + 130.0f) < playerPosX) && (!Gameplay_InCsMode(globalCtx))) {
         return 1;
@@ -1171,12 +1171,12 @@ void func_809875C0(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec3s* 
         Vec3f dest;
 
         Matrix_MultVec3f(&sp28, &dest);
-        thisx->posRot2.pos.x = dest.x;
-        thisx->posRot2.pos.y = dest.y;
-        thisx->posRot2.pos.z = dest.z;
-        thisx->posRot2.rot.x = thisx->posRot.rot.x;
-        thisx->posRot2.rot.y = thisx->posRot.rot.y;
-        thisx->posRot2.rot.z = thisx->posRot.rot.z;
+        thisx->head.pos.x = dest.x;
+        thisx->head.pos.y = dest.y;
+        thisx->head.pos.z = dest.z;
+        thisx->head.rot.x = thisx->world.rot.x;
+        thisx->head.rot.y = thisx->world.rot.y;
+        thisx->head.rot.z = thisx->world.rot.z;
     }
 }
 

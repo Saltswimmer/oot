@@ -11,7 +11,7 @@ void EnNiwLady_Update(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Niw_Lady_InitVars = {
     ACTOR_EN_NIW_LADY,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_ANE,
     sizeof(EnNiwLady),

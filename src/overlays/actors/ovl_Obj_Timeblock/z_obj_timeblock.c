@@ -18,7 +18,7 @@ void ObjTimeblock_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit Obj_Timeblock_InitVars = {
     ACTOR_OBJ_TIMEBLOCK,
-    ACTORTYPE_ITEMACTION,
+    ACTORCAT_ITEMACTION,
     FLAGS,
     OBJECT_TIMEBLOCK,
     sizeof(ObjTimeblock),

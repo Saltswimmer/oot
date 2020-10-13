@@ -22,7 +22,7 @@ void func_809C22F4(EnBlkobj* this, GlobalContext* globalCtx);
 
 const ActorInit En_Blkobj_InitVars = {
     ACTOR_EN_BLKOBJ,
-    ACTORTYPE_PROP,
+    ACTORCAT_PROP,
     FLAGS,
     OBJECT_BLKOBJ,
     sizeof(EnBlkobj),
@@ -93,8 +93,8 @@ void func_809C2148(EnBlkobj* this, GlobalContext* globalCtx) {
 
 void func_809C21A0(EnBlkobj* this, GlobalContext* globalCtx) {
     if (!(this->dyna.actor.flags & 0x40)) {
-        Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_TORCH2, this->dyna.actor.posRot.pos.x,
-                    this->dyna.actor.posRot.pos.y, this->dyna.actor.posRot.pos.z, 0, this->dyna.actor.yawTowardsLink, 0,
+        Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_TORCH2, this->dyna.actor.world.pos.x,
+                    this->dyna.actor.world.pos.y, this->dyna.actor.world.pos.z, 0, this->dyna.actor.yawTowardsLink, 0,
                     0);
         func_809C2060(this, func_809C2218);
     }
@@ -104,7 +104,7 @@ void func_809C2218(EnBlkobj* this, GlobalContext* globalCtx) {
     s32 temp;
 
     if (this->unk_166 == 0) {
-        if (Actor_Find(&globalCtx->actorCtx, ACTOR_EN_TORCH2, ACTORTYPE_BOSS) == NULL) {
+        if (Actor_Find(&globalCtx->actorCtx, ACTOR_EN_TORCH2, ACTORCAT_BOSS) == NULL) {
             Flags_SetClear(globalCtx, this->dyna.actor.room);
             this->unk_166 += 1;
         }

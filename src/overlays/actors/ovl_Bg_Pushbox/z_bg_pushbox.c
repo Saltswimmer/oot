@@ -19,7 +19,7 @@ void func_808A8BAC(BgPushbox* this, GlobalContext* globalCtx);
 
 const ActorInit Bg_Pushbox_InitVars = {
     ACTOR_BG_PUSHBOX,
-    ACTORTYPE_BG,
+    ACTORCAT_BG,
     FLAGS,
     OBJECT_GAMEPLAY_DANGEON_KEEP,
     sizeof(BgPushbox),
@@ -66,7 +66,7 @@ void func_808A8BAC(BgPushbox* this, GlobalContext* globalCtx) {
     thisx->speedXZ += this->dyna.unk_150 * 0.2f;
     thisx->speedXZ = (thisx->speedXZ < -1.0f) ? -1.0f : ((thisx->speedXZ > 1.0f) ? 1.0f : thisx->speedXZ);
     Math_ApproxF(&thisx->speedXZ, 0.0f, 0.2f);
-    thisx->posRot.rot.y = this->dyna.unk_158;
+    thisx->world.rot.y = this->dyna.unk_158;
     Actor_MoveForward(thisx);
     func_8002E4B4(globalCtx, thisx, 20.0f, 40.0f, 40.0f, 0x1D);
 }

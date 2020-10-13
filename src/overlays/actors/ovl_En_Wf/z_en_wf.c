@@ -18,7 +18,7 @@ void EnWf_Draw(Actor* thisx, GlobalContext* globalCtx);
 /*
 const ActorInit En_Wf_InitVars = {
     ACTOR_EN_WF,
-    ACTORTYPE_ENEMY,
+    ACTORCAT_ENEMY,
     FLAGS,
     OBJECT_WF,
     sizeof(EnWf),

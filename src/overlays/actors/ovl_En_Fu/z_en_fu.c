@@ -30,7 +30,7 @@ void func_80A1DB60(EnFu* this, GlobalContext* globalCtx);
 
 const ActorInit En_Fu_InitVars = {
     ACTOR_EN_FU,
-    ACTORTYPE_NPC,
+    ACTORCAT_NPC,
     FLAGS,
     OBJECT_FU,
     sizeof(EnFu),
@@ -256,7 +256,7 @@ void EnFu_Update(Actor* thisx, GlobalContext* globalCtx) {
         Math_SmoothScaleMaxMinS(&this->unk_2A2.y, 0, 6, 6200, 100);
         this->behaviorFlags &= ~FU_RESET_LOOK_ANGLE;
     } else {
-        func_80038290(globalCtx, &this->actor, &this->lookAngleOffset, &this->unk_2A2, this->actor.posRot2.pos);
+        func_80038290(globalCtx, &this->actor, &this->lookAngleOffset, &this->unk_2A2, this->actor.head.pos);
     }
 }
 
@@ -291,7 +291,7 @@ void EnFu_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
     EnFu* this = THIS;
 
     if (limbIndex == 14) {
-        Matrix_MultVec3f(&sMtxSrc, &this->actor.posRot2.pos);
+        Matrix_MultVec3f(&sMtxSrc, &this->actor.head.pos);
     }
 }
 
