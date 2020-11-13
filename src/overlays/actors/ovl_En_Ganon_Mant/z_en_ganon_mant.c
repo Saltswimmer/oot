@@ -22,9 +22,16 @@ const ActorInit En_Ganon_Mant_InitVars = {
     (ActorFunc)EnGanonMant_Draw,
 };
 */
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Ganon_Mant/EnGanonMant_Init.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Ganon_Mant/EnGanonMant_Destroy.s")
+void EnGanonMant_Init(Actor* thisx, GlobalContext* globalCtx) {
+    EnGanonMant* this = THIS;
+
+    this->actor.flags &= ~1;
+}
+
+void EnGanonMant_Destroy(Actor* thisx, GlobalContext* globalCtx) {
+
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_En_Ganon_Mant/func_80A23D84.s")
 
