@@ -469,7 +469,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             if (this->csTimer >= 20) {
                 this->unk_1A0 = 4;
             } else {
-                this->unk_1A0 = 0x23;
+                this->unk_1A0 = 35;
             }
 
             if (this->csTimer == 60) {
@@ -522,7 +522,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             Math_SmoothScaleMaxF(&this->unk_1DC, 200.0f, 1.0f, 3.0f);
 
             if (this->csTimer >= 30) {
-                this->unk_1A0 = 0x41;
+                this->unk_1A0 = 65;
             }
 
             if (this->csTimer == 30) {
@@ -572,7 +572,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if (this->csTimer >= 32) {
-                this->unk_1A0 = 0x4B;
+                this->unk_1A0 = 75;
             }
 
             if (this->csTimer == 32) {
@@ -1517,6 +1517,507 @@ void func_808DC14C(BossGanon* this, GlobalContext* globalCtx) {
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DD20C.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/BossGanon_Update.s")
+// void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
+//     BossGanon* this = THIS;
+
+
+//     f32 sp120;
+//     f32 sp108;
+//     f32 sp104;
+//     f32 sp100;
+//     f32 spFC;
+//     f32 spF8;
+//     f32 spF4;
+//     f32 spEC;
+//     ? spE8;
+//     f32 spE0;
+//     f32 spDC;
+//     f32 spD8;
+//     f32 spD4;
+//     f32 spD0;
+//     f32 spCC;
+//     f32 spC4;
+//     f32 spC0;
+//     f32 spBC;
+//     f32 spB0;
+//     f32 spAC;
+//     f32 spA8;
+//     f32 spA4;
+//     ColliderCylinder* temp_s0;
+//     CollisionCheckContext* temp_s1_3;
+//     f32* temp_a2;
+//     f32* temp_s1_5;
+//     f32* temp_s2_2;
+//     f32 temp_f0;
+//     f32 temp_f0_2;
+//     f32 temp_f12;
+//     f32 temp_f20;
+//     f32 temp_f20_2;
+//     f32 temp_f22;
+//     f32 temp_f22_2;
+//     f32 temp_f24;
+//     f32 temp_f2;
+//     s16 temp_a0_2;
+//     s16 temp_a0_3;
+//     s16 temp_s0_2;
+//     s16 temp_s1;
+//     s16 temp_s1_2;
+//     s16 temp_s1_4;
+//     s16 temp_s1_6;
+//     s16 temp_s1_7;
+//     s16 temp_s2;
+//     s16 temp_v0_2;
+//     s16 temp_v0_3;
+//     s16 temp_v0_4;
+//     s16 temp_v0_5;
+//     s16 temp_v0_6;
+//     s16 temp_v0_8;
+//     s16 temp_v0_9;
+//     s16 temp_v1_3;
+//     s16 temp_v1_5;
+//     s16 temp_v1_6;
+//     s8 temp_v0_12;
+//     u32 temp_t1;
+//     u8 temp_a0;
+//     u8 temp_v0_13;
+//     u8 temp_v0_14;
+//     void (*)(struct BossGanon*, GlobalContext*) temp_v1;
+//     void (*)(struct BossGanon*, GlobalContext*) temp_v1_2;
+//     void (*)(struct BossGanon*, GlobalContext*) temp_v1_4;
+//     void* temp_s0_3;
+//     void* temp_s0_4;
+//     void* temp_s3;
+//     void* temp_v0;
+//     void* temp_v0_10;
+//     void* temp_v0_11;
+//     void* temp_v0_7;
+//     s16 phi_s1;
+//     s16 phi_s1_2;
+//     f32 phi_f22;
+//     f32 phi_f20;
+//     s16 phi_s1_3;
+//     s16 phi_s0;
+//     s16 phi_s2;
+//     void* phi_s0_2;
+//     s16 phi_s1_4;
+//     void* phi_v0;
+//     f32 phi_f0;
+
+//     temp_v1 = this->actionFunc;
+//     temp_s3 = globalCtx->unk1C44;
+//     if ((&func_808D7918 != temp_v1) && (&func_808D933C != temp_v1)) {
+//         func_808D712C(this, globalCtx, 0x17C);
+//     } else {
+//         *(gSegments + 0x18) = globalCtx->objectCtx.status[this->animBankIndex].segment + 0x80000000;
+//     }
+//     temp_a0 = this->unk71B;
+//     if (temp_a0 != 0) {
+//         func_808D91F8(temp_a0);
+//         spF8 = 0.0f;
+//         phi_s1 = 0;
+//     loop_6:
+//         sp104 = Math_Rand_ZeroFloat(240.0f) + 20.0f;
+//         if (Math_Rand_ZeroOne() < 0.5f) {
+//             sp100 = 463.0f;
+//             sp108 = Math_Rand_ZeroFloat(463.0f);
+//             spF4 = Math_Rand_ZeroFloat(2.0f);
+//             spFC = Math_Rand_ZeroFloat(1.0f);
+//         } else {
+//             sp108 = 463.0f;
+//             sp100 = Math_Rand_ZeroFloat(463.0f);
+//             spFC = Math_Rand_ZeroFloat(2.0f);
+//             spF4 = Math_Rand_ZeroFloat(1.0f);
+//         }
+//         func_808D6870(globalCtx, &sp100, &spF4, Math_Rand_ZeroFloat(0.075f) + 0.08f);
+//         temp_s1 = phi_s1 + 1;
+//         phi_s1 = temp_s1;
+//         if (temp_s1 < 0xA) {
+//             goto loop_6;
+//         }
+//     }
+//     this->collider.base.type = 3;
+//     sCape->unk_16C8 = -3.0f;
+//     temp_v1_2 = this->actionFunc;
+//     this->unk2E4 = 0;
+//     this->actor.flags = this->actor.flags & -2;
+//     this->unk_1A2 = this->unk_1A2 + 1;
+//     this->unk_1A4 = this->unk_1A4 + 1;
+//     if ((&func_808DBB78 == temp_v1_2) || (&func_808DC4DC == temp_v1_2)) {
+//         if (temp_s3->unkA73 != 0) {
+//             func_808DC420(this, globalCtx);
+//         }
+//     }
+//     this->actionFunc(this, globalCtx);
+//     phi_s1_2 = 0;
+// loop_15:
+//     temp_v0 = this + (phi_s1_2 * 2);
+//     temp_v1_3 = temp_v0->unk1B6;
+//     temp_s1_2 = phi_s1_2 + 1;
+//     if (temp_v1_3 != 0) {
+//         temp_v0->unk1B6 = temp_v1_3 - 1;
+//     }
+//     phi_s1_2 = temp_s1_2;
+//     if (temp_s1_2 < 5) {
+//         goto loop_15;
+//     }
+//     temp_v0_2 = this->unk1A6;
+//     if (temp_v0_2 != 0) {
+//         this->unk1A6 = temp_v0_2 - 1;
+//     }
+//     temp_v0_3 = this->unk_2D4;
+//     if (temp_v0_3 != 0) {
+//         this->unk_2D4 = temp_v0_3 - 1;
+//     }
+//     temp_v0_4 = this->unk2E8;
+//     if (temp_v0_4 != 0) {
+//         this->unk2E8 = temp_v0_4 - 1;
+//     }
+//     temp_v0_5 = this->unk2E6;
+//     if (temp_v0_5 != 0) {
+//         this->unk2E6 = temp_v0_5 - 1;
+//     }
+//     temp_v0_6 = this->unk_19C;
+//     if (temp_v0_6 != 0) {
+//         this->unk_19C = temp_v0_6 - 1;
+//     }
+//     if (this->introCsState == 0) {
+//         func_808DD20C(this, globalCtx);
+//         temp_s0 = &this->collider;
+//         func_808D70F0(&this->unk_1FC, temp_s0);
+//         temp_s1_3 = &globalCtx->colChkCtx;
+//         CollisionCheck_SetOC(globalCtx, temp_s1_3, temp_s0);
+//         if (this->unk_2D4 == 0) {
+//             CollisionCheck_SetAC(globalCtx, temp_s1_3, temp_s0);
+//             temp_v1_4 = this->actionFunc;
+//             if ((&func_808DC75C != temp_v1_4) && (&func_808DCB7C != temp_v1_4) && (&func_808DD14C != temp_v1_4)) {
+//                 CollisionCheck_SetAT(globalCtx, temp_s1_3, temp_s0);
+//             }
+//         }
+//     }
+//     if (this->unk_199 != 0) {
+//         temp_f20 = Math_Sins(0 - this->actor.shape.rot.y);
+//         temp_f0 = Math_Coss(0 - this->actor.shape.rot.y);
+//         temp_f2 = this->actor.velocity.z;
+//         temp_f12 = this->actor.velocity.x;
+//         temp_f22 = ((temp_f2 * temp_f20) + (temp_f0 * temp_f12)) * 300.0f;
+//         sp120 = ((-temp_f20 * temp_f12) + (temp_f0 * temp_f2)) * 300.0f;
+//         temp_a0_2 = this->unk_1A2;
+//         phi_f22 = temp_f22;
+//         phi_f20 =
+//             (Math_Sins(((((((temp_a0_2 * 8) + temp_a0_2) * 8) - temp_a0_2) * 8) - temp_a0_2) * 4) * -500.0f) - 500.0f;
+//     } else {
+//         sp120 = 0.0f;
+//         phi_f22 = 0.0f;
+//         phi_f20 = 0.0f;
+//     }
+//     this->unk_199 = 0;
+//     Math_SmoothScaleMaxMinF(this + 0x50C, phi_f22, 1.0f, 600.0f, 0.0f);
+//     Math_SmoothScaleMaxMinF(this + 0x510, (bitwise f32)(bitwise s32)sp120, 1.0f, 600.0f, 0.0f);
+//     Math_SmoothScaleMaxMinF(this + 0x514, phi_f20, 1.0f, 100.0f, 0.0f);
+//     if (this->unk_1BA == 1) {
+//         Audio_PlayActorSound2(this, 0x39C7);
+//     }
+//     if (this->unk_1BA == 0x64) {
+//         Audio_PlayActorSound2(this, 0x39D6);
+//         this->unk_1BA = 0;
+//     }
+//     if ((this->unk2E6 != 0) || (this->unk2E8 != 0)) {
+//         phi_s1_3 = 1;
+//     loop_44:
+//         temp_v0_7 = this + (phi_s1_3 * 2);
+//         temp_v1_5 = temp_v0_7->unk4E4;
+//         if (temp_v1_5 != 0) {
+//             temp_v0_7->unk4E4 = temp_v1_5 - 1;
+//             Math_SmoothScaleMaxF(this + (phi_s1_3 * 4) + 0x49C, (bitwise f32)this->unk508, 1.0f, 2.0f);
+//         } else {
+//             Math_SmoothDownscaleMaxF(this + (phi_s1_3 * 4) + 0x49C, 1.0f, 0.2f);
+//         }
+//         temp_s1_4 = phi_s1_3 + 1;
+//         phi_s1_3 = temp_s1_4;
+//         if (temp_s1_4 < 0x12) {
+//             goto loop_44;
+//         }
+//         if (this->unk2E8 != 0) {
+//             func_80078914(temp_s3 + 0xE4, 0x68);
+//             func_808D6BF0(globalCtx, 700.0f, 1);
+//         }
+//     }
+//     if (this->unk_19F != 0) {
+//         this->unk_19F = 0;
+//         spE8.unk0 = (bitwise s32)this->actor.posRot.pos.x;
+//         spE8.unk4 = (bitwise s32)this->actor.posRot.pos.y;
+//         spE8.unk8 = (bitwise s32)this->actor.posRot.pos.z;
+//         spEC = 0.0f;
+//         func_808D6D60(globalCtx, &spE8, 0x3E4CCCCD, 0x3F333333);
+//         func_808D6D60(globalCtx, &spE8, 0x3E99999A, 0x3F4CCCCD);
+//     }
+//     temp_v0_8 = this->unk_26C;
+//     if (temp_v0_8 != 0) {
+//         this->unk_26C = temp_v0_8 - 1;
+//         if (this->unk_26C == 0) {
+//             func_808D6CBC(globalCtx, 1.0f, 0.0f, 0.0f);
+//         }
+//         func_808D6CBC(globalCtx, 1.0f, (*(&D_808E4D44 + (this->unk_26C * 4)) * 0.62831855f) + this->unk_270,
+//                       Math_Rand_CenteredFloat(0.62831855f) + 1.5707964f);
+//     }
+//     temp_v0_9 = this->unk_19C;
+//     if ((temp_v0_9 != 0) && (this->unk_19E < 4)) {
+//         if ((this->unk_19A == 0) && (temp_v0_9 == 0x14)) {
+//             this->unk_19A = 1;
+//             spD0 = 0.0f;
+//             temp_s1_5 = &spCC;
+//             spCC = -180.0f;
+//             phi_s2 = 0;
+//         loop_61:
+//             spD4 = -180.0f;
+//             phi_s0 = 0;
+//         loop_62:
+//             func_808E0F4C(this, globalCtx, temp_s1_5);
+//             temp_s0_2 = phi_s0 + 1;
+//             spD4 = spD4 + 120.0f;
+//             phi_s0 = temp_s0_2;
+//             if (temp_s0_2 < 4) {
+//                 goto loop_62;
+//             }
+//             temp_s2 = phi_s2 + 1;
+//             spCC = spCC + 120.0f;
+//             phi_s2 = temp_s2;
+//             if (temp_s2 < 4) {
+//                 goto loop_61;
+//             }
+//         } else if (temp_v0_9 < 0x1E) {
+//             spD8 = 0.0f;
+//             spDC = 0.0f;
+//             spE0 = (30.0f - this->unk_19C) * 15.0f;
+//             Matrix_RotateY(Math_Rand_ZeroFloat(6.2831855f), 0);
+//             Matrix_MultVec3f(&spD8, &spCC);
+//             this->unk_19E = this->unk_19E + func_808E0F4C(this, globalCtx, &spCC);
+//         }
+//     }
+//     temp_s0_3 = globalCtx->unk1C4C;
+//     if (temp_s0_3 != 0) {
+//         temp_s2_2 = &spBC;
+//         phi_s0_2 = temp_s0_3;
+//     loop_69:
+//         if (phi_s0_2->unk1C != 1) {
+
+//         } else {
+//             phi_s1_4 = 0;
+//         loop_72:
+//             spBC = 0.0f;
+//             spC0 = 0.0f;
+//             spC4 = 60.0f;
+//             Matrix_RotateY(phi_s1_4 * 0.7853982f, 0);
+//             Matrix_MultVec3f(temp_s2_2, &spB0);
+//             temp_a2 = &spA4;
+//             spA4 = phi_s0_2->unk24 + spB0;
+//             spA8 = phi_s0_2->unk28;
+//             spAC = phi_s0_2->unk2C + spB8;
+//             func_808E0F4C(this, globalCtx, temp_a2);
+//             temp_s1_6 = phi_s1_4 + 1;
+//             phi_s1_4 = temp_s1_6;
+//             if (temp_s1_6 < 8) {
+//                 goto loop_72;
+//             }
+//         }
+//         temp_s0_4 = phi_s0_2->unk124;
+//         phi_s0_2 = temp_s0_4;
+//         if (temp_s0_4 != 0) {
+//             goto loop_69;
+//         }
+//     }
+//     func_808E3564(globalCtx);
+//     temp_v0_10 = globalCtx->unk1C64;
+//     phi_v0 = temp_v0_10;
+//     if (temp_v0_10 != 0) {
+//     loop_75:
+//         if (0x106 != phi_v0->unk0) {
+//         block_79:
+//             temp_v0_11 = phi_v0->unk124;
+//             phi_v0 = temp_v0_11;
+//             if (temp_v0_11 != 0) {
+//                 goto loop_75;
+//             }
+//         } else if (phi_v0->unk16E != 0) {
+//             this->unk_1A0 = 1;
+//         } else {
+//             goto block_79;
+//         }
+//     }
+//     globalCtx->envCtx.unk_BF = 0;
+//     globalCtx->unk10AE2 = 0;
+//     globalCtx->envCtx.unk_DC = 2;
+
+//     switch (this->unk_1A0) {
+//         case 1:
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 0.0f, 1.0f, 0.02f);
+//             break;
+//         case 2:
+//             globalCtx->unk10AE1 = 1;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.1f);
+//             break;
+//         case 3:
+//             globalCtx->unk10AE1 = 1;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.02f);
+//             break;
+//         case 4:
+//             globalCtx->unk10AE1 = 3;
+//             globalCtx->envCtx.unk_D8 = 1.0f;
+//             break;
+//         case 36:
+//             globalCtx->unk10AE1 = 0;
+//             globalCtx->envCtx.unk_D8 = 1.0f;
+//             break;
+//         case 5:
+//             globalCtx->unk10AE1 = 4;
+//             globalCtx->envCtx.unk_D8 = 1.0f;
+//             break;
+//         case 6:
+//             globalCtx->unk10AE2 = 5;
+//             globalCtx->unk10AE1 = 3;
+//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.075f);
+//             break;
+//         case 7:
+//             globalCtx->unk10AE2 = 5;
+//             globalCtx->envCtx.unk_D8 = 0.0f;
+//             break;
+//         case 65:
+//             globalCtx->unk10AE2 = 3;
+//             globalCtx->unk10AE1 = 6;
+//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+//             break;
+//         case 8:
+//             globalCtx->unk10AE2 = 7;
+//             globalCtx->envCtx.unk_D8 = 0.0f;
+//             break;
+//         case 75:
+//             globalCtx->unk10AE2 = 4;
+//             globalCtx->unk10AE1 = 8;
+//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+//             break;
+//         case 9:
+//             globalCtx->unk10AE2 = 3;
+//             globalCtx->unk10AE1 = 9;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
+//             break;
+//         case 10:
+//             globalCtx->unk10AE2 = 3;
+//             globalCtx->unk10AE1 = 0xA;
+//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+//             break;
+//         case 11:
+//             globalCtx->unk10AE2 = 3;
+//             globalCtx->unk10AE1 = 0xB;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
+//             this->unk_1A4 = 0;
+//             break;
+//         case 12:
+//             globalCtx->unk10AE2 = 0xC;
+//             globalCtx->unk10AE1 = 0xB;
+//             temp_a0_3 = this->unk_1A4;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8,
+//                                  (Math_Coss(((temp_a0_3 * 4) - temp_a0_3) << 0xB) * 0.5f) + 0.5f, 1.0f, 1.0f);
+//             break;
+//         case 13:
+//             globalCtx->unk10AE2 = 0xC;
+//             globalCtx->unk10AE1 = 3;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
+//             break;
+//         case 14:
+//             globalCtx->unk10AE1 = 0xD;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.025f);
+//             break;
+//         case 15:
+//             globalCtx->unk10AE1 = 0xE;
+//             globalCtx->envCtx.unk_D8 = 1.0f;
+//             break;
+//         case 16:
+//             globalCtx->unk10AE2 = 0xE;
+//             globalCtx->unk10AE1 = 0xF;
+//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.01f);
+//             break;
+//         case 17:
+//             globalCtx->unk10AE2 = 0x10;
+//             globalCtx->unk10AE1 = 0xF;
+//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+//             break;
+//         case 21:
+//             globalCtx->unk10AE2 = 2;
+//             globalCtx->unk10AE1 = 1;
+//             break;
+//         default:
+//             break;
+//     }
+
+//     temp_f0_2 = this->unk714;
+//     this->unk_1A0 = 0;
+//     if (0.0f != temp_f0_2) {
+//         globalCtx->unk10B09 = temp_f0_2;
+//         globalCtx->unk10B08 = 0xFF;
+//         globalCtx->unk10B07 = 0xFF;
+//         globalCtx->envCtx.unk_E2 = 0xFF;
+//         globalCtx->envCtx.unk_E1 = 1;
+//     } else if (this->unk_1C4 != 0) {
+//         globalCtx->envCtx.unk_E1 = 1;
+//         globalCtx->unk10B08 = 0xFF;
+//         globalCtx->unk10B07 = 0xFF;
+//         globalCtx->envCtx.unk_E2 = 0xFF;
+//         if ((this->unk_1C4 & 1) != 0) {
+//             globalCtx->unk10B09 = 0x64;
+//         } else {
+//             globalCtx->unk10B09 = 0;
+//         }
+//         this->unk_1C4 = this->unk_1C4 - 1;
+//     } else {
+//         globalCtx->unk10B09 = 0;
+//         globalCtx->envCtx.unk_E1 = 0;
+//     }
+//     temp_v1_6 = this->unk_66E;
+//     if (temp_v1_6 != 0) {
+//         temp_v0_13 = this->unk_66C;
+//         this->unk_66E = temp_v1_6 - 1;
+//         if (temp_v0_13 == 1) {
+//             phi_f0 = 40.0f;
+//         } else if (temp_v0_13 == 4) {
+//             phi_f0 = 25.0f;
+//         } else {
+//             phi_f0 = 10.0f;
+//         }
+//         Math_SmoothScaleMaxF(this->unk_670, phi_f0, 0.3f, 10.0f);
+//     } else {
+//         Math_SmoothDownscaleMaxF(this->unk_670, 1.0f, 5.0f);
+//         if (0.0f == (bitwise f32)this->unk_670) {
+//             this->unk_66C = 0;
+//         }
+//     }
+//     if (this->unk_66C != 0) {
+//         D_8015FCF0 = 1;
+//         if (this->unk_66C == 1) {
+//             D_8015FCF8.x = (bitwise f32)(bitwise s32)this->actor.posRot.pos.x;
+//             D_8015FCF8.y = (bitwise f32)(bitwise s32)this->actor.posRot.pos.y;
+//             D_8015FCF8.z = (bitwise f32)(bitwise s32)this->actor.posRot.pos.z;
+//         }
+//         D_8015FD06 = (bitwise f32)this->unk_670;
+//         D_8015FD08 = 10.0f;
+//         D_8015FD0C = 0;
+//     } else {
+//         D_8015FCF0 = 0;
+//     }
+//     temp_v0_14 = this->unk_274;
+//     if (temp_v0_14 != 0) {
+//         temp_s1_7 = temp_v0_14 - 1;
+//         this->unk_278.x = (bitwise f32)this->unk_2EC;
+//         temp_f20_2 = temp_s1_7;
+//         this->unk_278.y = this->unk2F0 + 50.0f + 30.0f;
+//         this->unk_278.z = this->unk2F4;
+//         temp_f22_2 = temp_f20_2 * 1.2566371f;
+//         temp_f24 = sinf(temp_f22_2) * 600.0f;
+//         Actor_SpawnAsChild(&globalCtx->actorCtx, this, globalCtx, 0xE8, this->unk_1FC.x + temp_f24, this->unk_1FC.y,
+//                            this->unk_1FC.z + (cosf(temp_f22_2) * 600.0f), 0, (temp_f20_2 * 13107.2f) + 0x6000, 0,
+//                            temp_s1_7 + 0xFA);
+//         this->unk_274 = 0;
+//     }
+// }
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DE734.s")
 
