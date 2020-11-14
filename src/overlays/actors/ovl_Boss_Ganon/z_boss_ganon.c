@@ -23,6 +23,23 @@ void func_808D779C(BossGanon* this, GlobalContext* globalCtx);
 void func_808D90F8(BossGanon* this, GlobalContext* globalCtx);
 void func_808D7918(BossGanon* this, GlobalContext* globalCtx);
 void func_808D933C(BossGanon* this, GlobalContext* globalCtx);
+void func_808DBB78(BossGanon* this, GlobalContext* globalCtx); // start fight
+
+void func_808DBF30(BossGanon* this, GlobalContext* globalCtx); // spawn light ball
+void func_808DC14C(BossGanon* this, GlobalContext* globalCtx); // throw light ball
+
+void func_808DAD20(BossGanon* this, GlobalContext* globalCtx); // pound the floor
+
+void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx); // charge up thing
+
+// setup action?
+void func_808DBAF0(BossGanon* this, GlobalContext* globalCtx); // wait
+void func_808DACE8(BossGanon* this, GlobalContext* globalCtx); // pound the floor
+
+void func_808DBEC4(BossGanon* this, GlobalContext* globalCtx); // spawn light ball
+void func_808DC0E8(BossGanon* this, GlobalContext* globalCtx); // throw light ball
+
+void func_808DB278(BossGanon* this, GlobalContext* globalCtx); // charge up
 
 /*
 const ActorInit Boss_Ganon_InitVars = {
@@ -41,11 +58,14 @@ const ActorInit Boss_Ganon_InitVars = {
 extern InitChainEntry D_808E4C84[];
 extern ColliderCylinderInit D_808E4C00;
 extern ColliderCylinderInit D_808E4C2C;
+extern AnimationHeader* D_808E4D38[];
+extern s16 D_808E4D40[];
+extern Vec3f D_808E4C6C; // zeroVec?
 
 typedef struct {
     /* 0x00 */ Vec3s eye;
     /* 0x06 */ Vec3s at;
-} CutsceneCameraPosition;
+} CutsceneCameraPosition; // size = 0x12
 
 extern CutsceneCameraPosition D_808E4C94[];
 
@@ -110,11 +130,31 @@ extern AnimationHeader D_06003018;
 extern AnimationHeader D_06007268;
 extern AnimationHeader D_06007A64;
 extern AnimationHeader D_06008A88;
+extern AnimationHeader D_06009A14;
+extern AnimationHeader D_0600AA24;
+extern AnimationHeader D_0600738C;
+extern AnimationHeader D_06009A14;
+extern AnimationHeader D_06002D2C;
+extern AnimationHeader D_0600343C;
+extern AnimationHeader D_06001B0C;
+extern AnimationHeader D_06001FF8;
+extern AnimationHeader D_06000540;
+extern AnimationHeader D_06000FE8;
+extern AnimationHeader D_06001440;
+// extern AnimationHeader ;
+// extern AnimationHeader ;
+// extern AnimationHeader ;
+// extern AnimationHeader ;
+// extern AnimationHeader ;
+// extern AnimationHeader ;
+// extern AnimationHeader ;
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6870.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D69B0.s")
 
+// names of the vectors are just a guess
+void func_808D6AAC(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, f32 arg4, f32 arg5, s16 arg6);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6AAC.s")
 
 void func_808D6BF0(GlobalContext* globalCtx, f32 arg1, s32 arg2);
@@ -124,15 +164,21 @@ void func_808D6BF0(GlobalContext* globalCtx, f32 arg1, s32 arg2);
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6D60.s")
 
+void func_808D6E54(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3, s16 arg4);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6E54.s")
 
+void func_808D6F3C(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6F3C.s")
 
+void func_808D7034(GlobalContext* globalCtx, Vec3f* pos, f32 arg2);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D7034.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D70F0.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D712C.s")
+void func_808D712C(BossGanon* this, GlobalContext* globalCtx, s32 objectId) {
+    this->animBankIndex = Object_GetIndex(&globalCtx->objectCtx, objectId);
+    gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[this->animBankIndex].segment);
+}
 
 void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
     s16 i;
@@ -186,7 +232,7 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
         Actor_ChangeType(globalCtx, &globalCtx->actorCtx, thisx, ACTORTYPE_BOSS);
     } else {
         thisx->flags &= ~1;
-        this->unk_1CC = 255.0f;
+        this->animationLength = 255.0f;
 
         if (thisx->params >= 0xC8) {
             if (thisx->params == 0x12C) {
@@ -198,6 +244,7 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
                 thisx->draw = func_808E1B54;
                 this->unk_1A8 = 1;
             } else if (thisx->params >= 0x104) {
+                // charge attack light ball (0x104 - 0x109)
                 thisx->update = func_808E2544;
                 thisx->draw = func_808E324C;
                 this->unk_1C2 = 0xA;
@@ -219,7 +266,7 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
                     this->unk_2EC[i] = thisx->posRot.pos;
                 }
 
-                this->unk_1CC = 0;
+                this->animationLength = 0;
             } else {
                 thisx->update = func_808E1EB4;
                 thisx->draw = func_808E229C;
@@ -227,9 +274,9 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
                 thisx->speedXZ = 11.0f;
 
                 if (thisx->params == 0xC8) {
-                    this->unk_1B6 = 7;
+                    this->actionTimer = 7;
                 } else {
-                    this->unk_1B6 = (s16)Math_Rand_ZeroFloat(3.0f) + 3;
+                    this->actionTimer = (s16)Math_Rand_ZeroFloat(3.0f) + 3;
                 }
 
                 for (i = 0; i < ARRAY_COUNT(this->unk_2EC); i++) {
@@ -237,6 +284,7 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
                 }
             }
         } else {
+            // light ball ( anything from 0x64 - 0xC7)
             thisx->update = func_808E1034;
             thisx->draw = func_808E1B54;
             thisx->speedXZ = 12.0f;
@@ -274,18 +322,18 @@ void BossGanon_Destroy(Actor* thisx, GlobalContext* globalCtx) {
 
 void func_808D779C(BossGanon* this, GlobalContext* globalCtx) {
     s32 pad;
-    s32 anim2BankIndex = Object_GetIndex(&globalCtx->objectCtx, OBJECT_GANON_ANIME2);
+    s32 animBankIndex = Object_GetIndex(&globalCtx->objectCtx, OBJECT_GANON_ANIME2);
 
-    if (anim2BankIndex < 0) {
+    if (animBankIndex < 0) {
         Actor_Kill(&this->actor);
         return;
     }
 
-    if (Object_IsLoaded(&globalCtx->objectCtx, anim2BankIndex)) {
+    if (Object_IsLoaded(&globalCtx->objectCtx, animBankIndex)) {
         this->actionFunc = func_808D7918;
         this->unk_198 = 1;
-        this->anim2BankIndex = anim2BankIndex;
-        gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[anim2BankIndex].segment);
+        this->animBankIndex = animBankIndex;
+        gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[animBankIndex].segment);
         SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06005FFC, 0.0f);
     } else {
         this->actionFunc = func_808D779C;
@@ -293,7 +341,7 @@ void func_808D779C(BossGanon* this, GlobalContext* globalCtx) {
 }
 
 // set intro cs camera position
-void func_808D787C(BossGanon* this, u8 camPosIndex) {
+void BossGanon_SetIntroCsCamera(BossGanon* this, u8 camPosIndex) {
     CutsceneCameraPosition* camPos = &D_808E4C94[camPosIndex];
 
     this->csCamEye.x = camPos->eye.x;
@@ -315,7 +363,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
     moveCam = false;
     player = PLAYER;
-    gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[this->anim2BankIndex].segment);
+    gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[this->animBankIndex].segment);
     sCape->unk_16B0 = -2.0f;
     sCape->unk_16B4 = 0.25f;
     sCape->unk_16B8 = -1.0f;
@@ -350,15 +398,15 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 player->actor.posRot.pos.z = 20.0f;
                 this->unk_71A = 0;
                 SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_060089F8, -5.0f);
-                this->unk_1CC = 1000.0f;
-                func_808D787C(this, 11);
+                this->animationLength = 1000.0f;
+                BossGanon_SetIntroCsCamera(this, 11);
                 this->unk_198 = 2;
                 this->unk_1BA = 0x6E;
                 gSaveContext.healthAccumulator = 0x140;
                 Audio_SetBGM(NA_BGM_STOP);
             } else {
                 this->unk_71A = 1;
-                func_808D787C(this, 0);
+                BossGanon_SetIntroCsCamera(this, 0);
                 this->introCsState = 1;
                 sZelda = (EnZl3*)Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ZL3, 0.0f,
                                                     220.0f, -150.0f, 0, 0, 0, 0x2000);
@@ -375,7 +423,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
             break;
         case 2:
-            func_808D787C(this, 1);
+            BossGanon_SetIntroCsCamera(this, 1);
 
             if (this->csTimer == 10) {
                 func_8002DF54(globalCtx, &this->actor, 5);
@@ -410,7 +458,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             func_8002DF54(globalCtx, &this->actor, 8);
             this->introCsState = 4;
-            func_808D787C(this, 2);
+            BossGanon_SetIntroCsCamera(this, 2);
             this->csTimer = 0;
         case 4: // 14E0
             if ((this->csTimer == 0) || (this->csTimer == 10) || (this->csTimer == 20)) {
@@ -425,7 +473,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if (this->csTimer == 60) {
-                func_808D787C(this, 1);
+                BossGanon_SetIntroCsCamera(this, 1);
                 this->introCsState = 5;
                 this->csTimer = 0;
             }
@@ -442,7 +490,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if (this->csTimer == 70) {
-                func_808D787C(this, 3);
+                BossGanon_SetIntroCsCamera(this, 3);
                 this->introCsState = 6;
                 this->csTimer = 0;
                 this->unk_1A0 = 3;
@@ -457,7 +505,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             this->introCsState = 7;
             this->csTimer = 0;
-            func_808D787C(this, 4);
+            BossGanon_SetIntroCsCamera(this, 4);
             this->unk_1AE = 0;
             this->unk_1E0 = 10.0f;
             this->unk_1D8 = 0.0f;
@@ -467,6 +515,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             globalCtx->envCtx.unk_D8 = 0.0f;
         case 7: // 165C
             this->unk_1A0 = 6;
+            // fade in links triforce
             Math_SmoothScaleMaxF(&this->unk_1D8, 255.0f, 1.0f, 10.0f);
             Math_SmoothScaleMaxF(&this->unk_1E0, 0.4f, 1.0f, 0.3f);
             Math_SmoothScaleMaxF(&this->unk_1D4, 170.0f, 1.0f, 2.55f);
@@ -480,7 +529,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 globalCtx->envCtx.unk_D8 = 1.0f;
             }
 
-            func_808D787C(this, 4);
+            BossGanon_SetIntroCsCamera(this, 4);
             this->csCamEye.x += 5.0f;
             this->csCamEye.z += -10.0f;
             this->csCamAt.x += 18.0f;
@@ -492,7 +541,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             break;
         case 8:
             this->unk_1A0 = 3;
-            func_808D787C(this, 5);
+            BossGanon_SetIntroCsCamera(this, 5);
 
             if (this->csTimer != 30) {
                 break;
@@ -511,7 +560,8 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             globalCtx->envCtx.unk_D8 = 0.0f;
         case 9:
             this->unk_1A0 = 7;
-            func_808D787C(this, 6);
+            BossGanon_SetIntroCsCamera(this, 6);
+            // fade in zeldas triforce
             Math_SmoothScaleMaxF(&this->unk_1D8, 255.0f, 1.0f, 10.0f);
             Math_SmoothScaleMaxF(&this->unk_1E0, 0.4f, 1.0f, 0.3f);
             Math_SmoothScaleMaxF(&this->unk_1D4, 170.0f, 1.0f, 2.55f);
@@ -534,9 +584,9 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->csTimer = 0;
             }
             break;
-        case 10: // 1918
+        case 10: // top view of playing the organ
             this->unk_1A0 = 3;
-            func_808D787C(this, 7);
+            BossGanon_SetIntroCsCamera(this, 7);
 
             if (this->csTimer == 40) {
                 this->introCsState = 11;
@@ -544,12 +594,12 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->unk_1D8 = 0.0f;
             }
             break;
-        case 11:
+        case 11: // link is healed
             this->unk_1A0 = 3;
-            func_808D787C(this, 8);
+            BossGanon_SetIntroCsCamera(this, 8);
             player->actor.posRot.pos.z = 20.0f;
 
-            if (this->csTimer == 0x14) {
+            if (this->csTimer == 20) {
                 func_8002DF54(globalCtx, &this->actor, 0x17);
                 Interface_ChangeAlpha(11); // show hearts only
             }
@@ -567,35 +617,35 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->csTimer = 0;
             }
             break;
-        case 12:
+        case 12: // first dialouge, back facing link
             this->unk_1A0 = 3;
-            func_808D787C(this, 9);
+            BossGanon_SetIntroCsCamera(this, 9);
 
             if (this->csTimer == 30) {
                 Audio_SetBGM(0x100100FF);
-                this->unk_1CC = SkelAnime_GetFrameCount(&D_06004F64.genericHeader);
+                this->animationLength = SkelAnime_GetFrameCount(&D_06004F64.genericHeader);
                 SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06004F64, -5.0f);
             }
 
-            if ((this->csTimer > 30) && func_800A56C8(&this->skelAnime, this->unk_1CC)) {
+            if ((this->csTimer > 30) && func_800A56C8(&this->skelAnime, this->animationLength)) {
                 SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06006AF4, 0.0f);
-                this->unk_1CC = 1000.0f;
+                this->animationLength = 1000.0f;
             }
 
             if (this->csTimer == 80) {
                 func_8010B680(globalCtx, 0x70C8, NULL);
             }
 
-            if ((this->csTimer >= 0xB5) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
+            if ((this->csTimer > 180) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
                 this->introCsState = 15;
                 this->csTimer = 0;
                 this->unk_71A = 0;
             }
             break;
-        case 15:
+        case 15: // side view of all 3 of them
             this->unk_1A0 = 0;
             globalCtx->envCtx.unk_D8 = 0.0f;
-            func_808D787C(this, 10);
+            BossGanon_SetIntroCsCamera(this, 10);
 
             if (this->csTimer == 30) {
                 func_8010B680(globalCtx, 0x70C9, NULL);
@@ -604,7 +654,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             if ((this->csTimer > 100) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
                 this->introCsState = 16;
                 this->csTimer = 0;
-                func_808D787C(this, 11);
+                BossGanon_SetIntroCsCamera(this, 11);
                 this->unk_198 = 2;
                 sZelda->unk_3C8 = 2;
                 this->unk_1BA = 0x6E;
@@ -617,12 +667,12 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             if (this->csTimer <= 20) {
                 if (this->csTimer == 20) {
                     SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06004304, -5.0f);
-                    this->unk_1CC = SkelAnime_GetFrameCount(&D_06004304.genericHeader);
+                    this->animationLength = SkelAnime_GetFrameCount(&D_06004304.genericHeader);
                 }
-            } else if (func_800A56C8(&this->skelAnime, this->unk_1CC)) {
+            } else if (func_800A56C8(&this->skelAnime, this->animationLength)) {
                 func_8010B680(globalCtx, 0x70CA, NULL);
                 SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_060089F8, -5.0f);
-                this->unk_1CC = 1000.0f;
+                this->animationLength = 1000.0f;
             }
 
             if ((this->csTimer > 100) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
@@ -630,12 +680,12 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->csTimer = 0;
             }
             break;
-        case 17:
+        case 17: // turns around
             this->unk_1A0 = 3;
 
             if (this->csTimer == 20) {
                 SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06001F58, -5.0f);
-                this->unk_1CC = SkelAnime_GetFrameCount(&D_06001F58.genericHeader);
+                this->animationLength = SkelAnime_GetFrameCount(&D_06001F58.genericHeader);
             }
 
             if (this->csTimer > 10) {
@@ -655,20 +705,20 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                     this->introCsState = 18;
                     this->csTimer = 0;
                     this->csCamFov = 60.0f;
-                    func_808D787C(this, 12);
+                    BossGanon_SetIntroCsCamera(this, 12);
                     func_8010B680(globalCtx, 0x70CB, NULL);
                 }
             }
             break;
-        case 18: // 1D28
+        case 18: // last dialog before triforce
             this->unk_1A0 = 3;
-            func_808D787C(this, 12);
+            BossGanon_SetIntroCsCamera(this, 12);
             this->csCamEye.y += -6.0f;
             this->csCamEye.z += 6.0f;
 
-            if (func_800A56C8(&this->skelAnime, this->unk_1CC - 5.0f)) {
+            if (func_800A56C8(&this->skelAnime, this->animationLength - 5.0f)) {
                 SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06003018, -5.0f);
-                this->unk_1CC = 1000.0f;
+                this->animationLength = 1000.0f;
             }
 
             if ((this->csTimer <= 50) || (func_8010BDBC(&globalCtx->msgCtx) != 0)) {
@@ -685,7 +735,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             this->unk_1D4 = 255.0f;
             this->unk_1DC = 100.0f;
             globalCtx->envCtx.unk_D8 = 0.0f;
-        case 19: // 1E44
+        case 19: // show triforce
             this->unk_1A0 = 8;
 
             if (this->csTimer >= 60) {
@@ -696,7 +746,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 }
             }
 
-            func_808D787C(this, 12);
+            BossGanon_SetIntroCsCamera(this, 12);
             this->csCamEye.y += -6.0f;
             this->csCamEye.z += 6.0f;
 
@@ -704,7 +754,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 if (this->csTimer == 30) {
                     func_80078884(NA_SE_EV_TRIFORCE_MARK);
                 }
-
+                // fade in ganondorfs triforce
                 Math_SmoothScaleMaxF(&this->unk_1D8, 255.0f, 1.0f, 10.0f);
                 Math_SmoothScaleMaxF(&this->unk_1E0, 0.6f, 1.0f, 0.3f);
                 Math_SmoothScaleMaxF(&this->unk_1D4, 170.0f, 1.0f, 2.55f);
@@ -735,7 +785,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DARKWAVE);
             }
             break;
-        case 20: // 2018
+        case 20: // zoom cam out
             this->unk_1A0 = 0xA;
             moveCam = true;
             Math_SmoothScaleMaxF(&this->csCamMaxStepScale, 0.15f, 1.0f, 0.015f);
@@ -767,7 +817,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             this->unk_1D8 = 0.0f;
             this->unk_1E8 = 0.16f;
             goto skip_sound_and_fx;
-        case 21: // 2110
+        case 21: // purple wave thing
             this->unk_1A0 = 0xB;
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DARKWAVE_M - SFX_FLAG);
             func_808D6BF0(globalCtx, 700.0f, 2);
@@ -798,7 +848,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             this->csCamAt.z = this->unk_1FC.z;
             this->unk_1E4 = 255.0f;
             this->unk_1E8 = 0.2f;
-        case 22:
+        case 22: // float, show title card, start fight
             if (this->csTimer > 30) {
                 this->unk_1A0 = 0;
             } else {
@@ -849,7 +899,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 sin = Math_Sins(this->csTimer * 1500);
                 this->actor.velocity.y = this->unk_1C8 * sin * 0.04f;
                 this->actor.posRot.pos.y += this->actor.velocity.y;
-                
+
                 cos = Math_Coss(this->csTimer * 1800);
                 this->actor.posRot.pos.x = this->unk_1C8 * cos * 0.5f;
                 this->actor.velocity.x = this->actor.posRot.pos.x - this->actor.pos4.x;
@@ -911,13 +961,13 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 // tower collapse
 void func_808D90F8(BossGanon* this, GlobalContext* globalCtx) {
     s32 pad;
-    s32 anim2BankIndex = Object_GetIndex(&globalCtx->objectCtx, OBJECT_GANON_ANIME2);
+    s32 animBankIndex = Object_GetIndex(&globalCtx->objectCtx, OBJECT_GANON_ANIME2);
 
-    if (Object_IsLoaded(&globalCtx->objectCtx, anim2BankIndex)) {
-        this->anim2BankIndex = anim2BankIndex;
-        gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[anim2BankIndex].segment);
+    if (Object_IsLoaded(&globalCtx->objectCtx, animBankIndex)) {
+        this->animBankIndex = animBankIndex;
+        gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[animBankIndex].segment);
         SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_0600EA00, 0.0f);
-        this->unk_1CC = SkelAnime_GetFrameCount(&D_0600EA00.genericHeader);
+        this->animationLength = SkelAnime_GetFrameCount(&D_0600EA00.genericHeader);
         this->actionFunc = func_808D933C;
         this->csTimer = 0;
         this->introCsState = 0x64;
@@ -933,25 +983,520 @@ void func_808D90F8(BossGanon* this, GlobalContext* globalCtx) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D933C.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DACE8.s")
+void func_808DACE8(BossGanon* this, GlobalContext* globalCtx) {
+    this->unk_1C2 = 0;
+    this->actionTimer = 40;
+    this->actionFunc = func_808DAD20;
+    this->actor.velocity.x = 0.0f;
+    this->actor.velocity.y = 0.0f;
+    this->unk_1D0 = 100.0f;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DAD20.s")
+void func_808DAD20(BossGanon* this, GlobalContext* globalCtx) {
+    s16 i;
+    f32 heightTarget;
+    f32 targetPosX;
+    f32 targetPosZ;
+    Vec3f sp6C;
+    Vec3f sp60;
+    Vec3f sp54;
+    Vec3f sp48;
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DB278.s")
+    SkelAnime_FrameUpdateMatrix(&this->skelAnime);
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DB2E8.s")
+    switch (this->unk_1C2) {
+        case 0:
+            targetPosX = Math_Sins(this->unk_1A2 * 1280);
+            targetPosX = targetPosX * this->unk_1D0;
+            targetPosZ = Math_Coss(this->unk_1A2 * 1792);
+            targetPosZ = targetPosZ * this->unk_1D0;
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DBAF0.s")
+            Math_SmoothScaleMaxF(&this->actor.posRot.pos.x, targetPosX, 0.05f, this->unk_1C8);
+            Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, targetPosZ, 0.05f, this->unk_1C8);
+            Math_SmoothScaleMaxF(&this->unk_1D0, 0.0f, 1, 1.5f);
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DBB78.s")
+            if (this->actionTimer == 5) {
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_HIT_GND);
+            }
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DBEC4.s")
+            if (this->actionTimer < 14) {
+                heightTarget = 250.0f;
+                this->unk_258 += (Math_Rand_ZeroFloat(M_PI / 2) + (M_PI / 2));
+                Math_SmoothScaleMaxF(&this->unk_254, 7.0f, 0.5f, 1.0f);
+                this->unk_1A0 = 1;
+            } else {
+                heightTarget = 200.0f;
+            }
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DBF30.s")
+            Math_SmoothScaleMaxF(&this->actor.posRot.pos.y, heightTarget, 0.1f, this->actor.velocity.y);
+            Math_SmoothScaleMaxF(&this->actor.velocity.y, 20.0f, 1.0f, 1.0f);
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DC0E8.s")
+            if (this->actionTimer == 14) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_06002D2C.genericHeader);
+                SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06002D2C, 0.0f);
+                this->actor.velocity.y = 0.0f;
+            }
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DC14C.s")
+            if (this->actionTimer == 0) {
+                this->unk_1C2 = 1;
+                this->actor.velocity.y = 0.0f;
+            }
+            break;
+        case 1:
+            sCape->unk_16C8 = -1.0f;
+            this->unk_1A0 = 1;
+            Math_SmoothScaleMaxF(&this->actor.velocity.y, -50.0f, 1.0f, 10.0f);
+            this->actor.posRot.pos.y += this->actor.velocity.y;
+
+            if (this->actor.posRot.pos.y < 60.0f) {
+                this->actor.posRot.pos.y = 60.0f;
+                this->unk_1C2 = 2;
+                this->actionTimer = 10;
+                func_80033E88(&this->actor, globalCtx, 0xA, 0x14); // rumble
+                this->unk_19C = 35;
+                this->unk_19E = 0;
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_HIT_GND_IMP);
+                this->unk_254 = 0.0f;
+                sp60 = this->unk_260;
+                sp60.y = 0.0f;
+
+                for (i = 0; i < 80; i++) {
+                    sp6C.x = Math_Rand_CenteredFloat(25.0f);
+                    sp6C.y = Math_Rand_ZeroFloat(17.0f);
+                    sp6C.z = Math_Rand_CenteredFloat(25.0f);
+                    // impact light thing?
+                    func_808D6AAC(globalCtx, &sp60, &sp6C, &D_808E4C6C, Math_Rand_ZeroFloat(300.0f) + 500.0f, 13.0f,
+                                  0x1E);
+                }
+            }
+            break;
+        case 2:
+            this->unk_1A0 = 1;
+
+            if (this->actionTimer == 0) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_0600343C.genericHeader);
+                SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_0600343C, 0.0f);
+                this->unk_1C2 = 3;
+                this->unk_19F = 1;
+                this->actor.velocity.y = 0.0f;
+            }
+            break;
+        case 3:
+            Math_SmoothScaleMaxF(&this->actor.posRot.pos.y, 150.0f, 0.1f, this->actor.velocity.y);
+            Math_SmoothScaleMaxF(&this->actor.velocity.y, 20.0f, 1.0f, 1.0f);
+
+            if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_06008A88.genericHeader);
+                SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06008A88, 0.0f);
+                SkelAnime_FrameUpdateMatrix(&this->skelAnime);
+                sCape->unk_16C4 = 18.0f;
+                Audio_PlayActorSound2(&this->actor, NA_SE_EV_GANON_MANTLE);
+                this->unk_1C2 = 4;
+            }
+            break;
+        case 4:
+            Math_SmoothScaleMaxF(&this->actor.posRot.pos.y, 150.0f, 0.1f, this->actor.velocity.y);
+            Math_SmoothScaleMaxF(&this->actor.velocity.y, 20.0f, 1.0f, 1.0f);
+
+            if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+                func_808DBAF0(this, globalCtx);
+            }
+            break;
+    }
+
+    if ((this->unk_19C == 35) || (this->unk_19C == 30) || (this->unk_19C == 25)) {
+        sp54 = this->actor.posRot.pos;
+        sp54.y = 0.0f;
+        func_808D6E54(globalCtx, &sp54, 0, 3.0f, this->unk_19C - 25);
+    }
+
+    if (this->unk_19C == 35) {
+        sp48 = this->actor.posRot.pos;
+        sp48.y = 0.0f;
+        func_808D6F3C(globalCtx, &sp48, 0, 3.0f);
+    }
+}
+
+void func_808DB278(BossGanon* this, GlobalContext* globalCtx) {
+    this->unk_1C2 = 0;
+    this->actionTimer = 30;
+    this->actor.velocity.x = 0.0f;
+    this->actor.velocity.y = 0.0f;
+    this->unk_1D0 = 100.0f;
+    this->unk_1AA = Math_Rand_ZeroFloat(20000.0f);
+    this->unk_1AC = 0;
+    this->actionFunc = func_808DB2E8;
+}
+
+void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx) {
+    s32 pad;
+    f32 targetPosX;
+    f32 targetPosZ;
+    Vec3f sp80;
+    Vec3f sp74;
+    Vec3f sp68;
+    s16 i;
+
+    SkelAnime_FrameUpdateMatrix(&this->skelAnime);
+
+    targetPosX = Math_Sins(this->unk_1A2 * 1280);
+    targetPosX = targetPosX * this->unk_1D0;
+    targetPosZ = Math_Coss(this->unk_1A2 * 1792);
+    targetPosZ = targetPosZ * this->unk_1D0;
+
+    Math_SmoothScaleMaxF(&this->actor.posRot.pos.x, targetPosX, 0.05f, this->unk_1C8);
+    Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, targetPosZ, 0.05, this->unk_1C8);
+    Math_SmoothScaleMaxF(&this->unk_1D0, 0.0f, 1.0f, 1.5f);
+    Math_SmoothScaleMaxF(&this->actor.posRot.pos.y, 200.0f, 0.05f, this->actor.velocity.y);
+    Math_SmoothScaleMaxF(&this->actor.velocity.y, 20.0f, 1.0f, 1.0f);
+
+    switch (this->unk_1C2) {
+        case 0:
+            if (this->actionTimer == 0) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_06001B0C.genericHeader);
+                SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06001B0C, 0.0f);
+                this->unk_1C2 = 1;
+            }
+            break;
+        case 1:
+            if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_06001FF8.genericHeader);
+                SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06001FF8, 0.0f);
+                this->unk_1C2 = 2;
+                this->actionTimer = 100;
+            }
+            break;
+        case 2:
+            this->unk_1A0 = 2;
+            Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_CHARGE_MASIC - SFX_FLAG);
+            this->unk_278.x = this->unk_2EC[0].x;
+            this->unk_278.y = this->unk_2EC[0].y + 50.0f + 30.0f;
+            this->unk_278.z = this->unk_2EC[0].z;
+
+            Math_SmoothScaleMaxF(&this->unk_284, 0.25f, 0.1f, 0.006f);
+            Math_SmoothScaleMaxF(&this->unk_288, 255.0f, 1.0f, 255.0f);
+            Math_SmoothScaleMaxF(&this->unk_28C, 0.25f, 0.1f, 0.006f);
+
+            if ((this->actionTimer > 20) && (this->actionTimer < 60)) {
+                Math_SmoothScaleMaxF(&this->unk_290, 255.0f, 1.0f, 15.0f);
+            }
+
+            if (this->actionTimer == 0) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_06000540.genericHeader);
+                SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06000540, 0.0f);
+                this->unk_1C2 = 3;
+                this->actionTimer = 6;
+                this->unk_1B8 = 0xF;
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DARKWAVE);
+                break;
+            }
+
+            Math_SmoothScaleMaxS(&this->actor.shape.rot.y, this->actor.yawTowardsLink, 5, 0x3E8);
+
+            if (this->actionTimer < -4) {
+                for (i = 0; i < ARRAY_COUNT(this->unk_294); i++) {
+                    Math_SmoothScaleMaxF(&this->unk_294[i], 0.0f, 1.0f, 40.0f);
+                }
+            } else if ((this->actionTimer >= 7) && (this->actionTimer < 26)) {
+                if (this->unk_1AC < ARRAY_COUNT(this->unk_294)) {
+                    this->unk_1AC++;
+                }
+
+                for (i = 0; i < this->unk_1AC; i++) {
+                    Math_SmoothScaleMaxF(&this->unk_294[i], 200.0f, 1.0f, 40.0f);
+                }
+            }
+
+            if (this->actionTimer <= 30) {
+                Math_SmoothScaleMaxF(&this->unk_284, 0.4f, 0.5f, 0.017f);
+                this->unk_28C = this->unk_284;
+            }
+
+            if (this->actionTimer <= 30) {
+                Math_SmoothScaleMaxF(&this->unk_2D0, 45.0f, 0.1f, 10.0f);
+                this->unk_66E = 1;
+                this->unk_66C = 2;
+                D_8015FCF8 = this->unk_278;
+            }
+
+            if (this->actionTimer == 47) {
+                this->unk_274 = 1;
+            }
+
+            if (this->actionTimer == 46) {
+                this->unk_274 = 2;
+            }
+
+            if (this->actionTimer == 45) {
+                this->unk_274 = 3;
+            }
+
+            if (this->actionTimer == 44) {
+                this->unk_274 = 4;
+            }
+
+            if (this->actionTimer == 43) {
+                this->unk_274 = 5;
+            }
+
+            if (this->actionTimer == 42) {
+                this->unk_274 = 6;
+            }
+
+            if (this->actionTimer > 30) {
+                sp74.x = 0.0f;
+                sp74.y = Math_Rand_ZeroFloat(10.0f) + 150.0f;
+                sp74.z = 0.0f;
+
+                Matrix_RotateY((this->actor.yawTowardsLink / 32768.0f) * 3.1415927f, MTXMODE_NEW);
+                Matrix_RotateZ(Math_Rand_ZeroFloat(65536.0f), MTXMODE_APPLY);
+                Matrix_MultVec3f(&sp74, &sp68);
+
+                sp80.x = this->unk_278.x + sp68.x;
+                sp80.y = this->unk_278.y + sp68.y;
+                sp80.z = this->unk_278.z + sp68.z;
+
+                func_808D7034(globalCtx, &sp80, 20.0f);
+            }
+            break;
+        case 3:
+            this->unk_1A0 = 2;
+            for (i = 0; i < ARRAY_COUNT(this->unk_294); i++) {
+                Math_SmoothScaleMaxF(&this->unk_294[i], 0.0f, 1.0f, 40.0f);
+            }
+
+            if (this->actionTimer == 1) {
+                sCape->unk_16C0 = 15.0f;
+                Audio_PlayActorSound2(&this->actor, NA_SE_EV_GANON_MANTLE);
+            }
+
+            if (this->actionTimer == 0) {
+                Math_SmoothDownscaleMaxF(&this->unk_284, 1.0f, 0.08f);
+                this->unk_28C = this->unk_284;
+                Math_SmoothDownscaleMaxF(&this->unk_2D0, 1.0f, 10.0f);
+                Math_SmoothScaleMaxF(&this->unk_278.x, this->unk_1FC.x, 0.5f, 30.0f);
+                Math_SmoothScaleMaxF(&this->unk_278.y, this->unk_1FC.y, 0.5f, 30.0f);
+                Math_SmoothScaleMaxF(&this->unk_278.z, this->unk_1FC.z, 0.5f, 30.0f);
+            }
+
+            if (this->unk_1B8 == 0) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_06000FE8.genericHeader);
+                SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06000FE8, 0.0f);
+                this->unk_1C2 = 4;
+                this->unk_288 = 0.0f;
+                this->unk_290 = 0.0f;
+                this->unk_284 = 0.0f;
+                this->unk_28C = 0.0f;
+            }
+            break;
+        case 4:
+            this->unk_1A0 = 2;
+            if (func_800A56C8(&this->skelAnime, 5.0f)) {
+                for (i = 0; i < 5; i++) {
+                    Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_BOSS_GANON, this->unk_1FC.x,
+                                       this->unk_1FC.y, this->unk_1FC.z, 0, this->actor.yawTowardsLink, 0, 0x104 + i);
+                }
+
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_BIGMASIC);
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_THROW_BIG);
+            }
+
+            if (func_800A56C8(&this->skelAnime, 3.0f)) {
+                sCape->unk_16C4 = 26.0f;
+                Audio_PlayActorSound2(&this->actor, NA_SE_EV_GANON_MANTLE);
+            }
+
+            if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+                this->animationLength = SkelAnime_GetFrameCount(&D_06001440.genericHeader);
+                SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06001440, 0.0f);
+                this->unk_1C2 = 5;
+            }
+            break;
+        case 5:
+            this->unk_1A0 = 2;
+
+            if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+                func_808DBAF0(this, globalCtx);
+            }
+            break;
+    }
+}
+
+void func_808DBAF0(BossGanon* this, GlobalContext* globalCtx) {
+    func_808D712C(this, globalCtx, OBJECT_GANON_ANIME1);
+    SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06009A14, -10.0f);
+    this->actionFunc = func_808DBB78;
+    this->unk_1C8 = 0.0f;
+    this->actionTimer = (s16)Math_Rand_ZeroFloat(64.0f) + 30;
+    this->unk_1C2 = 0;
+    sCape->unk_16AC = 2.0f;
+}
+
+void func_808DBB78(BossGanon* this, GlobalContext* globalCtx) {
+    f32 sin;
+    s32 pad;
+    f32 cos;
+    Player* player = PLAYER;
+
+    this->unk_199 = 1;
+
+    sCape->unk_16B0 = -3.0f;
+    sCape->unk_16B4 = 0.25f;
+    sCape->unk_16B8 = -3.0f;
+    sCape->unk_16D0 = 20.0f;
+
+    SkelAnime_FrameUpdateMatrix(&this->skelAnime);
+
+    if ((this->unk_1C2 == 0) && !(player->actor.posRot.pos.y < 0.0f)) {
+        if (!(player->stateFlags1 & 0x2000) && (fabsf(player->actor.posRot.pos.x) < 110.0f) &&
+            (fabsf(player->actor.posRot.pos.z) < 110.0f)) {
+            func_808DACE8(this, globalCtx);
+        } else if ((this->actionTimer == 0) && !(player->stateFlags1 & 0x2000)) {
+            this->actionTimer = (s16)Math_Rand_ZeroFloat(30.0f) + 30;
+
+            if ((s8)this->actor.colChkInfo.health >= 20) {
+                func_808DBEC4(this, globalCtx);
+            } else if (Math_Rand_ZeroOne() >= 0.5f) {
+                if ((Math_Rand_ZeroOne() >= 0.5f) || (this->actor.xzDistFromLink > 350.0f)) {
+                    func_808DB278(this, globalCtx);
+                } else {
+                    func_808DACE8(this, globalCtx);
+                }
+            } else {
+                func_808DBEC4(this, globalCtx);
+            }
+        }
+    }
+
+    sin = Math_Sins(this->unk_1A2 * 1280) * 100.0f;
+    cos = Math_Coss(this->unk_1A2 * 1792) * 100.0f;
+
+    Math_SmoothScaleMaxF(&this->actor.posRot.pos.x, sin, 0.05f, this->unk_1C8);
+    Math_SmoothScaleMaxF(&this->actor.posRot.pos.y, 150.0f, 0.05f, this->unk_1C8 * 0.2f);
+    Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, cos, 0.05f, this->unk_1C8);
+    Math_SmoothScaleMaxF(&this->unk_1C8, 50.0f, 1.0f, 0.5f);
+
+    this->actor.velocity.x = this->actor.posRot.pos.x - this->actor.pos4.x;
+    this->actor.velocity.z = this->actor.posRot.pos.z - this->actor.pos4.z;
+
+    sin = Math_Sins(this->unk_1A2 * 1500);
+    this->actor.velocity.y = this->unk_1C8 * sin * 0.04f;
+    this->actor.posRot.pos.y += this->actor.velocity.y;
+
+    Math_SmoothScaleMaxS(&this->actor.shape.rot.y, this->actor.yawTowardsLink, 5, 0xBB8);
+    func_80078914(&this->actor.projectedPos, NA_SE_EN_FANTOM_FLOAT - SFX_FLAG);
+}
+
+void func_808DBEC4(BossGanon* this, GlobalContext* globalCtx) {
+    func_808D712C(this, globalCtx, OBJECT_GANON_ANIME1);
+    this->animationLength = SkelAnime_GetFrameCount(&D_0600AA24.genericHeader);
+    SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_0600AA24, -3.0f);
+    this->actionFunc = func_808DBF30;
+    this->actionTimer = 25;
+}
+
+void func_808DBF30(BossGanon* this, GlobalContext* globalCtx) {
+    SkelAnime_FrameUpdateMatrix(&this->skelAnime);
+
+    sCape->unk_16B0 = -3.0f;
+    sCape->unk_16B4 = 1.25f;
+    sCape->unk_16B8 = -2.0f;
+    sCape->unk_16D0 = 10.0f;
+
+    if (this->actionTimer < 17) {
+        this->unk_1A0 = 1;
+    }
+
+    if (this->actionTimer == 17) {
+        this->unk_26C = 0xA;
+        this->unk_270 = Math_Rand_ZeroFloat(M_PI);
+        Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_SPARK);
+    }
+
+    if (this->actionTimer < 10) {
+        this->unk_258 += (Math_Rand_ZeroFloat(M_PI / 2) + (M_PI / 2));
+        Math_SmoothScaleMaxF(&this->unk_254, 10.0f, 0.5f, 1.25f);
+
+        if (this->actionTimer == 0) {
+            func_808DC0E8(this, globalCtx);
+        }
+    }
+
+    Math_SmoothScaleMaxS(&this->actor.shape.rot.y, this->actor.yawTowardsLink, 5, 0x7D0);
+
+    this->actor.posRot.pos.x += this->actor.velocity.x;
+    this->actor.posRot.pos.z += this->actor.velocity.z;
+
+    Math_SmoothDownscaleMaxF(&this->actor.velocity.x, 1.0f, 0.5f);
+    Math_SmoothDownscaleMaxF(&this->actor.velocity.z, 1.0f, 0.5f);
+
+    this->actor.velocity.y = Math_Sins(this->unk_1A2 * 1500) * 2.0f;
+    this->actor.posRot.pos.y += this->actor.velocity.y;
+}
+
+void func_808DC0E8(BossGanon* this, GlobalContext* globalCtx) {
+    func_808D712C(this, globalCtx, OBJECT_GANON_ANIME1);
+    this->animationLength = SkelAnime_GetFrameCount(&D_0600738C.genericHeader);
+    SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_0600738C, 0.0f);
+    this->actionFunc = func_808DC14C;
+}
+
+void func_808DC14C(BossGanon* this, GlobalContext* globalCtx) {
+    s16 rand;
+
+    SkelAnime_FrameUpdateMatrix(&this->skelAnime);
+    Math_SmoothDownscaleMaxF(&this->unk_254, 1.0f, 0.2f);
+
+    switch (this->unk_1C2) {
+        case 0:
+            this->unk_1A0 = 1;
+
+            if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+                this->unk_1C2 = 1;
+                SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06009A14, 0.0f);
+            }
+
+            if (this->skelAnime.animCurrentFrame <= 12.0f) {
+                this->unk_66E = 2;
+                this->unk_66C = 2;
+                D_8015FCF8 = this->unk_260;
+            }
+
+            if (func_800A56C8(&this->skelAnime, 12.0f)) {
+                this->unk_254 = 0.0f;
+            }
+
+            if (func_800A56C8(&this->skelAnime, 11.0f) != 0) {
+                this->unk_25C = 1;
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_THROW);
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_THROW_MASIC);
+                Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_BOSS_GANON, this->unk_260.x,
+                                   this->unk_260.y, this->unk_260.z, 0, 0, 0, 0x64);
+            }
+            break;
+        case 1:
+            if (this->unk_1C0 != 0) {
+                rand = Math_Rand_ZeroOne() * 1.99f;
+                this->animationLength = SkelAnime_GetFrameCount(&D_808E4D38[rand]->genericHeader);
+                SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, D_808E4D38[rand], 0.0f);
+                sCape->unk_16BC = D_808E4D40[rand];
+                Audio_PlayActorSound2(&this->actor, NA_SE_EV_GANON_MANTLE);
+                this->unk_1C0 = 0;
+            }
+            break;
+    }
+
+    Math_SmoothScaleMaxS(&this->actor.shape.rot.y, this->actor.yawTowardsLink, 5, 0x7D0);
+
+    this->actor.posRot.pos.x += this->actor.velocity.x;
+    this->actor.posRot.pos.z += this->actor.velocity.z;
+
+    Math_SmoothScaleMaxMinF(&this->actor.velocity.x, 0.0f, 1.0f, 0.5f, 0.0f);
+    Math_SmoothScaleMaxMinF(&this->actor.velocity.z, 0.0f, 1.0f, 0.5f, 0.0f);
+
+    this->actor.velocity.y = Math_Sins(this->unk_1A2 * 1500) * 2.0f;
+    this->actor.posRot.pos.y += this->actor.velocity.y;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DC420.s")
 

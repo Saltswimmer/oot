@@ -170,7 +170,7 @@ glabel L808D79E8
 /* 01268 808D7AD8 44818000 */  mtc1    $at, $f16                  ## $f16 = 1000.00
 /* 0126C 808D7ADC 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
 /* 01270 808D7AE0 2405000B */  addiu   $a1, $zero, 0x000B         ## $a1 = 0000000B
-/* 01274 808D7AE4 0C235E1F */  jal     func_808D787C
+/* 01274 808D7AE4 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01278 808D7AE8 E61001CC */  swc1    $f16, 0x01CC($s0)          ## 000001CC
 /* 0127C 808D7AEC 24020002 */  addiu   $v0, $zero, 0x0002         ## $v0 = 00000002
 /* 01280 808D7AF0 240B006E */  addiu   $t3, $zero, 0x006E         ## $t3 = 0000006E
@@ -187,7 +187,7 @@ glabel L808D79E8
 /* 012A8 808D7B18 1000001B */  beq     $zero, $zero, .L808D7B88
 /* 012AC 808D7B1C 24841C24 */  addiu   $a0, $a0, 0x1C24           ## $a0 = 00001C24
 .L808D7B20:
-/* 012B0 808D7B20 0C235E1F */  jal     func_808D787C
+/* 012B0 808D7B20 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 012B4 808D7B24 A20D071A */  sb      $t5, 0x071A($s0)           ## 0000071A
 /* 012B8 808D7B28 8FA60074 */  lw      $a2, 0x0074($sp)
 /* 012BC 808D7B2C 240E0001 */  addiu   $t6, $zero, 0x0001         ## $t6 = 00000001
@@ -247,7 +247,7 @@ glabel L808D7BD4
 /* 01384 808D7BF4 AE000674 */  sw      $zero, 0x0674($s0)         ## 00000674
 glabel L808D7BF8
 /* 01388 808D7BF8 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 0138C 808D7BFC 0C235E1F */  jal     func_808D787C
+/* 0138C 808D7BFC 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01390 808D7C00 24050001 */  addiu   $a1, $zero, 0x0001         ## $a1 = 00000001
 /* 01394 808D7C04 8E030674 */  lw      $v1, 0x0674($s0)           ## 00000674
 /* 01398 808D7C08 2401000A */  addiu   $at, $zero, 0x000A         ## $at = 0000000A
@@ -336,7 +336,7 @@ glabel L808D7C90
 /* 014C8 808D7D38 24180004 */  addiu   $t8, $zero, 0x0004         ## $t8 = 00000004
 /* 014CC 808D7D3C A6180678 */  sh      $t8, 0x0678($s0)           ## 00000678
 /* 014D0 808D7D40 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 014D4 808D7D44 0C235E1F */  jal     func_808D787C
+/* 014D4 808D7D44 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 014D8 808D7D48 24050002 */  addiu   $a1, $zero, 0x0002         ## $a1 = 00000002
 /* 014DC 808D7D4C AE000674 */  sw      $zero, 0x0674($s0)         ## 00000674
 glabel L808D7D50
@@ -373,7 +373,7 @@ glabel L808D7D50
 /* 01548 808D7DB8 2401003C */  addiu   $at, $zero, 0x003C         ## $at = 0000003C
 /* 0154C 808D7DBC 55210446 */  bnel    $t1, $at, .L808D8ED8
 /* 01550 808D7DC0 8605067A */  lh      $a1, 0x067A($s0)           ## 0000067A
-/* 01554 808D7DC4 0C235E1F */  jal     func_808D787C
+/* 01554 808D7DC4 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01558 808D7DC8 24050001 */  addiu   $a1, $zero, 0x0001         ## $a1 = 00000001
 /* 0155C 808D7DCC 240A0005 */  addiu   $t2, $zero, 0x0005         ## $t2 = 00000005
 /* 01560 808D7DD0 A60A0678 */  sh      $t2, 0x0678($s0)           ## 00000678
@@ -404,7 +404,7 @@ glabel L808D7DDC
 /* 015B8 808D7E28 24010046 */  addiu   $at, $zero, 0x0046         ## $at = 00000046
 /* 015BC 808D7E2C 14610429 */  bne     $v1, $at, .L808D8ED4
 /* 015C0 808D7E30 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 015C4 808D7E34 0C235E1F */  jal     func_808D787C
+/* 015C4 808D7E34 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 015C8 808D7E38 24050003 */  addiu   $a1, $zero, 0x0003         ## $a1 = 00000003
 /* 015CC 808D7E3C 240D0006 */  addiu   $t5, $zero, 0x0006         ## $t5 = 00000006
 /* 015D0 808D7E40 240E0003 */  addiu   $t6, $zero, 0x0003         ## $t6 = 00000003
@@ -422,7 +422,7 @@ glabel L808D7E54
 /* 015FC 808D7E6C A6190678 */  sh      $t9, 0x0678($s0)           ## 00000678
 /* 01600 808D7E70 AE000674 */  sw      $zero, 0x0674($s0)         ## 00000674
 /* 01604 808D7E74 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 01608 808D7E78 0C235E1F */  jal     func_808D787C
+/* 01608 808D7E78 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 0160C 808D7E7C 24050004 */  addiu   $a1, $zero, 0x0004         ## $a1 = 00000004
 /* 01610 808D7E80 3C014120 */  lui     $at, 0x4120                ## $at = 41200000
 /* 01614 808D7E84 44812000 */  mtc1    $at, $f4                   ## $f4 = 10.00
@@ -491,7 +491,7 @@ glabel L808D7ECC
 /* 016F8 808D7F68 002B0821 */  addu    $at, $at, $t3
 /* 016FC 808D7F6C E4320AFC */  swc1    $f18, 0x0AFC($at)          ## 00010AFC
 .L808D7F70:
-/* 01700 808D7F70 0C235E1F */  jal     func_808D787C
+/* 01700 808D7F70 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01704 808D7F74 24050004 */  addiu   $a1, $zero, 0x0004         ## $a1 = 00000004
 /* 01708 808D7F78 3C0140A0 */  lui     $at, 0x40A0                ## $at = 40A00000
 /* 0170C 808D7F7C 44813000 */  mtc1    $at, $f6                   ## $f6 = 5.00
@@ -519,7 +519,7 @@ glabel L808D7FD0
 /* 01760 808D7FD0 240E0003 */  addiu   $t6, $zero, 0x0003         ## $t6 = 00000003
 /* 01764 808D7FD4 A20E01A0 */  sb      $t6, 0x01A0($s0)           ## 000001A0
 /* 01768 808D7FD8 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 0176C 808D7FDC 0C235E1F */  jal     func_808D787C
+/* 0176C 808D7FDC 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01770 808D7FE0 24050005 */  addiu   $a1, $zero, 0x0005         ## $a1 = 00000005
 /* 01774 808D7FE4 8E0F0674 */  lw      $t7, 0x0674($s0)           ## 00000674
 /* 01778 808D7FE8 2401001E */  addiu   $at, $zero, 0x001E         ## $at = 0000001E
@@ -558,7 +558,7 @@ glabel L808D8068
 /* 017F8 808D8068 240A0007 */  addiu   $t2, $zero, 0x0007         ## $t2 = 00000007
 /* 017FC 808D806C A20A01A0 */  sb      $t2, 0x01A0($s0)           ## 000001A0
 /* 01800 808D8070 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 01804 808D8074 0C235E1F */  jal     func_808D787C
+/* 01804 808D8074 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01808 808D8078 24050006 */  addiu   $a1, $zero, 0x0006         ## $a1 = 00000006
 /* 0180C 808D807C 260401D8 */  addiu   $a0, $s0, 0x01D8           ## $a0 = 000001D8
 /* 01810 808D8080 3C05437F */  lui     $a1, 0x437F                ## $a1 = 437F0000
@@ -623,7 +623,7 @@ glabel L808D814C
 /* 018DC 808D814C 24180003 */  addiu   $t8, $zero, 0x0003         ## $t8 = 00000003
 /* 018E0 808D8150 A21801A0 */  sb      $t8, 0x01A0($s0)           ## 000001A0
 /* 018E4 808D8154 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 018E8 808D8158 0C235E1F */  jal     func_808D787C
+/* 018E8 808D8158 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 018EC 808D815C 24050007 */  addiu   $a1, $zero, 0x0007         ## $a1 = 00000007
 /* 018F0 808D8160 8E190674 */  lw      $t9, 0x0674($s0)           ## 00000674
 /* 018F4 808D8164 24010028 */  addiu   $at, $zero, 0x0028         ## $at = 00000028
@@ -639,7 +639,7 @@ glabel L808D8188
 /* 01918 808D8188 24090003 */  addiu   $t1, $zero, 0x0003         ## $t1 = 00000003
 /* 0191C 808D818C A20901A0 */  sb      $t1, 0x01A0($s0)           ## 000001A0
 /* 01920 808D8190 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 01924 808D8194 0C235E1F */  jal     func_808D787C
+/* 01924 808D8194 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01928 808D8198 24050008 */  addiu   $a1, $zero, 0x0008         ## $a1 = 00000008
 /* 0192C 808D819C 3C0141A0 */  lui     $at, 0x41A0                ## $at = 41A00000
 /* 01930 808D81A0 44818000 */  mtc1    $at, $f16                  ## $f16 = 20.00
@@ -681,7 +681,7 @@ glabel L808D8220
 /* 019B0 808D8220 240D0003 */  addiu   $t5, $zero, 0x0003         ## $t5 = 00000003
 /* 019B4 808D8224 A20D01A0 */  sb      $t5, 0x01A0($s0)           ## 000001A0
 /* 019B8 808D8228 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 019BC 808D822C 0C235E1F */  jal     func_808D787C
+/* 019BC 808D822C 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 019C0 808D8230 24050009 */  addiu   $a1, $zero, 0x0009         ## $a1 = 00000009
 /* 019C4 808D8234 8E030674 */  lw      $v1, 0x0674($s0)           ## 00000674
 /* 019C8 808D8238 2401001E */  addiu   $at, $zero, 0x001E         ## $at = 0000001E
@@ -749,7 +749,7 @@ glabel L808D8308
 /* 01AA8 808D8318 002F0821 */  addu    $at, $at, $t7
 /* 01AAC 808D831C 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
 /* 01AB0 808D8320 2405000A */  addiu   $a1, $zero, 0x000A         ## $a1 = 0000000A
-/* 01AB4 808D8324 0C235E1F */  jal     func_808D787C
+/* 01AB4 808D8324 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01AB8 808D8328 E4280AFC */  swc1    $f8, 0x0AFC($at)           ## 00010AFC
 /* 01ABC 808D832C 8E030674 */  lw      $v1, 0x0674($s0)           ## 00000674
 /* 01AC0 808D8330 2401001E */  addiu   $at, $zero, 0x001E         ## $at = 0000001E
@@ -770,7 +770,7 @@ glabel L808D8308
 /* 01AF8 808D8368 A6180678 */  sh      $t8, 0x0678($s0)           ## 00000678
 /* 01AFC 808D836C AE000674 */  sw      $zero, 0x0674($s0)         ## 00000674
 /* 01B00 808D8370 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 01B04 808D8374 0C235E1F */  jal     func_808D787C
+/* 01B04 808D8374 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01B08 808D8378 2405000B */  addiu   $a1, $zero, 0x000B         ## $a1 = 0000000B
 /* 01B0C 808D837C 24020002 */  addiu   $v0, $zero, 0x0002         ## $v0 = 00000002
 /* 01B10 808D8380 A2020198 */  sb      $v0, 0x0198($s0)           ## 00000198
@@ -912,7 +912,7 @@ glabel L808D8468
 /* 01CFC 808D856C A6180678 */  sh      $t8, 0x0678($s0)           ## 00000678
 /* 01D00 808D8570 AE000674 */  sw      $zero, 0x0674($s0)         ## 00000674
 /* 01D04 808D8574 2405000C */  addiu   $a1, $zero, 0x000C         ## $a1 = 0000000C
-/* 01D08 808D8578 0C235E1F */  jal     func_808D787C
+/* 01D08 808D8578 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01D0C 808D857C E60606F4 */  swc1    $f6, 0x06F4($s0)           ## 000006F4
 /* 01D10 808D8580 8FA40074 */  lw      $a0, 0x0074($sp)
 /* 01D14 808D8584 240570CB */  addiu   $a1, $zero, 0x70CB         ## $a1 = 000070CB
@@ -924,7 +924,7 @@ glabel L808D8598
 /* 01D28 808D8598 24190003 */  addiu   $t9, $zero, 0x0003         ## $t9 = 00000003
 /* 01D2C 808D859C A21901A0 */  sb      $t9, 0x01A0($s0)           ## 000001A0
 /* 01D30 808D85A0 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
-/* 01D34 808D85A4 0C235E1F */  jal     func_808D787C
+/* 01D34 808D85A4 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01D38 808D85A8 2405000C */  addiu   $a1, $zero, 0x000C         ## $a1 = 0000000C
 /* 01D3C 808D85AC 3C01C0C0 */  lui     $at, 0xC0C0                ## $at = C0C00000
 /* 01D40 808D85B0 44815000 */  mtc1    $at, $f10                  ## $f10 = -6.00
@@ -1011,7 +1011,7 @@ glabel L808D86B4
 /* 01E7C 808D86EC 002E0821 */  addu    $at, $at, $t6
 /* 01E80 808D86F0 E4320AFC */  swc1    $f18, 0x0AFC($at)          ## 00010AFC
 .L808D86F4:
-/* 01E84 808D86F4 0C235E1F */  jal     func_808D787C
+/* 01E84 808D86F4 0C235E1F */  jal     BossGanon_SetIntroCsCamera
 /* 01E88 808D86F8 2405000C */  addiu   $a1, $zero, 0x000C         ## $a1 = 0000000C
 /* 01E8C 808D86FC 3C01C0C0 */  lui     $at, 0xC0C0                ## $at = C0C00000
 /* 01E90 808D8700 44813000 */  mtc1    $at, $f6                   ## $f6 = -6.00
