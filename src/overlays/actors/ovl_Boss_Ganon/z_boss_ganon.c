@@ -305,16 +305,15 @@ void func_808D787C(BossGanon* this, u8 camPosIndex) {
     this->csCamAt.z = camPos->at.z;
 }
 
-//#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D7918.s")
 void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
-    u8 zoomOut;
+    u8 moveCam;
     Player* player;
-    f32 temp_f2;
-    f32 temp_f8;
-    f32 temp_f10;
+    s32 pad;
+    f32 sin;
+    f32 cos;
     Camera* gameplayCam;
 
-    zoomOut = false;
+    moveCam = false;
     player = PLAYER;
     gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[this->anim2BankIndex].segment);
     sCape->unk_16B0 = -2.0f;
@@ -334,14 +333,14 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             this->actor.posRot.pos.y = 112.0f;
             this->actor.posRot.pos.z = -333.0f;
 
-            this->actor.shape.rot.y = 0;
             this->actor.shape.unk_08 = -7000.0f;
+            this->actor.shape.rot.y = 0;
 
             func_80064520(globalCtx, &globalCtx->csCtx);
-            func_8002DF54(globalCtx, this, 8); // set player csMode
+            func_8002DF54(globalCtx, &this->actor, 8);
             this->csCamIndex = Gameplay_CreateSubCamera(globalCtx);
-            Gameplay_ChangeCameraStatus(globalCtx, 0, 1);                // set main cam to wait
-            Gameplay_ChangeCameraStatus(globalCtx, this->csCamIndex, 7); // set cs Cam to active
+            Gameplay_ChangeCameraStatus(globalCtx, 0, 1);
+            Gameplay_ChangeCameraStatus(globalCtx, this->csCamIndex, 7);
             this->csCamFov = 60.0f;
 
             if (gSaveContext.eventChkInf[7] & 0x100) {
@@ -361,8 +360,8 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->unk_71A = 1;
                 func_808D787C(this, 0);
                 this->introCsState = 1;
-                sZelda = Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ZL3, 0.0f, 220.0f,
-                                            -150.0f, 0, 0, 0, 0x2000);
+                sZelda = (EnZl3*)Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ZL3, 0.0f,
+                                                    220.0f, -150.0f, 0, 0, 0, 0x2000);
             }
 
             Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_GANON_ORGAN, 0.0f, 0.0f, 0.0f, 0,
@@ -379,22 +378,24 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             func_808D787C(this, 1);
 
             if (this->csTimer == 10) {
-                func_8002DF54(globalCtx, this, 5);
+                func_8002DF54(globalCtx, &this->actor, 5);
             }
 
             if (this->csTimer == 13) {
                 func_8002F7DC(&player->actor, (player->ageProperties->unk_92 + NA_SE_VO_LI_SURPRISE));
             }
 
-            if (this->csTimer == 35) {
-                this->introCsState = 3;
-                this->csTimer = 0;
-                this->csCamEye.x = 0.0f;
-                this->csCamEye.y = 60.0f;
-                this->csCamEye.z = 300.0f;
-                this->csCamAt.x = 0.0f;
-                this->unk_704 = 1.2566371f;
+            if (this->csTimer != 35) {
+                break;
             }
+
+            this->introCsState = 3;
+            this->csTimer = 0;
+            this->csCamEye.x = 0.0f;
+            this->csCamEye.y = 60.0f;
+            this->csCamEye.z = 300.0f;
+            this->csCamAt.x = 0.0f;
+            this->unk_704 = 1.2566371f;
         case 3:
             this->unk_1A0 = 0;
             globalCtx->envCtx.unk_D8 = 0.0f;
@@ -403,13 +404,15 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             Math_SmoothScaleMaxF(&this->unk_704, 0.25f, 0.05f, this->csCamAtMaxStep.y);
             Math_SmoothScaleMaxF(&this->csCamAtMaxStep.y, 0.01f, 1.0f, 0.0001f);
 
-            if (this->csTimer == 200) {
-                func_8002DF54(globalCtx, this, 8);
-                this->introCsState = 4;
-                func_808D787C(this, 2);
-                this->csTimer = 0;
+            if (this->csTimer != 200) {
+                break;
             }
-        case 4:
+
+            func_8002DF54(globalCtx, &this->actor, 8);
+            this->introCsState = 4;
+            func_808D787C(this, 2);
+            this->csTimer = 0;
+        case 4: // 14E0
             if ((this->csTimer == 0) || (this->csTimer == 10) || (this->csTimer == 20)) {
                 this->csCamEye.y += 68.0f;
                 this->csCamEye.z -= 142.0f;
@@ -435,7 +438,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if (this->csTimer == 10) {
-                func_8002DF54(globalCtx, this, 0x4B);
+                func_8002DF54(globalCtx, &this->actor, 0x4B);
             }
 
             if (this->csTimer == 70) {
@@ -448,19 +451,21 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
         case 6:
             this->unk_1A0 = 3;
 
-            if (this->csTimer == 30) {
-                this->introCsState = 7;
-                this->csTimer = 0;
-                func_808D787C(this, 4);
-                this->unk_1AE = 0;
-                this->unk_1E0 = 10.0f;
-                this->unk_1D4 = 255.0f;
-                this->unk_1D8 = 0.0f;
-                this->unk_1DC = 100.0f;
-                func_80078884(NA_SE_EV_TRIFORCE_MARK);
-                globalCtx->envCtx.unk_D8 = 0.0f;
+            if (this->csTimer != 30) {
+                break;
             }
-        case 7:
+
+            this->introCsState = 7;
+            this->csTimer = 0;
+            func_808D787C(this, 4);
+            this->unk_1AE = 0;
+            this->unk_1E0 = 10.0f;
+            this->unk_1D8 = 0.0f;
+            this->unk_1D4 = 255.0f;
+            this->unk_1DC = 100.0f;
+            func_80078884(NA_SE_EV_TRIFORCE_MARK);
+            globalCtx->envCtx.unk_D8 = 0.0f;
+        case 7: // 165C
             this->unk_1A0 = 6;
             Math_SmoothScaleMaxF(&this->unk_1D8, 255.0f, 1.0f, 10.0f);
             Math_SmoothScaleMaxF(&this->unk_1E0, 0.4f, 1.0f, 0.3f);
@@ -477,7 +482,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             func_808D787C(this, 4);
             this->csCamEye.x += 5.0f;
-            this->csCamEye.z -= 10.0f; // += negative?
+            this->csCamEye.z += -10.0f;
             this->csCamAt.x += 18.0f;
 
             if (this->csTimer == 60) {
@@ -489,19 +494,21 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             this->unk_1A0 = 3;
             func_808D787C(this, 5);
 
-            if (this->csTimer == 30) {
-                this->introCsState = 9;
-                this->csTimer = 0;
-                func_8002DF54(globalCtx, this, 8);
-                sZelda->unk_3C8 = 0;
-                this->unk_1AE = 1;
-                this->unk_1E0 = 10.0f;
-                this->unk_1D4 = 255.0f;
-                this->unk_1D8 = 0.0f;
-                this->unk_1DC = 100.0f;
-                func_80078884(NA_SE_EV_TRIFORCE_MARK);
-                globalCtx->envCtx.unk_D8 = 0.0f;
+            if (this->csTimer != 30) {
+                break;
             }
+
+            this->introCsState = 9;
+            this->csTimer = 0;
+            func_8002DF54(globalCtx, &this->actor, 8);
+            sZelda->unk_3C8 = 0;
+            this->unk_1AE = 1;
+            this->unk_1E0 = 10.0f;
+            this->unk_1D8 = 0.0f;
+            this->unk_1D4 = 255.0f;
+            this->unk_1DC = 100.0f;
+            func_80078884(NA_SE_EV_TRIFORCE_MARK);
+            globalCtx->envCtx.unk_D8 = 0.0f;
         case 9:
             this->unk_1A0 = 7;
             func_808D787C(this, 6);
@@ -527,7 +534,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->csTimer = 0;
             }
             break;
-        case 10:
+        case 10: // 1918
             this->unk_1A0 = 3;
             func_808D787C(this, 7);
 
@@ -543,7 +550,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             player->actor.posRot.pos.z = 20.0f;
 
             if (this->csTimer == 0x14) {
-                func_8002DF54(globalCtx, this, 0x17);
+                func_8002DF54(globalCtx, &this->actor, 0x17);
                 Interface_ChangeAlpha(11); // show hearts only
             }
 
@@ -637,7 +644,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 }
 
                 if (this->csTimer == 57) {
-                    Audio_PlayActorSound2(this, NA_SE_EV_GANON_MANTLE);
+                    Audio_PlayActorSound2(&this->actor, NA_SE_EV_GANON_MANTLE);
                 }
 
                 Math_SmoothScaleMaxF(&this->csCamFov, 110.0f, 0.1f, this->csCamMaxStepScale * 2.0f);
@@ -653,10 +660,10 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 }
             }
             break;
-        case 18:
+        case 18: // 1D28
             this->unk_1A0 = 3;
             func_808D787C(this, 12);
-            this->csCamEye.y -= 6.0f; // += negative?
+            this->csCamEye.y += -6.0f;
             this->csCamEye.z += 6.0f;
 
             if (func_800A56C8(&this->skelAnime, this->unk_1CC - 5.0f)) {
@@ -664,19 +671,21 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->unk_1CC = 1000.0f;
             }
 
-            if ((this->csTimer > 50) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
-                this->introCsState = 19;
-                this->csTimer = 0;
-                func_8010B680(globalCtx, 0x70CC, NULL);
-                SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06007268, -5.0f);
-                this->unk_1AE = 2;
-                this->unk_1E0 = 10.0f;
-                this->unk_1D4 = 255.0f;
-                this->unk_1D8 = 0.0f;
-                this->unk_1DC = 100.0f;
-                globalCtx->envCtx.unk_D8 = 0.0f;
+            if ((this->csTimer <= 50) || (func_8010BDBC(&globalCtx->msgCtx) != 0)) {
+                break;
             }
-        case 19:
+
+            this->introCsState = 19;
+            this->csTimer = 0;
+            func_8010B680(globalCtx, 0x70CC, NULL);
+            SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06007268, -5.0f);
+            this->unk_1AE = 2;
+            this->unk_1E0 = 10.0f;
+            this->unk_1D8 = 0.0f;
+            this->unk_1D4 = 255.0f;
+            this->unk_1DC = 100.0f;
+            globalCtx->envCtx.unk_D8 = 0.0f;
+        case 19: // 1E44
             this->unk_1A0 = 8;
 
             if (this->csTimer >= 60) {
@@ -688,7 +697,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             func_808D787C(this, 12);
-            this->csCamEye.y -= 6.0f; // += negative?
+            this->csCamEye.y += -6.0f;
             this->csCamEye.z += 6.0f;
 
             if (this->csTimer >= 30) {
@@ -707,61 +716,63 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if ((this->csTimer > 80) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
-                this->csCamTargetEye.x = this->csCamEye.x - 50.0f;
-                this->csCamTargetEye.y = this->csCamEye.y - 100.0f;
                 this->introCsState = 20;
                 this->csTimer = 0;
+                this->csCamTargetEye.x = this->csCamEye.x - 50.0f;
+                this->csCamTargetEye.y = this->csCamEye.y - 100.0f;
                 this->csCamTargetEye.z = this->csCamEye.z + 400.0f;
-                this->csCamTargetAt.x = this->csCamAt.x + 400.0f;
+                this->csCamEyeMaxStep.x = 50.0f;
+                this->csCamEyeMaxStep.y = 100.0f;
                 this->csCamEyeMaxStep.z = 400.0f;
                 this->csCamAtMaxStep.x = 400.0f;
-                this->csCamEyeMaxStep.y = 100.0f;
-                this->csCamEyeMaxStep.x = 50.0f;
                 this->csCamMaxStepScale = 0.0f;
+                this->csCamTargetAt.x = this->csCamAt.x + 400.0f;
                 this->csCamTargetAt.y = this->csCamAt.y;
                 this->csCamTargetAt.z = this->csCamAt.z;
-                this->unk_1E4 = 0.0f;
                 this->csCamMovementScale = 0.2f;
+                this->unk_1E4 = 0.0f;
                 this->unk_1E8 = 0.1f;
-                Audio_PlayActorSound2(this, NA_SE_EN_GANON_DARKWAVE);
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DARKWAVE);
             }
             break;
-        case 20:
+        case 20: // 2018
             this->unk_1A0 = 0xA;
-            zoomOut = true;
+            moveCam = true;
             Math_SmoothScaleMaxF(&this->csCamMaxStepScale, 0.15f, 1.0f, 0.015f);
 
             if (this->csTimer <= 40) {
-                Math_SmoothScaleMaxF(this + 0x1E4, 255.0f, 1.0f, 6.5f);
-                Math_SmoothScaleMaxF(this + 0x1E8, 0.2f, 1.0f, 0.025f);
+                Math_SmoothScaleMaxF(&this->unk_1E4, 255.0f, 1.0f, 6.5f);
+                Math_SmoothScaleMaxF(&this->unk_1E8, 0.2f, 1.0f, 0.025f);
             }
 
             if (this->csTimer > 20) {
-                Audio_PlayActorSound2(this, NA_SE_EN_GANON_DARKWAVE_M - SFX_FLAG);
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DARKWAVE_M - SFX_FLAG);
             }
 
-            if (this->csTimer >= 20) {
+            if (this->csTimer > 20) {
                 func_808D6BF0(globalCtx, 700.0f, 2);
                 func_808D6BF0(globalCtx, 700.0f, 2);
             }
 
             if (this->csTimer == 30) {
-                func_8002DF54(globalCtx, this, 0x4A);
+                func_8002DF54(globalCtx, &this->actor, 0x4A);
             }
 
-            if (this->csTimer > 50) {
-                this->introCsState = 21;
-                this->csTimer = 0;
-                this->unk_1D8 = 0.0f;
-                this->unk_1E8 = 0.16f;
-                goto skip_sound;
+            if (this->csTimer <= 50) {
+                break;
             }
-        case 21:
+
+            this->introCsState = 21;
+            this->csTimer = 0;
+            this->unk_1D8 = 0.0f;
+            this->unk_1E8 = 0.16f;
+            goto skip_sound_and_fx;
+        case 21: // 2110
             this->unk_1A0 = 0xB;
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DARKWAVE_M - SFX_FLAG);
             func_808D6BF0(globalCtx, 700.0f, 2);
             func_808D6BF0(globalCtx, 700.0f, 2);
-        skip_sound:
+        skip_sound_and_fx:
             this->csCamEye.x = -30.0f;
             this->csCamEye.y = 37.0f;
             this->csCamEye.z = -30.0f;
@@ -774,17 +785,19 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 func_8010B680(globalCtx, 0x70CD, NULL);
             }
 
-            if ((this->csTimer > 120) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
-                this->introCsState = 22;
-                this->csTimer = 0;
-                this->unk_1BA = 0x1E;
-                this->organAlpha = 254;
-                this->csCamAt.x = this->unk_1FC.x - 10.0f;
-                this->csCamAt.y = this->unk_1FC.y + 30.0f;
-                this->csCamAt.z = this->unk_1FC.z;
-                this->unk_1E4 = 255.0f;
-                this->unk_1E8 = 0.2f;
+            if ((this->csTimer <= 120) || (func_8010BDBC(&globalCtx->msgCtx) != 0)) {
+                break;
             }
+
+            this->introCsState = 22;
+            this->csTimer = 0;
+            this->unk_1BA = 0x1E;
+            this->organAlpha = 254;
+            this->csCamAt.x = this->unk_1FC.x - 10.0f;
+            this->csCamAt.y = this->unk_1FC.y + 30.0f;
+            this->csCamAt.z = this->unk_1FC.z;
+            this->unk_1E4 = 255.0f;
+            this->unk_1E8 = 0.2f;
         case 22:
             if (this->csTimer > 30) {
                 this->unk_1A0 = 0;
@@ -805,7 +818,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 SkelAnime_FrameUpdateMatrix(&this->skelAnime);
                 this->actor.shape.unk_08 = 0.0f;
                 sCape->unk_16C4 = 18.0f;
-                Audio_PlayActorSound2(this, NA_SE_EV_GANON_MANTLE);
+                Audio_PlayActorSound2(&this->actor, NA_SE_EV_GANON_MANTLE);
                 this->unk_198 = 0;
                 Audio_SetBGM(0x64);
             }
@@ -824,25 +837,23 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             if (this->csTimer >= 20) {
                 this->unk_199 = 1;
-                Audio_PlayActorSound2(this, NA_SE_EN_GANON_FLOAT - SFX_FLAG);
+                Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_FLOAT - SFX_FLAG);
+
                 Math_SmoothScaleMaxF(&this->actor.posRot.pos.y, 228.0f, 0.05f, 2.0f);
                 Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, -230.0f, 0.05f, 4.0f);
+
                 sCape->unk_16B0 = -3.0f;
                 sCape->unk_16B4 = 0.25f;
                 sCape->unk_16B8 = -3.0f;
-                temp_f2 =
-                    this->unk_1C8 *
-                    Math_Sins(((((((this->csTimer * 4) - this->csTimer) * 0x10) - this->csTimer) * 8) - this->csTimer) *
-                              4) *
-                    0.04f;
-                temp_f10 = this->actor.posRot.pos.y + temp_f2;
-                this->actor.velocity.y = temp_f2;
-                this->actor.posRot.pos.y = temp_f10;
-                temp_f2 = this->unk_1C8 *
-                          Math_Coss(((((this->csTimer * 8) - this->csTimer) << 5) + this->csTimer) * 8) * 0.5f;
-                temp_f8 = temp_f2 - this->actor.pos4.x;
-                this->actor.posRot.pos.x = temp_f2;
-                this->actor.velocity.x = temp_f8;
+
+                sin = Math_Sins(this->csTimer * 1500);
+                this->actor.velocity.y = this->unk_1C8 * sin * 0.04f;
+                this->actor.posRot.pos.y += this->actor.velocity.y;
+                
+                cos = Math_Coss(this->csTimer * 1800);
+                this->actor.posRot.pos.x = this->unk_1C8 * cos * 0.5f;
+                this->actor.velocity.x = this->actor.posRot.pos.x - this->actor.pos4.x;
+
                 Math_SmoothScaleMaxF(&this->unk_1C8, 50.0f, 1.0f, 1.0f);
             }
 
@@ -862,7 +873,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 func_800C08AC(globalCtx, this->csCamIndex, 0);
                 this->introCsState = this->csCamIndex = 0;
                 func_80064534(globalCtx, &globalCtx->csCtx);
-                func_8002DF54(globalCtx, this, 7);
+                func_8002DF54(globalCtx, &this->actor, 7);
                 func_808DBAF0(this, globalCtx);
             }
 
@@ -874,7 +885,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
     }
 
     if (this->csCamIndex != 0) {
-        if (zoomOut) {
+        if (moveCam) {
             Math_SmoothScaleMaxF(&this->csCamEye.x, this->csCamTargetEye.x, this->csCamMovementScale,
                                  this->csCamEyeMaxStep.x * this->csCamMaxStepScale);
             Math_SmoothScaleMaxF(&this->csCamEye.y, this->csCamTargetEye.y, this->csCamMovementScale,

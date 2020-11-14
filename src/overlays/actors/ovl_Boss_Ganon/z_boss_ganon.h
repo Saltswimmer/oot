@@ -46,7 +46,7 @@ typedef struct BossGanon {
     /* 0x03A0 */ char unk_3A0[0x270];
     /* 0x0610 */ ColliderCylinder collider;
     /* 0x065C */ char unk_65C[0x18];
-    /* 0x0674 */ s32 csTimer;
+    /* 0x0674 */ u32 csTimer;
     /* 0x0678 */ s16 introCsState;
     /* 0x067A */ s16 csCamIndex;
     /* 0x067C */ char unk_67C[0x4];
@@ -66,7 +66,7 @@ typedef struct BossGanon {
     /* 0x0704 */ f32 unk_704;
     /* 0x0708 */ char unk_708[0x10];
     /* 0x0718 */ s16 organAlpha;
-    /* 0x071A */ s16 unk_71A;
+    /* 0x071A */ s8 unk_71A;
 } BossGanon; // size = 0x71C
 
 extern const ActorInit Boss_Ganon_InitVars;
