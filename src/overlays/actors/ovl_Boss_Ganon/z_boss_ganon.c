@@ -1,6 +1,7 @@
 #include "z_boss_ganon.h"
 #include "overlays/actors/ovl_En_Ganon_Mant/z_en_ganon_mant.h"
 #include "overlays/actors/ovl_En_Zl3/z_en_zl3.h"
+#include "overlays/actors/ovl_Bg_Ganon_Otyuka/z_bg_ganon_otyuka.h"
 
 #define FLAGS 0x00000035
 
@@ -23,7 +24,7 @@ void func_808D779C(BossGanon* this, GlobalContext* globalCtx);
 void func_808D90F8(BossGanon* this, GlobalContext* globalCtx);
 void func_808D7918(BossGanon* this, GlobalContext* globalCtx);
 void func_808D933C(BossGanon* this, GlobalContext* globalCtx);
-void func_808DBB78(BossGanon* this, GlobalContext* globalCtx); // start fight
+void func_808DBB78(BossGanon* this, GlobalContext* globalCtx); // wait
 
 void func_808DBF30(BossGanon* this, GlobalContext* globalCtx); // spawn light ball
 void func_808DC14C(BossGanon* this, GlobalContext* globalCtx); // throw light ball
@@ -31,6 +32,11 @@ void func_808DC14C(BossGanon* this, GlobalContext* globalCtx); // throw light ba
 void func_808DAD20(BossGanon* this, GlobalContext* globalCtx); // pound the floor
 
 void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx); // charge up thing
+
+void func_808DC4DC(BossGanon* this, GlobalContext* globalCtx);
+void func_808DC75C(BossGanon* this, GlobalContext* globalCtx);
+void func_808DCB7C(BossGanon* this, GlobalContext* globalCtx);
+void func_808DD14C(BossGanon* this, GlobalContext* globalCtx);
 
 // setup action?
 void func_808DBAF0(BossGanon* this, GlobalContext* globalCtx); // wait
@@ -61,6 +67,7 @@ extern ColliderCylinderInit D_808E4C2C;
 extern AnimationHeader* D_808E4D38[];
 extern s16 D_808E4D40[];
 extern Vec3f D_808E4C6C; // zeroVec?
+extern f32 D_808E4D44[];
 
 typedef struct {
     /* 0x00 */ Vec3s eye;
@@ -149,6 +156,7 @@ extern AnimationHeader D_06001440;
 // extern AnimationHeader ;
 // extern AnimationHeader ;
 
+void func_808D6870(GlobalContext* globalCtx, Vec3f* arg1, Vec3f* arg2, f32 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6870.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D69B0.s")
@@ -157,11 +165,14 @@ extern AnimationHeader D_06001440;
 void func_808D6AAC(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, f32 arg4, f32 arg5, s16 arg6);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6AAC.s")
 
+// shock
 void func_808D6BF0(GlobalContext* globalCtx, f32 arg1, s32 arg2);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6BF0.s")
 
+void func_808D6CBC(GlobalContext* globalCtx, f32 arg1, f32 arg2, f32 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6CBC.s")
 
+void func_808D6D60(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6D60.s")
 
 void func_808D6E54(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3, s16 arg4);
@@ -173,7 +184,11 @@ void func_808D6F3C(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3);
 void func_808D7034(GlobalContext* globalCtx, Vec3f* pos, f32 arg2);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D7034.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D70F0.s")
+void func_808D70F0(Vec3f* src, ColliderCylinder* collider) {
+    collider->dim.pos.x = src->x;
+    collider->dim.pos.y = src->y;
+    collider->dim.pos.z = src->z;
+}
 
 void func_808D712C(BossGanon* this, GlobalContext* globalCtx, s32 objectId) {
     this->animBankIndex = Object_GetIndex(&globalCtx->objectCtx, objectId);
@@ -254,7 +269,7 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
                     this->unk_2EC[i] = thisx->posRot.pos;
                 }
 
-                this->unk_1B8 = 3;
+                this->timers[1] = 3;
                 Collider_InitCylinder(globalCtx, &this->collider);
                 Collider_SetCylinder(globalCtx, &this->collider, thisx, &D_808E4C2C);
             } else if (thisx->params >= 0xFA) {
@@ -274,9 +289,9 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
                 thisx->speedXZ = 11.0f;
 
                 if (thisx->params == 0xC8) {
-                    this->actionTimer = 7;
+                    this->timers[0] = 7;
                 } else {
-                    this->actionTimer = (s16)Math_Rand_ZeroFloat(3.0f) + 3;
+                    this->timers[0] = (s16)Math_Rand_ZeroFloat(3.0f) + 3;
                 }
 
                 for (i = 0; i < ARRAY_COUNT(this->unk_2EC); i++) {
@@ -301,7 +316,7 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
                 thisx->posRot.rot.x += (s16)Math_Rand_CenteredFloat(5000.0f);
             }
 
-            this->unk_1B8 = 3;
+            this->timers[1] = 3;
             Collider_InitCylinder(globalCtx, &this->collider);
             Collider_SetCylinder(globalCtx, &this->collider, thisx, &D_808E4C2C);
         }
@@ -401,7 +416,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 this->animationLength = 1000.0f;
                 BossGanon_SetIntroCsCamera(this, 11);
                 this->unk_198 = 2;
-                this->unk_1BA = 0x6E;
+                this->timers[2] = 0x6E;
                 gSaveContext.healthAccumulator = 0x140;
                 Audio_SetBGM(NA_BGM_STOP);
             } else {
@@ -657,7 +672,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 BossGanon_SetIntroCsCamera(this, 11);
                 this->unk_198 = 2;
                 sZelda->unk_3C8 = 2;
-                this->unk_1BA = 0x6E;
+                this->timers[2] = 0x6E;
                 this->unk_1A0 = 3;
             }
             break;
@@ -841,7 +856,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             this->introCsState = 22;
             this->csTimer = 0;
-            this->unk_1BA = 0x1E;
+            this->timers[2] = 0x1E;
             this->organAlpha = 254;
             this->csCamAt.x = this->unk_1FC.x - 10.0f;
             this->csCamAt.y = this->unk_1FC.y + 30.0f;
@@ -985,7 +1000,7 @@ void func_808D90F8(BossGanon* this, GlobalContext* globalCtx) {
 
 void func_808DACE8(BossGanon* this, GlobalContext* globalCtx) {
     this->unk_1C2 = 0;
-    this->actionTimer = 40;
+    this->timers[0] = 40;
     this->actionFunc = func_808DAD20;
     this->actor.velocity.x = 0.0f;
     this->actor.velocity.y = 0.0f;
@@ -1015,11 +1030,11 @@ void func_808DAD20(BossGanon* this, GlobalContext* globalCtx) {
             Math_SmoothScaleMaxF(&this->actor.posRot.pos.z, targetPosZ, 0.05f, this->unk_1C8);
             Math_SmoothScaleMaxF(&this->unk_1D0, 0.0f, 1, 1.5f);
 
-            if (this->actionTimer == 5) {
+            if (this->timers[0] == 5) {
                 Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_HIT_GND);
             }
 
-            if (this->actionTimer < 14) {
+            if (this->timers[0] < 14) {
                 heightTarget = 250.0f;
                 this->unk_258 += (Math_Rand_ZeroFloat(M_PI / 2) + (M_PI / 2));
                 Math_SmoothScaleMaxF(&this->unk_254, 7.0f, 0.5f, 1.0f);
@@ -1031,13 +1046,13 @@ void func_808DAD20(BossGanon* this, GlobalContext* globalCtx) {
             Math_SmoothScaleMaxF(&this->actor.posRot.pos.y, heightTarget, 0.1f, this->actor.velocity.y);
             Math_SmoothScaleMaxF(&this->actor.velocity.y, 20.0f, 1.0f, 1.0f);
 
-            if (this->actionTimer == 14) {
+            if (this->timers[0] == 14) {
                 this->animationLength = SkelAnime_GetFrameCount(&D_06002D2C.genericHeader);
                 SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06002D2C, 0.0f);
                 this->actor.velocity.y = 0.0f;
             }
 
-            if (this->actionTimer == 0) {
+            if (this->timers[0] == 0) {
                 this->unk_1C2 = 1;
                 this->actor.velocity.y = 0.0f;
             }
@@ -1051,7 +1066,7 @@ void func_808DAD20(BossGanon* this, GlobalContext* globalCtx) {
             if (this->actor.posRot.pos.y < 60.0f) {
                 this->actor.posRot.pos.y = 60.0f;
                 this->unk_1C2 = 2;
-                this->actionTimer = 10;
+                this->timers[0] = 10;
                 func_80033E88(&this->actor, globalCtx, 0xA, 0x14); // rumble
                 this->unk_19C = 35;
                 this->unk_19E = 0;
@@ -1073,7 +1088,7 @@ void func_808DAD20(BossGanon* this, GlobalContext* globalCtx) {
         case 2:
             this->unk_1A0 = 1;
 
-            if (this->actionTimer == 0) {
+            if (this->timers[0] == 0) {
                 this->animationLength = SkelAnime_GetFrameCount(&D_0600343C.genericHeader);
                 SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_0600343C, 0.0f);
                 this->unk_1C2 = 3;
@@ -1119,7 +1134,7 @@ void func_808DAD20(BossGanon* this, GlobalContext* globalCtx) {
 
 void func_808DB278(BossGanon* this, GlobalContext* globalCtx) {
     this->unk_1C2 = 0;
-    this->actionTimer = 30;
+    this->timers[0] = 30;
     this->actor.velocity.x = 0.0f;
     this->actor.velocity.y = 0.0f;
     this->unk_1D0 = 100.0f;
@@ -1152,7 +1167,7 @@ void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx) {
 
     switch (this->unk_1C2) {
         case 0:
-            if (this->actionTimer == 0) {
+            if (this->timers[0] == 0) {
                 this->animationLength = SkelAnime_GetFrameCount(&D_06001B0C.genericHeader);
                 SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06001B0C, 0.0f);
                 this->unk_1C2 = 1;
@@ -1163,7 +1178,7 @@ void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx) {
                 this->animationLength = SkelAnime_GetFrameCount(&D_06001FF8.genericHeader);
                 SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06001FF8, 0.0f);
                 this->unk_1C2 = 2;
-                this->actionTimer = 100;
+                this->timers[0] = 100;
             }
             break;
         case 2:
@@ -1177,27 +1192,27 @@ void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx) {
             Math_SmoothScaleMaxF(&this->unk_288, 255.0f, 1.0f, 255.0f);
             Math_SmoothScaleMaxF(&this->unk_28C, 0.25f, 0.1f, 0.006f);
 
-            if ((this->actionTimer > 20) && (this->actionTimer < 60)) {
+            if ((this->timers[0] > 20) && (this->timers[0] < 60)) {
                 Math_SmoothScaleMaxF(&this->unk_290, 255.0f, 1.0f, 15.0f);
             }
 
-            if (this->actionTimer == 0) {
+            if (this->timers[0] == 0) {
                 this->animationLength = SkelAnime_GetFrameCount(&D_06000540.genericHeader);
                 SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06000540, 0.0f);
                 this->unk_1C2 = 3;
-                this->actionTimer = 6;
-                this->unk_1B8 = 0xF;
+                this->timers[0] = 6;
+                this->timers[1] = 0xF;
                 Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DARKWAVE);
                 break;
             }
 
             Math_SmoothScaleMaxS(&this->actor.shape.rot.y, this->actor.yawTowardsLink, 5, 0x3E8);
 
-            if (this->actionTimer < -4) {
+            if (this->timers[0] < -4) {
                 for (i = 0; i < ARRAY_COUNT(this->unk_294); i++) {
                     Math_SmoothScaleMaxF(&this->unk_294[i], 0.0f, 1.0f, 40.0f);
                 }
-            } else if ((this->actionTimer >= 7) && (this->actionTimer < 26)) {
+            } else if ((this->timers[0] >= 7) && (this->timers[0] < 26)) {
                 if (this->unk_1AC < ARRAY_COUNT(this->unk_294)) {
                     this->unk_1AC++;
                 }
@@ -1207,43 +1222,43 @@ void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx) {
                 }
             }
 
-            if (this->actionTimer <= 30) {
+            if (this->timers[0] <= 30) {
                 Math_SmoothScaleMaxF(&this->unk_284, 0.4f, 0.5f, 0.017f);
                 this->unk_28C = this->unk_284;
             }
 
-            if (this->actionTimer <= 30) {
+            if (this->timers[0] <= 30) {
                 Math_SmoothScaleMaxF(&this->unk_2D0, 45.0f, 0.1f, 10.0f);
                 this->unk_66E = 1;
                 this->unk_66C = 2;
                 D_8015FCF8 = this->unk_278;
             }
 
-            if (this->actionTimer == 47) {
+            if (this->timers[0] == 47) {
                 this->unk_274 = 1;
             }
 
-            if (this->actionTimer == 46) {
+            if (this->timers[0] == 46) {
                 this->unk_274 = 2;
             }
 
-            if (this->actionTimer == 45) {
+            if (this->timers[0] == 45) {
                 this->unk_274 = 3;
             }
 
-            if (this->actionTimer == 44) {
+            if (this->timers[0] == 44) {
                 this->unk_274 = 4;
             }
 
-            if (this->actionTimer == 43) {
+            if (this->timers[0] == 43) {
                 this->unk_274 = 5;
             }
 
-            if (this->actionTimer == 42) {
+            if (this->timers[0] == 42) {
                 this->unk_274 = 6;
             }
 
-            if (this->actionTimer > 30) {
+            if (this->timers[0] > 30) {
                 sp74.x = 0.0f;
                 sp74.y = Math_Rand_ZeroFloat(10.0f) + 150.0f;
                 sp74.z = 0.0f;
@@ -1265,12 +1280,12 @@ void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx) {
                 Math_SmoothScaleMaxF(&this->unk_294[i], 0.0f, 1.0f, 40.0f);
             }
 
-            if (this->actionTimer == 1) {
+            if (this->timers[0] == 1) {
                 sCape->unk_16C0 = 15.0f;
                 Audio_PlayActorSound2(&this->actor, NA_SE_EV_GANON_MANTLE);
             }
 
-            if (this->actionTimer == 0) {
+            if (this->timers[0] == 0) {
                 Math_SmoothDownscaleMaxF(&this->unk_284, 1.0f, 0.08f);
                 this->unk_28C = this->unk_284;
                 Math_SmoothDownscaleMaxF(&this->unk_2D0, 1.0f, 10.0f);
@@ -1279,7 +1294,7 @@ void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx) {
                 Math_SmoothScaleMaxF(&this->unk_278.z, this->unk_1FC.z, 0.5f, 30.0f);
             }
 
-            if (this->unk_1B8 == 0) {
+            if (this->timers[1] == 0) {
                 this->animationLength = SkelAnime_GetFrameCount(&D_06000FE8.genericHeader);
                 SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06000FE8, 0.0f);
                 this->unk_1C2 = 4;
@@ -1327,7 +1342,7 @@ void func_808DBAF0(BossGanon* this, GlobalContext* globalCtx) {
     SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06009A14, -10.0f);
     this->actionFunc = func_808DBB78;
     this->unk_1C8 = 0.0f;
-    this->actionTimer = (s16)Math_Rand_ZeroFloat(64.0f) + 30;
+    this->timers[0] = (s16)Math_Rand_ZeroFloat(64.0f) + 30;
     this->unk_1C2 = 0;
     sCape->unk_16AC = 2.0f;
 }
@@ -1350,9 +1365,9 @@ void func_808DBB78(BossGanon* this, GlobalContext* globalCtx) {
     if ((this->unk_1C2 == 0) && !(player->actor.posRot.pos.y < 0.0f)) {
         if (!(player->stateFlags1 & 0x2000) && (fabsf(player->actor.posRot.pos.x) < 110.0f) &&
             (fabsf(player->actor.posRot.pos.z) < 110.0f)) {
-            func_808DACE8(this, globalCtx);
-        } else if ((this->actionTimer == 0) && !(player->stateFlags1 & 0x2000)) {
-            this->actionTimer = (s16)Math_Rand_ZeroFloat(30.0f) + 30;
+            func_808DACE8(this, globalCtx); // pound floor
+        } else if ((this->timers[0] == 0) && !(player->stateFlags1 & 0x2000)) {
+            this->timers[0] = (s16)Math_Rand_ZeroFloat(30.0f) + 30;
 
             if ((s8)this->actor.colChkInfo.health >= 20) {
                 func_808DBEC4(this, globalCtx);
@@ -1360,7 +1375,7 @@ void func_808DBB78(BossGanon* this, GlobalContext* globalCtx) {
                 if ((Math_Rand_ZeroOne() >= 0.5f) || (this->actor.xzDistFromLink > 350.0f)) {
                     func_808DB278(this, globalCtx);
                 } else {
-                    func_808DACE8(this, globalCtx);
+                    func_808DACE8(this, globalCtx); // pound floor
                 }
             } else {
                 func_808DBEC4(this, globalCtx);
@@ -1392,7 +1407,7 @@ void func_808DBEC4(BossGanon* this, GlobalContext* globalCtx) {
     this->animationLength = SkelAnime_GetFrameCount(&D_0600AA24.genericHeader);
     SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_0600AA24, -3.0f);
     this->actionFunc = func_808DBF30;
-    this->actionTimer = 25;
+    this->timers[0] = 25;
 }
 
 void func_808DBF30(BossGanon* this, GlobalContext* globalCtx) {
@@ -1403,21 +1418,21 @@ void func_808DBF30(BossGanon* this, GlobalContext* globalCtx) {
     sCape->unk_16B8 = -2.0f;
     sCape->unk_16D0 = 10.0f;
 
-    if (this->actionTimer < 17) {
+    if (this->timers[0] < 17) {
         this->unk_1A0 = 1;
     }
 
-    if (this->actionTimer == 17) {
+    if (this->timers[0] == 17) {
         this->unk_26C = 0xA;
         this->unk_270 = Math_Rand_ZeroFloat(M_PI);
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_SPARK);
     }
 
-    if (this->actionTimer < 10) {
+    if (this->timers[0] < 10) {
         this->unk_258 += (Math_Rand_ZeroFloat(M_PI / 2) + (M_PI / 2));
         Math_SmoothScaleMaxF(&this->unk_254, 10.0f, 0.5f, 1.25f);
 
-        if (this->actionTimer == 0) {
+        if (this->timers[0] == 0) {
             func_808DC0E8(this, globalCtx);
         }
     }
@@ -1514,510 +1529,427 @@ void func_808DC14C(BossGanon* this, GlobalContext* globalCtx) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DD14C.s")
 
+void func_808DD20C(BossGanon* this, GlobalContext* globalCtx);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DD20C.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/BossGanon_Update.s")
-// void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
-//     BossGanon* this = THIS;
+//#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/BossGanon_Update.s")
+void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
+    BossGanon* this = THIS;
+    Player* player = PLAYER;
+    f32 sin;
+    f32 cos;
+    f32 target50C_X;
+    f32 target50C_Y; // target50C_Y
+    f32 target50C_Z;
+    Vec3f sp100;
+    Vec3f spF4;
+    Vec3f spE8;
+    Vec3f spD8;
+    Vec3f spCC;
+    Vec3f spBC;
+    Vec3f spB0;
+    Vec3f spA4;
+    Actor* explosive;
+    Actor* prop; // might need only one temp for this
+    BgGanonOtyuka* platform;
+    f32 target670;
+    s16 decr274;
+    f32 decr2pi;
+    s16 i;
+    s16 j;
 
+    if ((this->actionFunc != func_808D7918) && (this->actionFunc != func_808D933C)) {
+        func_808D712C(this, globalCtx, OBJECT_GANON_ANIME1);
+    } else {
+        gSegments[6] = VIRTUAL_TO_PHYSICAL(globalCtx->objectCtx.status[this->animBankIndex].segment);
+    }
 
-//     f32 sp120;
-//     f32 sp108;
-//     f32 sp104;
-//     f32 sp100;
-//     f32 spFC;
-//     f32 spF8;
-//     f32 spF4;
-//     f32 spEC;
-//     ? spE8;
-//     f32 spE0;
-//     f32 spDC;
-//     f32 spD8;
-//     f32 spD4;
-//     f32 spD0;
-//     f32 spCC;
-//     f32 spC4;
-//     f32 spC0;
-//     f32 spBC;
-//     f32 spB0;
-//     f32 spAC;
-//     f32 spA8;
-//     f32 spA4;
-//     ColliderCylinder* temp_s0;
-//     CollisionCheckContext* temp_s1_3;
-//     f32* temp_a2;
-//     f32* temp_s1_5;
-//     f32* temp_s2_2;
-//     f32 temp_f0;
-//     f32 temp_f0_2;
-//     f32 temp_f12;
-//     f32 temp_f20;
-//     f32 temp_f20_2;
-//     f32 temp_f22;
-//     f32 temp_f22_2;
-//     f32 temp_f24;
-//     f32 temp_f2;
-//     s16 temp_a0_2;
-//     s16 temp_a0_3;
-//     s16 temp_s0_2;
-//     s16 temp_s1;
-//     s16 temp_s1_2;
-//     s16 temp_s1_4;
-//     s16 temp_s1_6;
-//     s16 temp_s1_7;
-//     s16 temp_s2;
-//     s16 temp_v0_2;
-//     s16 temp_v0_3;
-//     s16 temp_v0_4;
-//     s16 temp_v0_5;
-//     s16 temp_v0_6;
-//     s16 temp_v0_8;
-//     s16 temp_v0_9;
-//     s16 temp_v1_3;
-//     s16 temp_v1_5;
-//     s16 temp_v1_6;
-//     s8 temp_v0_12;
-//     u32 temp_t1;
-//     u8 temp_a0;
-//     u8 temp_v0_13;
-//     u8 temp_v0_14;
-//     void (*)(struct BossGanon*, GlobalContext*) temp_v1;
-//     void (*)(struct BossGanon*, GlobalContext*) temp_v1_2;
-//     void (*)(struct BossGanon*, GlobalContext*) temp_v1_4;
-//     void* temp_s0_3;
-//     void* temp_s0_4;
-//     void* temp_s3;
-//     void* temp_v0;
-//     void* temp_v0_10;
-//     void* temp_v0_11;
-//     void* temp_v0_7;
-//     s16 phi_s1;
-//     s16 phi_s1_2;
-//     f32 phi_f22;
-//     f32 phi_f20;
-//     s16 phi_s1_3;
-//     s16 phi_s0;
-//     s16 phi_s2;
-//     void* phi_s0_2;
-//     s16 phi_s1_4;
-//     void* phi_v0;
-//     f32 phi_f0;
+    if (this->unk_71B != 0) { // if hit by light arrow, spawn light stuff around him?
+        func_808D91F8(this->unk_71B);
+        spF4.y = 0.0f;
 
-//     temp_v1 = this->actionFunc;
-//     temp_s3 = globalCtx->unk1C44;
-//     if ((&func_808D7918 != temp_v1) && (&func_808D933C != temp_v1)) {
-//         func_808D712C(this, globalCtx, 0x17C);
-//     } else {
-//         *(gSegments + 0x18) = globalCtx->objectCtx.status[this->animBankIndex].segment + 0x80000000;
-//     }
-//     temp_a0 = this->unk71B;
-//     if (temp_a0 != 0) {
-//         func_808D91F8(temp_a0);
-//         spF8 = 0.0f;
-//         phi_s1 = 0;
-//     loop_6:
-//         sp104 = Math_Rand_ZeroFloat(240.0f) + 20.0f;
-//         if (Math_Rand_ZeroOne() < 0.5f) {
-//             sp100 = 463.0f;
-//             sp108 = Math_Rand_ZeroFloat(463.0f);
-//             spF4 = Math_Rand_ZeroFloat(2.0f);
-//             spFC = Math_Rand_ZeroFloat(1.0f);
-//         } else {
-//             sp108 = 463.0f;
-//             sp100 = Math_Rand_ZeroFloat(463.0f);
-//             spFC = Math_Rand_ZeroFloat(2.0f);
-//             spF4 = Math_Rand_ZeroFloat(1.0f);
-//         }
-//         func_808D6870(globalCtx, &sp100, &spF4, Math_Rand_ZeroFloat(0.075f) + 0.08f);
-//         temp_s1 = phi_s1 + 1;
-//         phi_s1 = temp_s1;
-//         if (temp_s1 < 0xA) {
-//             goto loop_6;
-//         }
-//     }
-//     this->collider.base.type = 3;
-//     sCape->unk_16C8 = -3.0f;
-//     temp_v1_2 = this->actionFunc;
-//     this->unk2E4 = 0;
-//     this->actor.flags = this->actor.flags & -2;
-//     this->unk_1A2 = this->unk_1A2 + 1;
-//     this->unk_1A4 = this->unk_1A4 + 1;
-//     if ((&func_808DBB78 == temp_v1_2) || (&func_808DC4DC == temp_v1_2)) {
-//         if (temp_s3->unkA73 != 0) {
-//             func_808DC420(this, globalCtx);
-//         }
-//     }
-//     this->actionFunc(this, globalCtx);
-//     phi_s1_2 = 0;
-// loop_15:
-//     temp_v0 = this + (phi_s1_2 * 2);
-//     temp_v1_3 = temp_v0->unk1B6;
-//     temp_s1_2 = phi_s1_2 + 1;
-//     if (temp_v1_3 != 0) {
-//         temp_v0->unk1B6 = temp_v1_3 - 1;
-//     }
-//     phi_s1_2 = temp_s1_2;
-//     if (temp_s1_2 < 5) {
-//         goto loop_15;
-//     }
-//     temp_v0_2 = this->unk1A6;
-//     if (temp_v0_2 != 0) {
-//         this->unk1A6 = temp_v0_2 - 1;
-//     }
-//     temp_v0_3 = this->unk_2D4;
-//     if (temp_v0_3 != 0) {
-//         this->unk_2D4 = temp_v0_3 - 1;
-//     }
-//     temp_v0_4 = this->unk2E8;
-//     if (temp_v0_4 != 0) {
-//         this->unk2E8 = temp_v0_4 - 1;
-//     }
-//     temp_v0_5 = this->unk2E6;
-//     if (temp_v0_5 != 0) {
-//         this->unk2E6 = temp_v0_5 - 1;
-//     }
-//     temp_v0_6 = this->unk_19C;
-//     if (temp_v0_6 != 0) {
-//         this->unk_19C = temp_v0_6 - 1;
-//     }
-//     if (this->introCsState == 0) {
-//         func_808DD20C(this, globalCtx);
-//         temp_s0 = &this->collider;
-//         func_808D70F0(&this->unk_1FC, temp_s0);
-//         temp_s1_3 = &globalCtx->colChkCtx;
-//         CollisionCheck_SetOC(globalCtx, temp_s1_3, temp_s0);
-//         if (this->unk_2D4 == 0) {
-//             CollisionCheck_SetAC(globalCtx, temp_s1_3, temp_s0);
-//             temp_v1_4 = this->actionFunc;
-//             if ((&func_808DC75C != temp_v1_4) && (&func_808DCB7C != temp_v1_4) && (&func_808DD14C != temp_v1_4)) {
-//                 CollisionCheck_SetAT(globalCtx, temp_s1_3, temp_s0);
-//             }
-//         }
-//     }
-//     if (this->unk_199 != 0) {
-//         temp_f20 = Math_Sins(0 - this->actor.shape.rot.y);
-//         temp_f0 = Math_Coss(0 - this->actor.shape.rot.y);
-//         temp_f2 = this->actor.velocity.z;
-//         temp_f12 = this->actor.velocity.x;
-//         temp_f22 = ((temp_f2 * temp_f20) + (temp_f0 * temp_f12)) * 300.0f;
-//         sp120 = ((-temp_f20 * temp_f12) + (temp_f0 * temp_f2)) * 300.0f;
-//         temp_a0_2 = this->unk_1A2;
-//         phi_f22 = temp_f22;
-//         phi_f20 =
-//             (Math_Sins(((((((temp_a0_2 * 8) + temp_a0_2) * 8) - temp_a0_2) * 8) - temp_a0_2) * 4) * -500.0f) - 500.0f;
-//     } else {
-//         sp120 = 0.0f;
-//         phi_f22 = 0.0f;
-//         phi_f20 = 0.0f;
-//     }
-//     this->unk_199 = 0;
-//     Math_SmoothScaleMaxMinF(this + 0x50C, phi_f22, 1.0f, 600.0f, 0.0f);
-//     Math_SmoothScaleMaxMinF(this + 0x510, (bitwise f32)(bitwise s32)sp120, 1.0f, 600.0f, 0.0f);
-//     Math_SmoothScaleMaxMinF(this + 0x514, phi_f20, 1.0f, 100.0f, 0.0f);
-//     if (this->unk_1BA == 1) {
-//         Audio_PlayActorSound2(this, 0x39C7);
-//     }
-//     if (this->unk_1BA == 0x64) {
-//         Audio_PlayActorSound2(this, 0x39D6);
-//         this->unk_1BA = 0;
-//     }
-//     if ((this->unk2E6 != 0) || (this->unk2E8 != 0)) {
-//         phi_s1_3 = 1;
-//     loop_44:
-//         temp_v0_7 = this + (phi_s1_3 * 2);
-//         temp_v1_5 = temp_v0_7->unk4E4;
-//         if (temp_v1_5 != 0) {
-//             temp_v0_7->unk4E4 = temp_v1_5 - 1;
-//             Math_SmoothScaleMaxF(this + (phi_s1_3 * 4) + 0x49C, (bitwise f32)this->unk508, 1.0f, 2.0f);
-//         } else {
-//             Math_SmoothDownscaleMaxF(this + (phi_s1_3 * 4) + 0x49C, 1.0f, 0.2f);
-//         }
-//         temp_s1_4 = phi_s1_3 + 1;
-//         phi_s1_3 = temp_s1_4;
-//         if (temp_s1_4 < 0x12) {
-//             goto loop_44;
-//         }
-//         if (this->unk2E8 != 0) {
-//             func_80078914(temp_s3 + 0xE4, 0x68);
-//             func_808D6BF0(globalCtx, 700.0f, 1);
-//         }
-//     }
-//     if (this->unk_19F != 0) {
-//         this->unk_19F = 0;
-//         spE8.unk0 = (bitwise s32)this->actor.posRot.pos.x;
-//         spE8.unk4 = (bitwise s32)this->actor.posRot.pos.y;
-//         spE8.unk8 = (bitwise s32)this->actor.posRot.pos.z;
-//         spEC = 0.0f;
-//         func_808D6D60(globalCtx, &spE8, 0x3E4CCCCD, 0x3F333333);
-//         func_808D6D60(globalCtx, &spE8, 0x3E99999A, 0x3F4CCCCD);
-//     }
-//     temp_v0_8 = this->unk_26C;
-//     if (temp_v0_8 != 0) {
-//         this->unk_26C = temp_v0_8 - 1;
-//         if (this->unk_26C == 0) {
-//             func_808D6CBC(globalCtx, 1.0f, 0.0f, 0.0f);
-//         }
-//         func_808D6CBC(globalCtx, 1.0f, (*(&D_808E4D44 + (this->unk_26C * 4)) * 0.62831855f) + this->unk_270,
-//                       Math_Rand_CenteredFloat(0.62831855f) + 1.5707964f);
-//     }
-//     temp_v0_9 = this->unk_19C;
-//     if ((temp_v0_9 != 0) && (this->unk_19E < 4)) {
-//         if ((this->unk_19A == 0) && (temp_v0_9 == 0x14)) {
-//             this->unk_19A = 1;
-//             spD0 = 0.0f;
-//             temp_s1_5 = &spCC;
-//             spCC = -180.0f;
-//             phi_s2 = 0;
-//         loop_61:
-//             spD4 = -180.0f;
-//             phi_s0 = 0;
-//         loop_62:
-//             func_808E0F4C(this, globalCtx, temp_s1_5);
-//             temp_s0_2 = phi_s0 + 1;
-//             spD4 = spD4 + 120.0f;
-//             phi_s0 = temp_s0_2;
-//             if (temp_s0_2 < 4) {
-//                 goto loop_62;
-//             }
-//             temp_s2 = phi_s2 + 1;
-//             spCC = spCC + 120.0f;
-//             phi_s2 = temp_s2;
-//             if (temp_s2 < 4) {
-//                 goto loop_61;
-//             }
-//         } else if (temp_v0_9 < 0x1E) {
-//             spD8 = 0.0f;
-//             spDC = 0.0f;
-//             spE0 = (30.0f - this->unk_19C) * 15.0f;
-//             Matrix_RotateY(Math_Rand_ZeroFloat(6.2831855f), 0);
-//             Matrix_MultVec3f(&spD8, &spCC);
-//             this->unk_19E = this->unk_19E + func_808E0F4C(this, globalCtx, &spCC);
-//         }
-//     }
-//     temp_s0_3 = globalCtx->unk1C4C;
-//     if (temp_s0_3 != 0) {
-//         temp_s2_2 = &spBC;
-//         phi_s0_2 = temp_s0_3;
-//     loop_69:
-//         if (phi_s0_2->unk1C != 1) {
+        for (i = 0; i < 10; i++) {
+            sp100.y = Math_Rand_ZeroFloat(240.0f) + 20.0f;
 
-//         } else {
-//             phi_s1_4 = 0;
-//         loop_72:
-//             spBC = 0.0f;
-//             spC0 = 0.0f;
-//             spC4 = 60.0f;
-//             Matrix_RotateY(phi_s1_4 * 0.7853982f, 0);
-//             Matrix_MultVec3f(temp_s2_2, &spB0);
-//             temp_a2 = &spA4;
-//             spA4 = phi_s0_2->unk24 + spB0;
-//             spA8 = phi_s0_2->unk28;
-//             spAC = phi_s0_2->unk2C + spB8;
-//             func_808E0F4C(this, globalCtx, temp_a2);
-//             temp_s1_6 = phi_s1_4 + 1;
-//             phi_s1_4 = temp_s1_6;
-//             if (temp_s1_6 < 8) {
-//                 goto loop_72;
-//             }
-//         }
-//         temp_s0_4 = phi_s0_2->unk124;
-//         phi_s0_2 = temp_s0_4;
-//         if (temp_s0_4 != 0) {
-//             goto loop_69;
-//         }
-//     }
-//     func_808E3564(globalCtx);
-//     temp_v0_10 = globalCtx->unk1C64;
-//     phi_v0 = temp_v0_10;
-//     if (temp_v0_10 != 0) {
-//     loop_75:
-//         if (0x106 != phi_v0->unk0) {
-//         block_79:
-//             temp_v0_11 = phi_v0->unk124;
-//             phi_v0 = temp_v0_11;
-//             if (temp_v0_11 != 0) {
-//                 goto loop_75;
-//             }
-//         } else if (phi_v0->unk16E != 0) {
-//             this->unk_1A0 = 1;
-//         } else {
-//             goto block_79;
-//         }
-//     }
-//     globalCtx->envCtx.unk_BF = 0;
-//     globalCtx->unk10AE2 = 0;
-//     globalCtx->envCtx.unk_DC = 2;
+            if (Math_Rand_ZeroOne() < 0.5f) {
+                sp100.x = 463.0f;
+                sp100.z = Math_Rand_ZeroFloat(463.0f);
+                spF4.x = Math_Rand_ZeroFloat(2.0f);
+                spF4.z = Math_Rand_ZeroFloat(1.0f);
+            } else {
+                sp100.z = 463.0f;
+                sp100.x = Math_Rand_ZeroFloat(463.0f);
+                spF4.z = Math_Rand_ZeroFloat(2.0f);
+                spF4.x = Math_Rand_ZeroFloat(1.0f);
+            }
 
-//     switch (this->unk_1A0) {
-//         case 1:
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 0.0f, 1.0f, 0.02f);
-//             break;
-//         case 2:
-//             globalCtx->unk10AE1 = 1;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.1f);
-//             break;
-//         case 3:
-//             globalCtx->unk10AE1 = 1;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.02f);
-//             break;
-//         case 4:
-//             globalCtx->unk10AE1 = 3;
-//             globalCtx->envCtx.unk_D8 = 1.0f;
-//             break;
-//         case 36:
-//             globalCtx->unk10AE1 = 0;
-//             globalCtx->envCtx.unk_D8 = 1.0f;
-//             break;
-//         case 5:
-//             globalCtx->unk10AE1 = 4;
-//             globalCtx->envCtx.unk_D8 = 1.0f;
-//             break;
-//         case 6:
-//             globalCtx->unk10AE2 = 5;
-//             globalCtx->unk10AE1 = 3;
-//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.075f);
-//             break;
-//         case 7:
-//             globalCtx->unk10AE2 = 5;
-//             globalCtx->envCtx.unk_D8 = 0.0f;
-//             break;
-//         case 65:
-//             globalCtx->unk10AE2 = 3;
-//             globalCtx->unk10AE1 = 6;
-//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
-//             break;
-//         case 8:
-//             globalCtx->unk10AE2 = 7;
-//             globalCtx->envCtx.unk_D8 = 0.0f;
-//             break;
-//         case 75:
-//             globalCtx->unk10AE2 = 4;
-//             globalCtx->unk10AE1 = 8;
-//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
-//             break;
-//         case 9:
-//             globalCtx->unk10AE2 = 3;
-//             globalCtx->unk10AE1 = 9;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
-//             break;
-//         case 10:
-//             globalCtx->unk10AE2 = 3;
-//             globalCtx->unk10AE1 = 0xA;
-//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
-//             break;
-//         case 11:
-//             globalCtx->unk10AE2 = 3;
-//             globalCtx->unk10AE1 = 0xB;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
-//             this->unk_1A4 = 0;
-//             break;
-//         case 12:
-//             globalCtx->unk10AE2 = 0xC;
-//             globalCtx->unk10AE1 = 0xB;
-//             temp_a0_3 = this->unk_1A4;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8,
-//                                  (Math_Coss(((temp_a0_3 * 4) - temp_a0_3) << 0xB) * 0.5f) + 0.5f, 1.0f, 1.0f);
-//             break;
-//         case 13:
-//             globalCtx->unk10AE2 = 0xC;
-//             globalCtx->unk10AE1 = 3;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
-//             break;
-//         case 14:
-//             globalCtx->unk10AE1 = 0xD;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.025f);
-//             break;
-//         case 15:
-//             globalCtx->unk10AE1 = 0xE;
-//             globalCtx->envCtx.unk_D8 = 1.0f;
-//             break;
-//         case 16:
-//             globalCtx->unk10AE2 = 0xE;
-//             globalCtx->unk10AE1 = 0xF;
-//             Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.01f);
-//             break;
-//         case 17:
-//             globalCtx->unk10AE2 = 0x10;
-//             globalCtx->unk10AE1 = 0xF;
-//             Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
-//             break;
-//         case 21:
-//             globalCtx->unk10AE2 = 2;
-//             globalCtx->unk10AE1 = 1;
-//             break;
-//         default:
-//             break;
-//     }
+            func_808D6870(globalCtx, &sp100, &spF4, Math_Rand_ZeroFloat(0.075f) + 0.08f);
+        }
+    }
 
-//     temp_f0_2 = this->unk714;
-//     this->unk_1A0 = 0;
-//     if (0.0f != temp_f0_2) {
-//         globalCtx->unk10B09 = temp_f0_2;
-//         globalCtx->unk10B08 = 0xFF;
-//         globalCtx->unk10B07 = 0xFF;
-//         globalCtx->envCtx.unk_E2 = 0xFF;
-//         globalCtx->envCtx.unk_E1 = 1;
-//     } else if (this->unk_1C4 != 0) {
-//         globalCtx->envCtx.unk_E1 = 1;
-//         globalCtx->unk10B08 = 0xFF;
-//         globalCtx->unk10B07 = 0xFF;
-//         globalCtx->envCtx.unk_E2 = 0xFF;
-//         if ((this->unk_1C4 & 1) != 0) {
-//             globalCtx->unk10B09 = 0x64;
-//         } else {
-//             globalCtx->unk10B09 = 0;
-//         }
-//         this->unk_1C4 = this->unk_1C4 - 1;
-//     } else {
-//         globalCtx->unk10B09 = 0;
-//         globalCtx->envCtx.unk_E1 = 0;
-//     }
-//     temp_v1_6 = this->unk_66E;
-//     if (temp_v1_6 != 0) {
-//         temp_v0_13 = this->unk_66C;
-//         this->unk_66E = temp_v1_6 - 1;
-//         if (temp_v0_13 == 1) {
-//             phi_f0 = 40.0f;
-//         } else if (temp_v0_13 == 4) {
-//             phi_f0 = 25.0f;
-//         } else {
-//             phi_f0 = 10.0f;
-//         }
-//         Math_SmoothScaleMaxF(this->unk_670, phi_f0, 0.3f, 10.0f);
-//     } else {
-//         Math_SmoothDownscaleMaxF(this->unk_670, 1.0f, 5.0f);
-//         if (0.0f == (bitwise f32)this->unk_670) {
-//             this->unk_66C = 0;
-//         }
-//     }
-//     if (this->unk_66C != 0) {
-//         D_8015FCF0 = 1;
-//         if (this->unk_66C == 1) {
-//             D_8015FCF8.x = (bitwise f32)(bitwise s32)this->actor.posRot.pos.x;
-//             D_8015FCF8.y = (bitwise f32)(bitwise s32)this->actor.posRot.pos.y;
-//             D_8015FCF8.z = (bitwise f32)(bitwise s32)this->actor.posRot.pos.z;
-//         }
-//         D_8015FD06 = (bitwise f32)this->unk_670;
-//         D_8015FD08 = 10.0f;
-//         D_8015FD0C = 0;
-//     } else {
-//         D_8015FCF0 = 0;
-//     }
-//     temp_v0_14 = this->unk_274;
-//     if (temp_v0_14 != 0) {
-//         temp_s1_7 = temp_v0_14 - 1;
-//         this->unk_278.x = (bitwise f32)this->unk_2EC;
-//         temp_f20_2 = temp_s1_7;
-//         this->unk_278.y = this->unk2F0 + 50.0f + 30.0f;
-//         this->unk_278.z = this->unk2F4;
-//         temp_f22_2 = temp_f20_2 * 1.2566371f;
-//         temp_f24 = sinf(temp_f22_2) * 600.0f;
-//         Actor_SpawnAsChild(&globalCtx->actorCtx, this, globalCtx, 0xE8, this->unk_1FC.x + temp_f24, this->unk_1FC.y,
-//                            this->unk_1FC.z + (cosf(temp_f22_2) * 600.0f), 0, (temp_f20_2 * 13107.2f) + 0x6000, 0,
-//                            temp_s1_7 + 0xFA);
-//         this->unk_274 = 0;
-//     }
-// }
+    this->collider.base.type = 3;
+    sCape->unk_16C8 = -3.0f;
+    this->unk_2E4 = 0;
+    this->actor.flags &= ~1;
+    this->unk_1A2++;
+    this->unk_1A4++;
+
+    if ((this->actionFunc == func_808DBB78) || (this->actionFunc == func_808DC4DC)) {
+        if (player->unk_A73 != 0) {
+            func_808DC420(this, globalCtx);
+        }
+    }
+
+    this->actionFunc(this, globalCtx);
+
+    for (i = 0; i < ARRAY_COUNT(this->timers); i++) {
+        this->timers[i]--;
+    }
+
+    if (this->unk_1A6 != 0) {
+        this->unk_1A6--;
+    }
+
+    if (this->unk_2D4 != 0) {
+        this->unk_2D4--;
+    }
+
+    if (this->unk_2E8 != 0) {
+        this->unk_2E8--;
+    }
+
+    if (this->unk_2E6 != 0) {
+        this->unk_2E6--;
+    }
+
+    if (this->unk_19C != 0) {
+        this->unk_19C--;
+    }
+
+    if (this->introCsState == 0) {
+        func_808DD20C(this, globalCtx);
+        func_808D70F0(&this->unk_1FC, &this->collider);
+        CollisionCheck_SetOC(globalCtx, &globalCtx->colChkCtx, &this->collider);
+
+        if (this->unk_2D4 == 0) {
+            CollisionCheck_SetAC(globalCtx, &globalCtx->colChkCtx, &this->collider);
+
+            if ((this->actionFunc != func_808DC75C) && (this->actionFunc != func_808DCB7C) &&
+                (this->actionFunc != func_808DD14C)) {
+                CollisionCheck_SetAT(globalCtx, &globalCtx->colChkCtx, &this->collider);
+            }
+        }
+    }
+
+    if (this->unk_199 != 0) {
+        sin = Math_Sins(-this->actor.shape.rot.y);
+        cos = Math_Coss(-this->actor.shape.rot.y);
+        // flip stuff
+        target50C_X = ((this->actor.velocity.z * sin) + (cos * this->actor.velocity.x)) * 300.0f;
+        target50C_Y = ((-sin * this->actor.velocity.x) + (cos * this->actor.velocity.z)) * 300.0f;
+        target50C_Z = (Math_Sins(this->unk_1A2 * 4) * -500.0f) - 500.0f; // was all of that really * 4?
+    } else {
+        target50C_X = 0.0f; // x second?
+        target50C_Y = 0.0f;
+        target50C_Z = 0.0f;
+    }
+
+    this->unk_199 = 0;
+
+    Math_SmoothScaleMaxMinF(&this->unk_50C.x, target50C_X, 1.0f, 600.0f, 0.0f);
+    Math_SmoothScaleMaxMinF(&this->unk_50C.y + 1296, target50C_Y, 1.0f, 600.0f, 0.0f); // float for 1296?
+    Math_SmoothScaleMaxMinF(&this->unk_50C.z, target50C_Z, 1.0f, 100.0f, 0.0f);
+
+    if (this->timers[2] == 1) {
+        Audio_PlayActorSound2(this, NA_SE_EN_GANON_LAUGH);
+    }
+
+    if (this->timers[2] == 100) {
+        Audio_PlayActorSound2(this, NA_SE_EN_FANTOM_ST_LAUGH);
+        this->timers[2] = 0;
+    }
+
+    if ((this->unk_2E6 != 0) || (this->unk_2E8 != 0)) {
+        for (i = 1; i < ARRAY_COUNT(this->unk_49C); i++) {
+            if (this->unk_4E4[i] != 0) {
+                this->unk_4E4[i]--;
+                Math_SmoothScaleMaxF(&this->unk_49C[i], this->unk_508, 1.0f, 2.0f);
+            } else {
+                Math_SmoothDownscaleMaxF(&this->unk_49C[i], 1.0f, 2.0f);
+            }
+        }
+
+        // link hit, spawn shock and play sound
+        if (this->unk_2E8 != 0) {
+            func_80078914(&player->actor.projectedPos, NA_SE_PL_SPARK - SFX_FLAG);
+            func_808D6BF0(globalCtx, 700.0f, 1);
+        }
+    }
+
+    if (this->unk_19F != 0) {
+        this->unk_19F = 0;
+        spE8 = this->actor.posRot.pos;
+        spE8.y = 0.0f;
+        func_808D6D60(globalCtx, &spE8, 0.2f, 0.7f); // no f?
+        func_808D6D60(globalCtx, &spE8, 0.3f, 0.8f); // no f?
+    }
+
+    if (this->unk_26C != 0) {
+        this->unk_26C--;
+
+        if (this->unk_26C == 0) {
+            func_808D6CBC(globalCtx, 1.0f, 0.0f, 0.0f);
+        }
+
+        func_808D6CBC(globalCtx, 1.0f, D_808E4D44[i] * (M_PI / 5) + this->unk_270,
+                      Math_Rand_CenteredFloat(M_PI / 5) + (M_PI / 2));
+    }
+
+    // see if light ball hit and should knock platform down?
+    if ((this->unk_19C != 0) && (this->unk_19E < 4)) {
+        if ((this->unk_19A == 0) && (this->unk_19C == 20)) {
+            this->unk_19A = 1;
+            spCC.y = 0.0f; // x first?
+            spCC.x = -180.0f;
+
+            for (i = 0; i < 4; i++) {
+                spCC.z = -180.0f;
+
+                for (j = 0; j < 4; j++) {
+                    func_808E0F4C(this, globalCtx, &spCC);
+                    spCC.z += 120.0f;
+                }
+
+                spCC.x += 120.0f;
+            }
+        } else if (this->unk_19C < 30) {
+            spD8.x = 0.0f;
+            spD8.y = 0.0f;
+            spD8.z = (30.0f - this->unk_19C) * 15.0f;
+
+            Matrix_RotateY(Math_Rand_ZeroFloat(M_PI * 2), MTXMODE_NEW);
+            Matrix_MultVec3f(&spD8, &spCC);
+
+            this->unk_19E += func_808E0F4C(this, globalCtx, &spCC);
+        }
+    }
+
+    // see if a bomb exploded near a group of platforms and if they should fall
+    explosive = globalCtx->actorCtx.actorList[ACTORTYPE_EXPLOSIVES].first;
+
+    while (explosive != NULL) {
+        if (explosive->params == 1) {
+            for (i = 0; i < 8; i++) {
+                spBC.x = 0.0f;
+                spBC.y = 0.0f;
+                spBC.z = 60.0f;
+
+                Matrix_RotateY(i * (M_PI / 4), MTXMODE_NEW);
+                Matrix_MultVec3f(&spBC, &spB0);
+
+                spA4.x = explosive->posRot.pos.x + spB0.x;
+                spA4.y = explosive->posRot.pos.y;
+                spA4.z = explosive->posRot.pos.z + spB0.z;
+
+                func_808E0F4C(this, globalCtx, &spA4);
+            }
+        }
+        explosive = explosive->next;
+    }
+
+    func_808E3564(globalCtx);
+
+    prop = globalCtx->actorCtx.actorList[ACTORTYPE_PROP].first;
+    // is this supposed to break after successfully finding one platform?
+    while (prop != NULL) {
+        if ((prop->id == ACTOR_BG_GANON_OTYUKA)) {
+            platform = (BgGanonOtyuka*)prop;
+
+            if (platform->unk_16E != 0) {
+                this->unk_1A0 = 1;
+            }
+        } else {
+            prop = prop->next;
+        }
+    }
+
+    globalCtx->envCtx.unk_BF = 0;
+    globalCtx->envCtx.unk_BE = 0;
+    globalCtx->envCtx.unk_DC = 2;
+
+    switch (this->unk_1A0) {
+        case 1:
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 0.0f, 1.0f, 0.02f);
+            break;
+        case 2:
+            globalCtx->envCtx.unk_BD = 1;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.1f);
+            break;
+        case 3:
+            globalCtx->envCtx.unk_BD = 1;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.02f);
+            break;
+        case 4:
+            globalCtx->envCtx.unk_BD = 3;
+            globalCtx->envCtx.unk_D8 = 1.0f;
+            break;
+        case 36:
+            globalCtx->envCtx.unk_BD = 0;
+            globalCtx->envCtx.unk_D8 = 1.0f;
+            break;
+        case 5:
+            globalCtx->envCtx.unk_BD = 4;
+            globalCtx->envCtx.unk_D8 = 1.0f;
+            break;
+        case 6:
+            globalCtx->envCtx.unk_BE = 5;
+            globalCtx->envCtx.unk_BD = 3;
+            Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.075f);
+            break;
+        case 7:
+            globalCtx->envCtx.unk_BE = 5;
+            globalCtx->envCtx.unk_D8 = 0.0f;
+            break;
+        case 65:
+            globalCtx->envCtx.unk_BE = 3;
+            globalCtx->envCtx.unk_BD = 6;
+            Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+            break;
+        case 8:
+            globalCtx->envCtx.unk_BE = 7;
+            globalCtx->envCtx.unk_D8 = 0.0f;
+            break;
+        case 75:
+            globalCtx->envCtx.unk_BE = 4;
+            globalCtx->envCtx.unk_BD = 8;
+            Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+            break;
+        case 9:
+            globalCtx->envCtx.unk_BE = 3;
+            globalCtx->envCtx.unk_BD = 9;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
+            break;
+        case 10:
+            globalCtx->envCtx.unk_BE = 3;
+            globalCtx->envCtx.unk_BD = 0xA;
+            Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+            break;
+        case 11:
+            globalCtx->envCtx.unk_BE = 3;
+            globalCtx->envCtx.unk_BD = 0xB;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
+            this->unk_1A4 = 0;
+            break;
+        case 12:
+            globalCtx->envCtx.unk_BE = 0xC;
+            globalCtx->envCtx.unk_BD = 0xB;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, (Math_Coss(this->unk_1A4 * 0x1800) * 0.5f) + 0.5f, 1.0f,
+                                 1.0f);
+            break;
+        case 13:
+            globalCtx->envCtx.unk_BE = 0xC;
+            globalCtx->envCtx.unk_BD = 3;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.05f);
+            break;
+        case 14:
+            globalCtx->envCtx.unk_BD = 0xD;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.025f);
+            break;
+        case 15:
+            globalCtx->envCtx.unk_BD = 0xE;
+            globalCtx->envCtx.unk_D8 = 1.0f;
+            break;
+        case 16:
+            globalCtx->envCtx.unk_BE = 0xE;
+            globalCtx->envCtx.unk_BD = 0xF;
+            Math_SmoothScaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 1.0f, 0.01f);
+            break;
+        case 17:
+            globalCtx->envCtx.unk_BE = 0x10;
+            globalCtx->envCtx.unk_BD = 0xF;
+            Math_SmoothDownscaleMaxF(&globalCtx->envCtx.unk_D8, 1.0f, 0.05f);
+            break;
+        case 21:
+            globalCtx->envCtx.unk_BE = 2;
+            globalCtx->envCtx.unk_BD = 1;
+            break;
+        default:
+            break;
+    }
+
+    this->unk_1A0 = 0;
+
+    if (this->unk_714 != 0.0f) {
+        globalCtx->envCtx.unk_E2[3] = this->unk_714;
+        globalCtx->envCtx.unk_E2[0] = globalCtx->envCtx.unk_E2[1] = globalCtx->envCtx.unk_E2[2] = 255;
+        globalCtx->envCtx.unk_E1 = 1;
+    } else if (this->unk_1C4 != 0) {
+        globalCtx->envCtx.unk_E1 = 1;
+        globalCtx->envCtx.unk_E2[0] = globalCtx->envCtx.unk_E2[1] = globalCtx->envCtx.unk_E2[2] = 255;
+
+        if ((this->unk_1C4 & 1) != 0) {
+            globalCtx->envCtx.unk_E2[3] = 0x64;
+        } else {
+            globalCtx->envCtx.unk_E2[3] = 0;
+        }
+
+        this->unk_1C4--;
+    } else {
+        globalCtx->envCtx.unk_E2[3] = 0;
+        globalCtx->envCtx.unk_E1 = 0;
+    }
+
+    if (this->unk_66E != 0) {
+        this->unk_66E--;
+
+        if (this->unk_66C == 1) {
+            target670 = 40.0f;
+        } else if (this->unk_66C == 4) {
+            target670 = 25.0f;
+        } else {
+            target670 = 10.0f;
+        }
+
+        Math_SmoothScaleMaxF(&this->unk_670, target670, 0.3f, 10.0f);
+    } else {
+        Math_SmoothDownscaleMaxF(&this->unk_670, 1.0f, 5.0f);
+
+        if (this->unk_670 == 0.0f) {
+            this->unk_66C = 0;
+        }
+    }
+
+    if (this->unk_66C != 0) {
+        D_8015FCF0 = 1;
+
+        if (this->unk_66C == 1) {
+            D_8015FCF8 = this->actor.posRot.pos;
+        }
+
+        D_8015FD06 = this->unk_670;
+        D_8015FD08 = 10.0f;
+        D_8015FD0C = 0;
+    } else {
+        D_8015FCF0 = 0;
+    }
+
+    if (this->unk_274 != 0) {
+        decr274 = this->unk_274 - 1;
+
+        this->unk_278.x = this->unk_2EC[0].x;
+        this->unk_278.y = this->unk_2EC[0].y + 50.0f + 30.0f;
+        this->unk_278.z = this->unk_2EC[0].z;
+
+        decr2pi = decr274 * 1.2566371f; // fake?
+        // temp_f24 = sinf(decr2pi) * 600.0f; might need a temp for cosf
+        // 5 or 6 light balls that go into the charge. not the same as the ones that he throws
+        Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_BOSS_GANON,
+                           this->unk_1FC.x + sinf(decr2pi) * 600.0f, this->unk_1FC.y,
+                           this->unk_1FC.z + (cosf(decr2pi) * 600.0f), 0, (decr274 * 13107.2f) + 0x6000, 0,
+                           0xFA + decr274);
+        this->unk_274 = 0;
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DE734.s")
 
@@ -2045,6 +1977,8 @@ void func_808DC14C(BossGanon* this, GlobalContext* globalCtx) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/BossGanon_Draw.s")
 
+// check distance and set platform to fall if it passes
+s32 func_808E0F4C(BossGanon* this, GlobalContext* globalCtx, Vec3f* arg2);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E0F4C.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E1034.s")
