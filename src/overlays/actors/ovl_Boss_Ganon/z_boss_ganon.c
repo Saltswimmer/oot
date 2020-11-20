@@ -68,6 +68,7 @@ extern AnimationHeader* D_808E4D38[];
 extern s16 D_808E4D40[];
 extern Vec3f D_808E4C6C; // zeroVec?
 extern f32 D_808E4D44[];
+extern u8 D_808E4C58[];
 
 typedef struct {
     /* 0x00 */ Vec3s eye;
@@ -159,6 +160,7 @@ extern AnimationHeader D_06001440;
 void func_808D6870(GlobalContext* globalCtx, Vec3f* arg1, Vec3f* arg2, f32 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6870.s")
 
+void func_808D69B0(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, f32 arg4, s16 arg6);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D69B0.s")
 
 // names of the vectors are just a guess
@@ -1532,7 +1534,7 @@ void func_808DC14C(BossGanon* this, GlobalContext* globalCtx) {
 void func_808DD20C(BossGanon* this, GlobalContext* globalCtx);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DD20C.s")
 
-//#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/BossGanon_Update.s")
+#ifdef NON_MATCHING
 void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
     BossGanon* this = THIS;
     Player* player = PLAYER;
@@ -1574,7 +1576,7 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
             if (Math_Rand_ZeroOne() < 0.5f) {
                 sp100.x = 463.0f;
                 sp100.z = Math_Rand_ZeroFloat(463.0f);
-                spF4.x = Math_Rand_ZeroFloat(2.0f);
+                spF4.x = Math_Rand_ZeroFloat(2);
                 spF4.z = Math_Rand_ZeroFloat(1.0f);
             } else {
                 sp100.z = 463.0f;
@@ -1594,6 +1596,7 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
     this->unk_1A2++;
     this->unk_1A4++;
 
+    // block links attack if hes shooting something
     if ((this->actionFunc == func_808DBB78) || (this->actionFunc == func_808DC4DC)) {
         if (player->unk_A73 != 0) {
             func_808DC420(this, globalCtx);
@@ -1603,7 +1606,9 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
     this->actionFunc(this, globalCtx);
 
     for (i = 0; i < ARRAY_COUNT(this->timers); i++) {
-        this->timers[i]--;
+        if (this->timers[i] != 0) {
+            this->timers[i]--;
+        }
     }
 
     if (this->unk_1A6 != 0) {
@@ -1647,7 +1652,7 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
         // flip stuff
         target50C_X = ((this->actor.velocity.z * sin) + (cos * this->actor.velocity.x)) * 300.0f;
         target50C_Y = ((-sin * this->actor.velocity.x) + (cos * this->actor.velocity.z)) * 300.0f;
-        target50C_Z = (Math_Sins(this->unk_1A2 * 4) * -500.0f) - 500.0f; // was all of that really * 4?
+        target50C_Z = (Math_Sins(this->unk_1A2 * 2268) * -500.0f) - 500.0f; // was all of that really * 4?
     } else {
         target50C_X = 0.0f; // x second?
         target50C_Y = 0.0f;
@@ -1950,6 +1955,9 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
         this->unk_274 = 0;
     }
 }
+#else
+#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/BossGanon_Update.s")
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DE734.s")
 
@@ -1981,7 +1989,262 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
 s32 func_808E0F4C(BossGanon* this, GlobalContext* globalCtx, Vec3f* arg2);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E0F4C.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E1034.s")
+//#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E1034.s")
+void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
+    s16 spBA = 0;
+    BossGanon* this = THIS;
+    GlobalContext* globalCtx = globalCtx2;
+    Player* player = PLAYER;
+    BossGanon* ganondorf = (BossGanon*)this->actor.parent;
+    s16 i;
+    Vec3f spAC;             // spAC
+    Vec3f spA0;             // spA0
+    Vec3f sp94;             // sp94
+    f32 xDistFromLink;      // sp8C
+    f32 yDistFromLink;      // sp84
+    f32 zDistFromLink;      // sp80
+    f32 xDistFromGanondorf; // sp78
+    f32 yDistFromGanondorf; // sp74
+    f32 zDistFromGanondorf; // sp70
+    s16 yawDiff;            // unused
+    f32 minReflectDist;
+    f32 sp58;
+    f32 sp54;
+    s16 sp4E;
+    u8 hitWithBottle;
+    f32 phi_f20;
+
+    this->unk_1A2++;
+    ganondorf->unk_1A0 = 1;
+
+    if (this->unk_1A8 != 0) {
+        if (this->unk_1A8 == 2) {
+            Math_SmoothDownscaleMaxF(&this->animationLength, 1.0f, 10.0f);
+            Math_SmoothScaleMaxF(&this->actor.scale, 30.0f, 0.5f, 100.0f);
+        } else {
+            this->actor.shape.rot.y += 0x1000;
+            ganondorf->unk_66E = 1;
+            D_8015FCF8 = this->actor.posRot.pos;
+            Math_SmoothDownscaleMaxF(&this->animationLength, 1.0f, 30.0f);
+            Math_SmoothScaleMaxF(&this->actor.scale, 20.0f, 0.5f, 100.0f);
+            this->unk_1C8 += ((M_PI / 2) + Math_Rand_ZeroFloat((M_PI / 4)));
+        }
+
+        Actor_SetScale(&this->actor, this->actor.scale.x);
+
+        if (this->animationLength == 0.0f) {
+            Actor_Kill(this);
+            return;
+        }
+    } else {
+        Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_FIRE - SFX_FLAG);
+
+        if ((this->unk_1A2 & 1) != 0) {
+            Actor_SetScale(&this->actor, 6.0f);
+        } else {
+            Actor_SetScale(&this->actor, 5.25f);
+        }
+
+        this->actor.shape.rot.z += (s32)(Math_Rand_ZeroOne() * 20000.0f) + 0x4000;
+
+        for (i = 0; i < ARRAY_COUNT(this->timers); i++) {
+            if (this->timers[i] != 0) {
+                this->timers[i]--;
+            }
+        }
+
+        xDistFromGanondorf = ganondorf->unk_1FC.x - this->actor.posRot.pos.x;
+        yDistFromGanondorf = ganondorf->unk_1FC.y - this->actor.posRot.pos.y;
+        zDistFromGanondorf = ganondorf->unk_1FC.z - this->actor.posRot.pos.z;
+
+        xDistFromLink = player->actor.posRot.pos.x - this->actor.posRot.pos.x;
+        yDistFromLink = (player->actor.posRot.pos.y + 40.0f) - this->actor.posRot.pos.y;
+        zDistFromLink = player->actor.posRot.pos.z - this->actor.posRot.pos.z;
+
+        func_8002D908(this);
+        func_8002D7EC(this);
+
+        switch (this->unk_1C2) {
+            case 0:
+                if ((player->stateFlags1 & 2) &&
+                    (ABS((s16)(player->actor.shape.rot.y - (s16)(ganondorf->actor.yawTowardsLink + 0x8000))) <
+                     0x2000) &&
+                    (sqrtf(SQ(xDistFromLink) + SQ(yDistFromLink) + SQ(zDistFromLink)) <= 25.0f)) {
+                    hitWithBottle = 1;
+                } else {
+                    hitWithBottle = 0;
+                }
+
+                if ((this->collider.base.acFlags & 2) || (hitWithBottle != 0)) {
+                    ColliderBody* acHitItem = this->collider.body.acHitItem;
+                    this->collider.base.acFlags &= ~2;
+                    
+
+                    if ((hitWithBottle == 0) && (acHitItem->toucher.flags & 0x100000)) {
+                        spBA = 2;
+                        Audio_PlaySoundGeneral(NA_SE_IT_SHIELD_REFLECT_MG, &player->actor.projectedPos, 4, &D_801333E0,
+                                               &D_801333E0, &D_801333E8);
+                        func_800AA000(this->actor.xyzDistFromLinkSq, 0xFF, 0x14, 0x96);
+                    } else {
+                        spBA = 1;
+                        this->actor.posRot.rot.y = atan2s(xDistFromGanondorf, zDistFromGanondorf);
+                        this->actor.posRot.rot.x =
+                            atan2s(sqrtf(SQ(xDistFromGanondorf) + SQ(zDistFromGanondorf)), yDistFromGanondorf);
+                        this->unk_1A4++;
+                        this->timers[1] = 2;
+                        Audio_PlaySoundGeneral(NA_SE_IT_SWORD_REFLECT_MG, &player->actor.projectedPos, 4, &D_801333E0,
+                                               &D_801333E0, &D_801333E8);
+                        func_800AA000(this->actor.xyzDistFromLinkSq, 0xB4, 0x14, 0x64);
+
+                        if (hitWithBottle == 0) {
+                            if ((ganondorf->actor.xyzDistFromLinkSq > 62500.0f) && (this->unk_1A4 < 3)) {
+                                this->unk_1C2 = 1;
+                            } else if (Math_Rand_ZeroOne() < 0.7f) {
+                                this->unk_1C2 = 1;
+                            } else {
+                                this->unk_1C2 = 3;
+                            }
+
+                            if (player->swordAnimation >= 24) {
+                                this->actor.speedXZ = 20.0f;
+                            }
+                        } else if (Math_Rand_ZeroOne() < 0.9f) {
+                            this->unk_1C2 = 1;
+                        } else {
+                            this->unk_1C2 = 3;
+                        }
+                    }
+                } else {
+                    if (sqrtf(SQ(xDistFromLink) + SQ(yDistFromLink) + SQ(zDistFromLink)) <= 25.0f) {
+                        spBA = 5;
+                        func_8002F6D4(globalCtx, &this->actor, 3.0f, this->actor.posRot.rot.y, 0.0f, 0x30);
+                        Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot, 0x28, NA_SE_EN_GANON_HIT_THUNDER);
+                        ganondorf->timers[2] = 20;
+
+                        for (i = 0; i < ARRAY_COUNT(ganondorf->unk_4E4); i++) {
+                            ganondorf->unk_4E4[i] = D_808E4C58[i];
+                        }
+
+                        ganondorf->unk_2E6 = 0;
+                        ganondorf->unk_2E8 = 60;
+                        ganondorf->unk_508 = 4.0f;
+                    }
+                }
+                break;
+            case 1:
+                if ((ganondorf->actionFunc == func_808DC14C) && (ganondorf->unk_1C2 == 1)) {
+                    minReflectDist = (this->actor.speedXZ >= 19.0f) ? 250.0f : 170.0f;
+
+                    if (sqrtf(SQ(xDistFromGanondorf) + SQ(yDistFromGanondorf) + SQ(zDistFromGanondorf)) <
+                        minReflectDist) {
+                        ganondorf->unk_1C0 = 1;
+                        this->timers[0] = 8;
+                        this->unk_1C2 = 2;
+                    }
+                }
+                break;
+            case 2:
+                if (this->timers[0] == 1) {
+                    spBA = 1;
+                    this->actor.posRot.rot.y = atan2s(zDistFromLink, xDistFromLink);
+                    this->actor.posRot.rot.x = atan2s(sqrtf(SQ(xDistFromLink) + SQ(zDistFromLink)), yDistFromLink);
+                    this->timers[1] = 2;
+                    Audio_PlayActorSound2(this, NA_SE_IT_SWORD_REFLECT_MG);
+                    Audio_PlayActorSound2(this, NA_SE_EN_GANON_AT_RETURN);
+                    this->unk_1C2 = 0;
+                    break;
+                }
+            case 4:
+                if (sqrtf(SQ(xDistFromGanondorf) + SQ(yDistFromGanondorf) + SQ(zDistFromGanondorf)) < 30.0f) {
+                    spBA = 3;
+                    Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot.pos, 40, NA_SE_EN_GANON_DAMAGE1);
+                    Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot.pos, 40, NA_SE_EN_GANON_HIT_THUNDER);
+                }
+                break;
+            case 3:
+                if (sqrtf(SQ(xDistFromGanondorf) + SQ(yDistFromGanondorf) + SQ(zDistFromGanondorf)) < 100.0f) {
+                    ganondorf->unk_1C0 = 1;
+                    this->unk_1C2 = 4;
+                }
+                break;
+        }
+
+        Collider_CylinderUpdate(this, &this->collider);
+
+        if (this->timers[1] == 0) {
+            CollisionCheck_SetAC(globalCtx, &globalCtx->colChkCtx, &this->collider);
+        }
+
+        for (i = 0; i < 2; i++) {
+            spA0.x = spA0.z = 0.0f;
+            spA0.y = 0.2f;
+
+            spAC.x = spAC.y = spAC.z = 0.0f;
+
+            sp94.x = Math_Rand_CenteredFloat(30.0f) + this->actor.posRot.pos.x;
+            sp94.y = Math_Rand_CenteredFloat(30.0f) + this->actor.posRot.pos.y;
+            sp94.z = Math_Rand_CenteredFloat(30.0f) + this->actor.posRot.pos.z;
+
+            func_808D69B0(globalCtx, &sp94, &spAC, &spA0, Math_Rand_ZeroFloat(500.0f) + 700.0f, 0x1E);
+        }
+
+        if (this->actor.posRot.pos.y < 10.0f) {
+            func_8002E4B4(globalCtx, this, 0.0f, 20.0f, 20.0f, 4);
+        }
+
+        if ((fabsf(this->actor.posRot.pos.x) > 465.0f) || (this->actor.posRot.pos.y > 500.0f) ||
+            (fabsf(this->actor.posRot.pos.z) > 465.0f)) {
+            spBA = 4;
+        }
+
+        if ((spBA != 0) || (this->actor.bgCheckFlags & 1)) {
+            if (spBA == 1) {
+                sp58 = Math_Rand_ZeroFloat(100.0f) + 300.0f;
+                sp4E = 40;
+                phi_f20 = 25.0f;
+                sp54 = 10.0f;
+            } else {
+                sp58 = Math_Rand_ZeroFloat(200.0f) + 500.0f;
+                sp4E = 70;
+                phi_f20 = 30.0f;
+                sp54 = 15.0f;
+                Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot.pos, 0x50, NA_SE_EN_GANON_HIT_THUNDER);
+            }
+
+            for (i = 0; i < sp4E; i++) {
+                if (spBA != 0) {
+                    spAC.x = Math_Rand_CenteredFloat(phi_f20);
+                    spAC.y = Math_Rand_CenteredFloat(phi_f20);
+                    spAC.z = Math_Rand_CenteredFloat(phi_f20);
+                } else {
+                    spAC.x = Math_Rand_CenteredFloat(phi_f20);
+                    spAC.y = Math_Rand_ZeroFloat(25.0f);
+                    spAC.z = Math_Rand_CenteredFloat(phi_f20);
+                }
+
+                func_808D6AAC(globalCtx, &this->actor.posRot, &spAC, &D_808E4C6C, sp58, sp54, 0x1E);
+            }
+
+            if (spBA != 1) {
+                this->unk_1A8 = 1;
+
+                if (spBA == 0) {
+                    func_808E0F4C(this, globalCtx, &this->actor.posRot);
+                }
+
+                if (spBA == 3) {
+                    func_808DC66C(ganondorf, globalCtx);
+                } else if (ganondorf->actionFunc == func_808DC14C) {
+                    func_808DBAF0(ganondorf, globalCtx);
+
+                    if (spBA == 5) {
+                        ganondorf->timers[0] = 125;
+                    }
+                }
+            }
+        }
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E1B54.s")
 
