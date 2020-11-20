@@ -1580,7 +1580,7 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
                 spF4.z = Math_Rand_ZeroFloat(1.0f);
             } else {
                 sp100.z = 463.0f;
-                sp100.x = Math_Rand_ZeroFloat(463.0f);
+                sp100.x = Math_Rand_ZeroFloat(463);
                 spF4.z = Math_Rand_ZeroFloat(2.0f);
                 spF4.x = Math_Rand_ZeroFloat(1.0f);
             }
@@ -1649,10 +1649,10 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
     if (this->unk_199 != 0) {
         sin = Math_Sins(-this->actor.shape.rot.y);
         cos = Math_Coss(-this->actor.shape.rot.y);
-        // flip stuff
+        // flip mults if needed
         target50C_X = ((this->actor.velocity.z * sin) + (cos * this->actor.velocity.x)) * 300.0f;
         target50C_Y = ((-sin * this->actor.velocity.x) + (cos * this->actor.velocity.z)) * 300.0f;
-        target50C_Z = (Math_Sins(this->unk_1A2 * 2268) * -500.0f) - 500.0f; // was all of that really * 4?
+        target50C_Z = (Math_Sins(this->unk_1A2 * 2268) * -500.0f) - 500.0f;
     } else {
         target50C_X = 0.0f; // x second?
         target50C_Y = 0.0f;
