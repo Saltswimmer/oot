@@ -20,11 +20,11 @@ typedef struct BossGanon {
     /* 0x019C */ s16 unk_19C; // timer
     /* 0x019E */ u8 unk_19E;
     /* 0x019F */ u8 unk_19F;
-    /* 0x01A0 */ u8 unk_1A0;
+    /* 0x01A0 */ s8 unk_1A0;
     /* 0x01A1 */ char unk_1A1[0x1];
     /* 0x01A2 */ s16 unk_1A2;
     /* 0x01A4 */ s16 unk_1A4;
-    /* 0x01A6 */ s16 unk_1A6; // timer
+    /* 0x01A6 */ s16 unk_1A6;
     /* 0x01A8 */ s16 unk_1A8;
     /* 0x01AA */ s16 unk_1AA;
     /* 0x01AC */ s16 unk_1AC;

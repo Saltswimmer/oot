@@ -1989,30 +1989,26 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
 s32 func_808E0F4C(BossGanon* this, GlobalContext* globalCtx, Vec3f* arg2);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E0F4C.s")
 
-//#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808E1034.s")
 void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
+    u8 hitWithBottle;
+    s16 i;
     s16 spBA = 0;
+    Vec3f spAC;
+    Vec3f spA0;
+    Vec3f sp94;
     BossGanon* this = THIS;
     GlobalContext* globalCtx = globalCtx2;
-    Player* player = PLAYER;
-    BossGanon* ganondorf = (BossGanon*)this->actor.parent;
-    s16 i;
-    Vec3f spAC;             // spAC
-    Vec3f spA0;             // spA0
-    Vec3f sp94;             // sp94
-    f32 xDistFromLink;      // sp8C
-    f32 yDistFromLink;      // sp84
-    f32 zDistFromLink;      // sp80
-    f32 xDistFromGanondorf; // sp78
-    f32 yDistFromGanondorf; // sp74
-    f32 zDistFromGanondorf; // sp70
-    s16 yawDiff;            // unused
+    f32 xDistFromLink;
+    f32 yDistFromLink;
+    f32 zDistFromLink;
     f32 minReflectDist;
-    f32 sp58;
-    f32 sp54;
-    s16 sp4E;
-    u8 hitWithBottle;
-    f32 phi_f20;
+    f32 xDistFromGanondorf;
+    f32 yDistFromGanondorf;
+    f32 zDistFromGanondorf;
+    Player* player = PLAYER;
+    s32 pad;
+    BossGanon* ganondorf = (BossGanon*)this->actor.parent;
+    s32 pad1;
 
     this->unk_1A2++;
     ganondorf->unk_1A0 = 1;
@@ -2020,32 +2016,32 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
     if (this->unk_1A8 != 0) {
         if (this->unk_1A8 == 2) {
             Math_SmoothDownscaleMaxF(&this->animationLength, 1.0f, 10.0f);
-            Math_SmoothScaleMaxF(&this->actor.scale, 30.0f, 0.5f, 100.0f);
+            Math_SmoothScaleMaxF(&this->actor.scale.x, 30.0f, 0.5f, 100.0f);
         } else {
             this->actor.shape.rot.y += 0x1000;
             ganondorf->unk_66E = 1;
             D_8015FCF8 = this->actor.posRot.pos;
             Math_SmoothDownscaleMaxF(&this->animationLength, 1.0f, 30.0f);
-            Math_SmoothScaleMaxF(&this->actor.scale, 20.0f, 0.5f, 100.0f);
+            Math_SmoothScaleMaxF(&this->actor.scale.x, 20.0f, 0.5f, 100.0f);
             this->unk_1C8 += ((M_PI / 2) + Math_Rand_ZeroFloat((M_PI / 4)));
         }
 
         Actor_SetScale(&this->actor, this->actor.scale.x);
 
         if (this->animationLength == 0.0f) {
-            Actor_Kill(this);
+            Actor_Kill(&this->actor);
             return;
         }
     } else {
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_FIRE - SFX_FLAG);
 
-        if ((this->unk_1A2 & 1) != 0) {
+        if (this->unk_1A2 & 1) {
             Actor_SetScale(&this->actor, 6.0f);
         } else {
             Actor_SetScale(&this->actor, 5.25f);
         }
 
-        this->actor.shape.rot.z += (s32)(Math_Rand_ZeroOne() * 20000.0f) + 0x4000;
+        this->actor.shape.rot.z += (s16)(Math_Rand_ZeroOne() * 20000.0f) + 0x4000;
 
         for (i = 0; i < ARRAY_COUNT(this->timers); i++) {
             if (this->timers[i] != 0) {
@@ -2061,8 +2057,8 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
         yDistFromLink = (player->actor.posRot.pos.y + 40.0f) - this->actor.posRot.pos.y;
         zDistFromLink = player->actor.posRot.pos.z - this->actor.posRot.pos.z;
 
-        func_8002D908(this);
-        func_8002D7EC(this);
+        func_8002D908(&this->actor);
+        func_8002D7EC(&this->actor);
 
         switch (this->unk_1C2) {
             case 0:
@@ -2070,24 +2066,23 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                     (ABS((s16)(player->actor.shape.rot.y - (s16)(ganondorf->actor.yawTowardsLink + 0x8000))) <
                      0x2000) &&
                     (sqrtf(SQ(xDistFromLink) + SQ(yDistFromLink) + SQ(zDistFromLink)) <= 25.0f)) {
-                    hitWithBottle = 1;
+                    hitWithBottle = true;
                 } else {
-                    hitWithBottle = 0;
+                    hitWithBottle = false;
                 }
 
-                if ((this->collider.base.acFlags & 2) || (hitWithBottle != 0)) {
+                if ((this->collider.base.acFlags & 2) || hitWithBottle) {
                     ColliderBody* acHitItem = this->collider.body.acHitItem;
                     this->collider.base.acFlags &= ~2;
-                    
 
-                    if ((hitWithBottle == 0) && (acHitItem->toucher.flags & 0x100000)) {
+                    if ((hitWithBottle == false) && (acHitItem->toucher.flags & 0x100000)) {
                         spBA = 2;
                         Audio_PlaySoundGeneral(NA_SE_IT_SHIELD_REFLECT_MG, &player->actor.projectedPos, 4, &D_801333E0,
                                                &D_801333E0, &D_801333E8);
                         func_800AA000(this->actor.xyzDistFromLinkSq, 0xFF, 0x14, 0x96);
                     } else {
                         spBA = 1;
-                        this->actor.posRot.rot.y = atan2s(xDistFromGanondorf, zDistFromGanondorf);
+                        this->actor.posRot.rot.y = atan2s(zDistFromGanondorf, xDistFromGanondorf);
                         this->actor.posRot.rot.x =
                             atan2s(sqrtf(SQ(xDistFromGanondorf) + SQ(zDistFromGanondorf)), yDistFromGanondorf);
                         this->unk_1A4++;
@@ -2096,7 +2091,7 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                                                &D_801333E0, &D_801333E8);
                         func_800AA000(this->actor.xyzDistFromLinkSq, 0xB4, 0x14, 0x64);
 
-                        if (hitWithBottle == 0) {
+                        if (hitWithBottle == false) {
                             if ((ganondorf->actor.xyzDistFromLinkSq > 62500.0f) && (this->unk_1A4 < 3)) {
                                 this->unk_1C2 = 1;
                             } else if (Math_Rand_ZeroOne() < 0.7f) {
@@ -2105,20 +2100,24 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                                 this->unk_1C2 = 3;
                             }
 
+                            // if a spin attack is used
                             if (player->swordAnimation >= 24) {
                                 this->actor.speedXZ = 20.0f;
                             }
-                        } else if (Math_Rand_ZeroOne() < 0.9f) {
-                            this->unk_1C2 = 1;
+                            break;
                         } else {
-                            this->unk_1C2 = 3;
+                            if (Math_Rand_ZeroOne() < 0.9f) {
+                                this->unk_1C2 = 1;
+                            } else {
+                                this->unk_1C2 = 3;
+                            }
                         }
                     }
                 } else {
                     if (sqrtf(SQ(xDistFromLink) + SQ(yDistFromLink) + SQ(zDistFromLink)) <= 25.0f) {
                         spBA = 5;
                         func_8002F6D4(globalCtx, &this->actor, 3.0f, this->actor.posRot.rot.y, 0.0f, 0x30);
-                        Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot, 0x28, NA_SE_EN_GANON_HIT_THUNDER);
+                        Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot.pos, 0x28, NA_SE_EN_GANON_HIT_THUNDER);
                         ganondorf->timers[2] = 20;
 
                         for (i = 0; i < ARRAY_COUNT(ganondorf->unk_4E4); i++) {
@@ -2149,8 +2148,8 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                     this->actor.posRot.rot.y = atan2s(zDistFromLink, xDistFromLink);
                     this->actor.posRot.rot.x = atan2s(sqrtf(SQ(xDistFromLink) + SQ(zDistFromLink)), yDistFromLink);
                     this->timers[1] = 2;
-                    Audio_PlayActorSound2(this, NA_SE_IT_SWORD_REFLECT_MG);
-                    Audio_PlayActorSound2(this, NA_SE_EN_GANON_AT_RETURN);
+                    Audio_PlayActorSound2(&this->actor, NA_SE_IT_SWORD_REFLECT_MG);
+                    Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_AT_RETURN);
                     this->unk_1C2 = 0;
                     break;
                 }
@@ -2169,10 +2168,10 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                 break;
         }
 
-        Collider_CylinderUpdate(this, &this->collider);
+        Collider_CylinderUpdate(&this->actor, &this->collider);
 
         if (this->timers[1] == 0) {
-            CollisionCheck_SetAC(globalCtx, &globalCtx->colChkCtx, &this->collider);
+            CollisionCheck_SetAC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
         }
 
         for (i = 0; i < 2; i++) {
@@ -2189,7 +2188,7 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
         }
 
         if (this->actor.posRot.pos.y < 10.0f) {
-            func_8002E4B4(globalCtx, this, 0.0f, 20.0f, 20.0f, 4);
+            func_8002E4B4(globalCtx, &this->actor, 0.0f, 20.0f, 20.0f, 4);
         }
 
         if ((fabsf(this->actor.posRot.pos.x) > 465.0f) || (this->actor.posRot.pos.y > 500.0f) ||
@@ -2198,16 +2197,21 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
         }
 
         if ((spBA != 0) || (this->actor.bgCheckFlags & 1)) {
+            f32 sp58;
+            f32 sp54;
+            f32 phi_f20;
+            s16 sp4E;
+
             if (spBA == 1) {
                 sp58 = Math_Rand_ZeroFloat(100.0f) + 300.0f;
-                sp4E = 40;
-                phi_f20 = 25.0f;
                 sp54 = 10.0f;
+                phi_f20 = 25.0f;
+                sp4E = 40;
             } else {
                 sp58 = Math_Rand_ZeroFloat(200.0f) + 500.0f;
-                sp4E = 70;
-                phi_f20 = 30.0f;
                 sp54 = 15.0f;
+                phi_f20 = 30.0f;
+                sp4E = 70;
                 Audio_PlaySoundAtPosition(globalCtx, &this->actor.posRot.pos, 0x50, NA_SE_EN_GANON_HIT_THUNDER);
             }
 
@@ -2222,14 +2226,14 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                     spAC.z = Math_Rand_CenteredFloat(phi_f20);
                 }
 
-                func_808D6AAC(globalCtx, &this->actor.posRot, &spAC, &D_808E4C6C, sp58, sp54, 0x1E);
+                func_808D6AAC(globalCtx, &this->actor.posRot.pos, &spAC, &D_808E4C6C, sp58, sp54, 0x1E);
             }
 
             if (spBA != 1) {
                 this->unk_1A8 = 1;
 
                 if (spBA == 0) {
-                    func_808E0F4C(this, globalCtx, &this->actor.posRot);
+                    func_808E0F4C(this, globalCtx, &this->actor.posRot.pos);
                 }
 
                 if (spBA == 3) {
