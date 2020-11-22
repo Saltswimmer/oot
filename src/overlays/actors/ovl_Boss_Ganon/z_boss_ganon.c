@@ -69,6 +69,7 @@ extern s16 D_808E4D40[];
 extern Vec3f D_808E4C6C; // zeroVec?
 extern f32 D_808E4D44[];
 extern u8 D_808E4C58[];
+extern Color_RGB8 D_808E4C78[];
 
 typedef struct {
     /* 0x00 */ Vec3s eye;
@@ -94,35 +95,33 @@ extern CutsceneCameraPosition D_808E4C94[];
 // };
 
 // bss
+
+typedef struct {
+    /* 0x00 */ u8 type;
+    /* 0x01 */ s8 unk_01;
+    /* 0x04 */ Vec3f pos;
+    /* 0x10 */ Vec3f velocity;
+    /* 0x1C */ Vec3f accel;
+    /* 0x28 */ Color_RGB8 color; // this might not be a color
+    /* 0x2B */ u8 unk_2B;
+    /* 0x2C */ s16 unk_2C;
+    /* 0x2E */ s16 unk_2E;
+    /* 0x30 */ s16 unk_30;
+    /* 0x34 */ f32 unk_34;
+    /* 0x38 */ f32 unk_38;
+    /* 0x3C */ f32 unk_3C;
+    /* 0x40 */ f32 unk_40;
+    /* 0x44 */ f32 unk_44;
+    /* 0x48 */ f32 unk_48;
+} GanondorfEffect; // size = 0x4C
+
+extern GanondorfEffect sCustomEffects[200];
 extern EnGanonMant* sCape; // D_808F93C0
 // D_808F93C4
 // D_808F93C8
 // D_808F93CC
 extern BossGanon* sGanondorf; // D_808F93D0
 extern EnZl3* sZelda;         // D_808F93D4
-
-typedef struct {
-    /* 0x00 */ s8 unk_00;
-    /* 0x01 */ s8 unk_01;
-    /* 0x04 */ f32 unk_04; // prob vec3f
-    /* 0x08 */ f32 unk_08;
-    /* 0x0C */ f32 unk_0C;
-    /* 0x10 */ f32 unk_10; // prob vec3f
-    /* 0x14 */ f32 unk_14;
-    /* 0x18 */ f32 unk_18;
-    /* 0x1C */ s32 unk_1C;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ char unk_28[0x6];
-    /* 0x2E */ s16 unk_2E;
-    /* 0x30 */ char unk_30[0x4];
-    /* 0x34 */ f32 unk_34;
-    /* 0x38 */ char unk_38[0x4];
-    /* 0x3C */ f32 unk_3C;
-    /* 0x40 */ char unk_40[0xC];
-} GanondorfEffect; // size = 0x4C
-
-extern GanondorfEffect sCustomEffects[200];
 
 // segments
 extern u8 D_0600CF00[]; // title card texture
@@ -157,25 +156,135 @@ extern AnimationHeader D_06001440;
 // extern AnimationHeader ;
 // extern AnimationHeader ;
 
-void func_808D6870(GlobalContext* globalCtx, Vec3f* arg1, Vec3f* arg2, f32 arg3);
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6870.s")
+void func_808D6870(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, f32 arg3) {
+    s16 i;
+    GanondorfEffect* eff = globalCtx->customActorEffects;
+    Color_RGB8* color;
 
-void func_808D69B0(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, f32 arg4, s16 arg6);
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D69B0.s")
+    for (i = 0; i < 200; i++, eff++) {
+        if (eff->type == 0) {
+            eff->type = 9;
+            eff->pos = *pos;
+            eff->velocity = *velocity;
+            eff->accel = D_808E4C6C;
+            eff->unk_34 = arg3;
+            eff->accel.y = -1.5f;
+            eff->unk_44 = Math_Rand_ZeroFloat(6.28f);
+            eff->unk_48 = Math_Rand_ZeroFloat(6.28f);
+            color = &D_808E4C78[(s16)Math_Rand_ZeroFloat(2.99f)];
+            eff->color.r = color->r;
+            eff->color.g = color->g;
+            eff->color.b = color->b;
+            eff->unk_01 = (s16)Math_Rand_ZeroFloat(20.0f);
+            return;
+        }
+    }
+}
 
-// names of the vectors are just a guess
-void func_808D6AAC(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, f32 arg4, f32 arg5, s16 arg6);
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6AAC.s")
+void func_808D69B0(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, f32 arg4, s16 arg6) {
+    s16 i;
+    GanondorfEffect* eff = globalCtx->customActorEffects;
+
+    for (i = 0; i < 150; i++, eff++) {
+        if (eff->type == 0) {
+            eff->type = 1;
+            eff->pos = *pos;
+            eff->velocity = *velocity;
+            eff->accel = *accel;
+            eff->unk_34 = arg4 / 1000.0f;
+            eff->unk_2E = (s16)Math_Rand_ZeroFloat(100.0f) + 0xC8;
+            eff->unk_30 = arg6;
+            eff->unk_01 = (s16)Math_Rand_ZeroFloat(10.0f);
+            return;
+        }
+    }
+}
+
+void func_808D6AAC(GlobalContext* globalCtx, Vec3f* pos, Vec3f* velocity, Vec3f* accel, f32 arg4, f32 arg5, s16 arg6) {
+    s16 i;
+    GanondorfEffect* eff = globalCtx->customActorEffects;
+
+    for (i = 0; i < 150; i++, eff++) {
+        if (eff->type == 0) {
+            eff->type = 2;
+            eff->pos = *pos;
+            eff->velocity = *velocity;
+            eff->accel = *accel;
+            eff->unk_34 = arg4 / 1000.0f;
+            eff->unk_38 = 1.0f;
+            eff->unk_40 = arg5;
+            eff->unk_2E = (s16)Math_Rand_ZeroFloat(100.0f) + 0xC8;
+            eff->unk_30 = arg6;
+            eff->unk_01 = (s16)Math_Rand_ZeroFloat(10.0f);
+            eff->unk_48 = atan2f(eff->velocity.z, eff->velocity.x);
+            eff->unk_44 = -atan2f(sqrtf(SQ(eff->velocity.x) + SQ(eff->velocity.z)), eff->velocity.y);
+            return;
+        }
+    }
+}
 
 // shock
-void func_808D6BF0(GlobalContext* globalCtx, f32 arg1, s32 arg2);
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6BF0.s")
+void func_808D6BF0(GlobalContext* globalCtx, f32 arg1, s16 arg2) {
+    s16 i;
+    GanondorfEffect* eff = globalCtx->customActorEffects;
 
-void func_808D6CBC(GlobalContext* globalCtx, f32 arg1, f32 arg2, f32 arg3);
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6CBC.s")
+    for (i = 0; i < 75; i++, eff++) {
+        if (eff->type == 0) {
+            eff->type = 3;
+            eff->pos = D_808E4C6C;
+            eff->pos.y = -2000.0f;
+            eff->velocity = D_808E4C6C;
+            eff->accel = D_808E4C6C;
+            eff->unk_34 = arg1 / 1000.0f;
+            eff->unk_2E = arg2;
+            eff->unk_01 = 0;
+            return;
+        }
+    }
+}
+
+void func_808D6CBC(GlobalContext* globalCtx, f32 arg1, f32 arg2, f32 arg3) {
+    s16 i;
+    GanondorfEffect* eff = globalCtx->customActorEffects;
+
+    for (i = 0; i < 150; i++, eff++) {
+        if (eff->type == 0) {
+            eff->type = 4;
+            eff->velocity = D_808E4C6C;
+            eff->accel = D_808E4C6C;
+            eff->unk_2E = 0;
+            eff->unk_34 = arg1;
+            eff->unk_48 = arg2;
+            eff->unk_3C = arg3;
+            eff->unk_01 = 0;
+            return;
+        }
+    }
+}
 
 void func_808D6D60(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6D60.s")
+
+// void func_808D6D60(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3) {
+//     s16 i;
+//     GanondorfEffect* eff = globalCtx->customActorEffects;
+
+//     for (i = 0; i < 150; i++, eff++) {
+//         if (eff->type == 0) {
+//             eff->type = 5;
+//             eff->pos = *pos;
+//             eff->velocity = D_808E4C6C;
+//             eff->accel = D_808E4C6C;
+//             eff->unk_34 = arg2;
+//             eff->unk_40 = 1.0f;
+//             eff->unk_38 = arg3;
+//             eff->unk_30 = (s16)Math_Rand_ZeroFloat(100.0f);
+//             eff->unk_2C = 0;
+//             eff->unk_2E = eff->unk_01 = eff->unk_2D;
+//             return;
+//         }
+//     }
+// }
 
 void func_808D6E54(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3, s16 arg4);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6E54.s")
@@ -212,7 +321,7 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx2) {
         globalCtx->customActorEffects = sCustomEffects;
 
         for (i = 0; i < ARRAY_COUNT(sCustomEffects); i++) {
-            sCustomEffects[i].unk_00 = 0;
+            sCustomEffects[i].type = 0;
         }
 
         sGanondorf = this;
@@ -2091,7 +2200,8 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                                                &D_801333E0, &D_801333E8);
                         func_800AA000(this->actor.xyzDistFromLinkSq, 0xB4, 0x14, 0x64);
 
-                        if (hitWithBottle == false) {
+                        if (hitWithBottle == false) { // 801F00E8
+                            // if ganondorf is 250 units away from link, at least 3 volleys are required
                             if ((ganondorf->actor.xyzDistFromLinkSq > 62500.0f) && (this->unk_1A4 < 3)) {
                                 this->unk_1C2 = 1;
                             } else if (Math_Rand_ZeroOne() < 0.7f) {
@@ -2106,6 +2216,8 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                             }
                             break;
                         } else {
+                            // volley it back 90% of the time when hit with bottle
+                            // at least under normal conditions...
                             if (Math_Rand_ZeroOne() < 0.9f) {
                                 this->unk_1C2 = 1;
                             } else {
@@ -2236,7 +2348,7 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                     func_808E0F4C(this, globalCtx, &this->actor.posRot.pos);
                 }
 
-                if (spBA == 3) {
+                if (spBA == 3) { // 801F0788
                     func_808DC66C(ganondorf, globalCtx);
                 } else if (ganondorf->actionFunc == func_808DC14C) {
                     func_808DBAF0(ganondorf, globalCtx);
