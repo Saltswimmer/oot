@@ -85,7 +85,7 @@ typedef struct BossGanon {
     /* 0x066E */ s16 unk_66E; // timer?
     /* 0x0670 */ f32 unk_670;
     /* 0x0674 */ u32 csTimer;
-    /* 0x0678 */ s16 introCsState;
+    /* 0x0678 */ s16 cutsceneState;
     /* 0x067A */ s16 csCamIndex;
     /* 0x067C */ char unk_67C[0x4];
     /* 0x0680 */ Vec3f csCamEye;

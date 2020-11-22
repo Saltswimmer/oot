@@ -38,7 +38,7 @@ void func_808DC75C(BossGanon* this, GlobalContext* globalCtx);
 void func_808DCB7C(BossGanon* this, GlobalContext* globalCtx);
 void func_808DD14C(BossGanon* this, GlobalContext* globalCtx);
 
-// setup action?
+// setup action
 void func_808DBAF0(BossGanon* this, GlobalContext* globalCtx); // wait
 void func_808DACE8(BossGanon* this, GlobalContext* globalCtx); // pound the floor
 
@@ -148,8 +148,8 @@ extern AnimationHeader D_06001FF8;
 extern AnimationHeader D_06000540;
 extern AnimationHeader D_06000FE8;
 extern AnimationHeader D_06001440;
-// extern AnimationHeader ;
-// extern AnimationHeader ;
+extern AnimationHeader D_06008128;
+extern AnimationHeader D_06008F44;
 // extern AnimationHeader ;
 // extern AnimationHeader ;
 // extern AnimationHeader ;
@@ -291,6 +291,27 @@ void func_808D6E54(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3, s16
 
 void func_808D6F3C(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D6F3C.s")
+// void func_808D6F3C(GlobalContext* globalCtx, Vec3f* pos, f32 arg2, f32 arg3) {
+//     s16 i;
+//     GanondorfEffect* eff = globalCtx->customActorEffects;
+
+//     for (i = 0; i < 150; i++, eff++) {
+//         if (eff->type == 0) {
+//             eff->type = 7;
+//             eff->pos = *pos;
+//             eff->velocity = D_808E4C6C;
+//             eff->accel = D_808E4C6C;
+//             eff->unk_2C = 0xFF;
+//             eff->unk_34 = arg2;
+//             eff->unk_38 = arg3;
+//             eff->unk_40 = 0.6f;
+//             eff->unk_30 = Math_Rand_ZeroFloat(100.0f);
+//             eff->unk_2E = 0;
+//             eff->unk_01 = 0;
+//             return;
+//         }
+//     }
+// }
 
 void func_808D7034(GlobalContext* globalCtx, Vec3f* pos, f32 arg2);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D7034.s")
@@ -497,7 +518,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
     this->csTimer++;
     SkelAnime_FrameUpdateMatrix(&this->skelAnime);
 
-    switch (this->introCsState) {
+    switch (this->cutsceneState) {
         case 0:
             player->actor.posRot.pos.x = 0.0f;
             player->actor.posRot.pos.y = 0.0f;
@@ -519,7 +540,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             if (gSaveContext.eventChkInf[7] & 0x100) {
                 // watched cutscene already, skip most of it
-                this->introCsState = 17;
+                this->cutsceneState = 17;
                 this->csTimer = 0;
                 player->actor.posRot.pos.z = 20.0f;
                 this->unk_71A = 0;
@@ -533,7 +554,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             } else {
                 this->unk_71A = 1;
                 BossGanon_SetIntroCsCamera(this, 0);
-                this->introCsState = 1;
+                this->cutsceneState = 1;
                 sZelda = (EnZl3*)Actor_SpawnAsChild(&globalCtx->actorCtx, &this->actor, globalCtx, ACTOR_EN_ZL3, 0.0f,
                                                     220.0f, -150.0f, 0, 0, 0, 0x2000);
             }
@@ -544,7 +565,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
         case 1:
             this->unk_1A0 = 3;
             if (this->csTimer == 70) {
-                this->introCsState = 2;
+                this->cutsceneState = 2;
                 this->csTimer = 0;
             }
             break;
@@ -563,7 +584,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 break;
             }
 
-            this->introCsState = 3;
+            this->cutsceneState = 3;
             this->csTimer = 0;
             this->csCamEye.x = 0.0f;
             this->csCamEye.y = 60.0f;
@@ -583,7 +604,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             func_8002DF54(globalCtx, &this->actor, 8);
-            this->introCsState = 4;
+            this->cutsceneState = 4;
             BossGanon_SetIntroCsCamera(this, 2);
             this->csTimer = 0;
         case 4: // 14E0
@@ -600,7 +621,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             if (this->csTimer == 60) {
                 BossGanon_SetIntroCsCamera(this, 1);
-                this->introCsState = 5;
+                this->cutsceneState = 5;
                 this->csTimer = 0;
             }
             break;
@@ -617,7 +638,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
             if (this->csTimer == 70) {
                 BossGanon_SetIntroCsCamera(this, 3);
-                this->introCsState = 6;
+                this->cutsceneState = 6;
                 this->csTimer = 0;
                 this->unk_1A0 = 3;
             }
@@ -629,7 +650,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 break;
             }
 
-            this->introCsState = 7;
+            this->cutsceneState = 7;
             this->csTimer = 0;
             BossGanon_SetIntroCsCamera(this, 4);
             this->unk_1AE = 0;
@@ -661,7 +682,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             this->csCamAt.x += 18.0f;
 
             if (this->csTimer == 60) {
-                this->introCsState = 8;
+                this->cutsceneState = 8;
                 this->csTimer = 0;
             }
             break;
@@ -673,7 +694,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 break;
             }
 
-            this->introCsState = 9;
+            this->cutsceneState = 9;
             this->csTimer = 0;
             func_8002DF54(globalCtx, &this->actor, 8);
             sZelda->unk_3C8 = 0;
@@ -706,7 +727,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if (this->csTimer == 50) {
-                this->introCsState = 10;
+                this->cutsceneState = 10;
                 this->csTimer = 0;
             }
             break;
@@ -715,7 +736,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             BossGanon_SetIntroCsCamera(this, 7);
 
             if (this->csTimer == 40) {
-                this->introCsState = 11;
+                this->cutsceneState = 11;
                 this->csTimer = 0;
                 this->unk_1D8 = 0.0f;
             }
@@ -739,7 +760,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if (this->csTimer == 120) {
-                this->introCsState = 12;
+                this->cutsceneState = 12;
                 this->csTimer = 0;
             }
             break;
@@ -763,7 +784,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if ((this->csTimer > 180) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
-                this->introCsState = 15;
+                this->cutsceneState = 15;
                 this->csTimer = 0;
                 this->unk_71A = 0;
             }
@@ -778,7 +799,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if ((this->csTimer > 100) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
-                this->introCsState = 16;
+                this->cutsceneState = 16;
                 this->csTimer = 0;
                 BossGanon_SetIntroCsCamera(this, 11);
                 this->unk_198 = 2;
@@ -802,7 +823,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if ((this->csTimer > 100) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
-                this->introCsState = 17;
+                this->cutsceneState = 17;
                 this->csTimer = 0;
             }
             break;
@@ -828,7 +849,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 Math_SmoothScaleMaxF(&this->csCamMaxStepScale, 0.75f, 1.0f, 0.05f);
 
                 if (this->csTimer == 70) {
-                    this->introCsState = 18;
+                    this->cutsceneState = 18;
                     this->csTimer = 0;
                     this->csCamFov = 60.0f;
                     BossGanon_SetIntroCsCamera(this, 12);
@@ -851,7 +872,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 break;
             }
 
-            this->introCsState = 19;
+            this->cutsceneState = 19;
             this->csTimer = 0;
             func_8010B680(globalCtx, 0x70CC, NULL);
             SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06007268, -5.0f);
@@ -892,7 +913,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
             }
 
             if ((this->csTimer > 80) && (func_8010BDBC(&globalCtx->msgCtx) == 0)) {
-                this->introCsState = 20;
+                this->cutsceneState = 20;
                 this->csTimer = 0;
                 this->csCamTargetEye.x = this->csCamEye.x - 50.0f;
                 this->csCamTargetEye.y = this->csCamEye.y - 100.0f;
@@ -938,7 +959,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 break;
             }
 
-            this->introCsState = 21;
+            this->cutsceneState = 21;
             this->csTimer = 0;
             this->unk_1D8 = 0.0f;
             this->unk_1E8 = 0.16f;
@@ -965,7 +986,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 break;
             }
 
-            this->introCsState = 22;
+            this->cutsceneState = 22;
             this->csTimer = 0;
             this->timers[2] = 0x1E;
             this->organAlpha = 254;
@@ -1047,7 +1068,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
                 gameplayCam->eyeNext = this->csCamEye;
                 gameplayCam->at = this->csCamAt;
                 func_800C08AC(globalCtx, this->csCamIndex, 0);
-                this->introCsState = this->csCamIndex = 0;
+                this->cutsceneState = this->csCamIndex = 0;
                 func_80064534(globalCtx, &globalCtx->csCtx);
                 func_8002DF54(globalCtx, &this->actor, 7);
                 func_808DBAF0(this, globalCtx);
@@ -1084,7 +1105,7 @@ void func_808D7918(BossGanon* this, GlobalContext* globalCtx) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808D9018.s")
 
-// tower collapse
+// death and tower collapse cutscene
 void func_808D90F8(BossGanon* this, GlobalContext* globalCtx) {
     s32 pad;
     s32 animBankIndex = Object_GetIndex(&globalCtx->objectCtx, OBJECT_GANON_ANIME2);
@@ -1096,7 +1117,7 @@ void func_808D90F8(BossGanon* this, GlobalContext* globalCtx) {
         this->animationLength = SkelAnime_GetFrameCount(&D_0600EA00.genericHeader);
         this->actionFunc = func_808D933C;
         this->csTimer = 0;
-        this->introCsState = 0x64;
+        this->cutsceneState = 0x64;
         this->unk_198 = 1;
         gSaveContext.magic = gSaveContext.unk_13F4;
         gSaveContext.health = gSaveContext.healthCapacity;
@@ -1628,9 +1649,77 @@ void func_808DC14C(BossGanon* this, GlobalContext* globalCtx) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DC4DC.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DC66C.s")
+void func_808DC66C(BossGanon* this, GlobalContext* globalCtx) {
+    s16 i;
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DC75C.s")
+    func_808D712C(this, globalCtx, OBJECT_GANON_ANIME1);
+    this->animationLength = SkelAnime_GetFrameCount(&D_06008128.genericHeader);
+    SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06008128, 0);
+    this->timers[0] = 70;
+    sCape->unk_16BC = sCape->unk_16C0 = 0;
+
+    for (i = 1; i < 15; i++) {
+        this->unk_4E4[i] = D_808E4C58[i];
+    }
+
+    this->unk_2E6 = 0x50;
+    this->unk_2E8 = 0;
+    this->actionFunc = func_808DC75C;
+    this->actor.velocity.x = this->actor.velocity.z = 0.0f;
+    this->unk_1C2 = 0;
+    this->unk_1A6 = 0xF;
+    this->unk_508 = 6.0f;
+}
+
+void func_808DC75C(BossGanon* this, GlobalContext* globalCtx) {
+    s16 i;
+    Vec3f sp50;
+
+    SkelAnime_FrameUpdateMatrix(&this->skelAnime);
+
+    if (this->unk_1C2 == 0) {
+        func_808D6BF0(globalCtx, 1500.0f, 0);
+
+        if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+            this->animationLength = SkelAnime_GetFrameCount(&D_06008F44.genericHeader);
+            SkelAnime_ChangeAnimTransitionRepeat(&this->skelAnime, &D_06008F44, 0.0f);
+            this->unk_1C2 = 1;
+        }
+    } else if (this->unk_1C2 == 1) {
+        func_808D6BF0(globalCtx, 1000.0f, 0);
+
+        if (this->timers[0] == 0) {
+            this->animationLength = SkelAnime_GetFrameCount(&D_06008A88.genericHeader);
+            SkelAnime_ChangeAnimTransitionStop(&this->skelAnime, &D_06008A88, 0.0f);
+            this->unk_1C2 = 2;
+            SkelAnime_FrameUpdateMatrix(&this->skelAnime);
+            sCape->unk_16C4 = 18.0f;
+            Audio_PlayActorSound2(this, NA_SE_EV_GANON_MANTLE);
+            Audio_PlayActorSound2(this, NA_SE_EN_GANON_RESTORE);
+            this->timers[2] = 130;
+        }
+    } else {
+        if (func_800A56C8(&this->skelAnime, 7.0f)) {
+            for (i = 0; i < 100; i++) {
+                sp50.x = Math_Rand_CenteredFloat(25.0f);
+                sp50.y = Math_Rand_CenteredFloat(25.0f);
+                sp50.z = Math_Rand_CenteredFloat(25.0f);
+
+                func_808D69B0(globalCtx, &this->unk_1FC, &sp50, &D_808E4C6C, Math_Rand_ZeroFloat(200.0f) + 500.0f,
+                              0x14);
+            }
+
+            Audio_PlayActorSound2(this, NA_SE_PL_WALK_WATER2);
+        }
+
+        if (func_800A56C8(&this->skelAnime, this->animationLength)) {
+            func_808DBAF0(this, globalCtx);
+        }
+    }
+
+    this->actor.velocity.y = Math_Sins(this->unk_1A2 * 1500) * 2.0f;
+    this->actor.posRot.pos.y += this->actor.velocity.y;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DC9B4.s")
 
@@ -1642,6 +1731,128 @@ void func_808DC14C(BossGanon* this, GlobalContext* globalCtx) {
 
 void func_808DD20C(BossGanon* this, GlobalContext* globalCtx);
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/actors/ovl_Boss_Ganon/func_808DD20C.s")
+// void func_808DD20C(BossGanon* this, GlobalContext* globalCtx) {
+//     s16 i;
+//     Vec3f sp50;
+//     ColliderBody* acHitItem;
+//     s32 hitWithSword;
+//     s32 swordDamage;
+//     s32 damage;
+
+//     Vec3f* temp_s0;
+//     f32* temp_s1;
+//     s16 temp_s1_2;
+//     s16 temp_s1_3;
+//     s16 temp_s2;
+//     s16 temp_s2_2;
+//     s16 temp_s2_3;
+//     s32 temp_lo;
+//     s32 temp_lo_2;
+//     u8 temp_v0_3;
+//     u8 temp_v1;
+//     s16 phi_s2_2;
+//     s16 phi_s1;
+//     s16 phi_s2_3;
+//     s16 phi_s1_2;
+
+//     if (this->collider.base.acFlags & 2) {
+//         this->unk_2D4 = 2;
+//         this->collider.base.acFlags &= ~2;
+//         acHitItem = this->collider.body.acHitItem;
+
+//         if ((this->actionFunc == func_808DC75C) || (this->actionFunc == func_808DB2E8)) {
+//             if (acHitItem->toucher.flags & 0x2000) {
+//                 func_808DC9B4(this, globalCtx);
+//                 this->timers[2] = 0;
+//                 Audio_PlayActorSound2(this, NA_SE_EN_GANON_DAMAGE1);
+//                 this->unk_1A6 = 0xF;
+//                 return;
+//             }
+//         } else if ((this->actionFunc == func_808DCB7C) && (this->unk_1C2 >= 3)) {
+//             if (!(acHitItem->toucher.flags & 0x80)) {
+//                 for (i = 0; i < 30; i++) {
+//                     sp50.x = Math_Rand_CenteredFloat(20.0f);
+//                     sp50.y = Math_Rand_CenteredFloat(20.0f);
+//                     sp50.z = Math_Rand_CenteredFloat(20.0f);
+//                     func_808D69B0(globalCtx, &this->unk_1FC, &sp50, &D_808E4C6C, Math_Rand_ZeroFloat(200.0f) +
+//                     500.0f,
+//                                   0x1E);
+//                 }
+
+//                 swordDamage = func_800635D0(acHitItem->toucher.flags);
+
+//                 if (swordDamage == 0) {
+//                     hitWithSword = false;
+//                     damage = 2;
+//                 } else {
+//                     hitWithSword = true;
+//                     damage = swordDamage;
+//                 }
+
+//                 if ((this->actor.colChkInfo.health >= 3) || hitWithSword) {
+//                     this->actor.colChkInfo.health -= damage;
+//                 }
+
+//                 phi_s2_2 = 0;
+//             loop_17:
+//                 phi_s1 = 1;
+//             loop_18:
+//                 temp_lo = phi_s1 * 0xC;
+//                 (sCape + (((((phi_s2_2 * 8) - phi_s2_2) * 8) + phi_s2_2) * 8) + temp_lo)->unk278 =
+//                     Math_Rand_CenteredFloat(15.0f);
+//                 temp_s1_2 = phi_s1 + 1;
+//                 (sCape + (((((phi_s2_2 * 8) - phi_s2_2) * 8) + phi_s2_2) * 8) + temp_lo)->unk280 =
+//                     Math_Rand_CenteredFloat(15.0f);
+//                 phi_s1 = temp_s1_2;
+//                 if (temp_s1_2 < 0xC) {
+//                     goto loop_18;
+//                 }
+//                 temp_s2_2 = phi_s2_2 + 1;
+//                 phi_s2_2 = temp_s2_2;
+//                 if (temp_s2_2 < 0xC) {
+//                     goto loop_17;
+//                 }
+
+//                 if (this->actor.colChkInfo.health > 0) {
+//                     Audio_PlayActorSound2(this, NA_SE_EN_GANON_DAMAGE2);
+//                     Audio_PlayActorSound2(this, NA_SE_EN_GANON_CUTBODY);
+//                     func_808DD0E8(this, globalCtx);
+//                     this->unk_1A6 = 0xF;
+//                     sCape->unk_1704 = 1;
+//                 } else {
+//                     func_808D9018(this, globalCtx);
+//                     Audio_PlayActorSound2(this, NA_SE_EN_GANON_DEAD);
+//                     Audio_PlayActorSound2(this, NA_SE_EN_GANON_DD_THUNDER);
+//                     func_80078914(&D_808E4C6C, NA_SE_EN_LAST_DAMAGE);
+//                     Audio_SetBGM(0x100100FF);
+//                     this->unk_1C4 = 4;
+//                 }
+//             }
+//         } else if (acHitItem->toucher.flags & 0x1F8A4) {
+//             Audio_PlayActorSound2(this, 0);
+
+//             phi_s2_3 = 0;
+//         loop_25:
+//             phi_s1_2 = 1;
+//         loop_26:
+//             temp_lo_2 = phi_s1_2 * 0xC;
+//             (sCape + (((((phi_s2_3 * 8) - phi_s2_3) * 8) + phi_s2_3) * 8) + temp_lo_2)->unk278 =
+//                 Math_Rand_CenteredFloat(15.0f);
+//             temp_s1_3 = phi_s1_2 + 1;
+//             (sCape + (((((phi_s2_3 * 8) - phi_s2_3) * 8) + phi_s2_3) * 8) + temp_lo_2)->unk280 =
+//                 Math_Rand_CenteredFloat(15.0f);
+//             phi_s1_2 = temp_s1_3;
+//             if (temp_s1_3 < 0xC) {
+//                 goto loop_26;
+//             }
+//             temp_s2_3 = phi_s2_3 + 1;
+//             phi_s2_3 = temp_s2_3;
+//             if (temp_s2_3 < 0xC) {
+//                 goto loop_25;
+//             }
+//         }
+//     }
+// }
 
 #ifdef NON_MATCHING
 void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
@@ -1740,7 +1951,7 @@ void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx) {
         this->unk_19C--;
     }
 
-    if (this->introCsState == 0) {
+    if (this->cutsceneState == 0) {
         func_808DD20C(this, globalCtx);
         func_808D70F0(&this->unk_1FC, &this->collider);
         CollisionCheck_SetOC(globalCtx, &globalCtx->colChkCtx, &this->collider);
@@ -2200,7 +2411,7 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                                                &D_801333E0, &D_801333E8);
                         func_800AA000(this->actor.xyzDistFromLinkSq, 0xB4, 0x14, 0x64);
 
-                        if (hitWithBottle == false) { // 801F00E8
+                        if (hitWithBottle == false) {
                             // if ganondorf is 250 units away from link, at least 3 volleys are required
                             if ((ganondorf->actor.xyzDistFromLinkSq > 62500.0f) && (this->unk_1A4 < 3)) {
                                 this->unk_1C2 = 1;
@@ -2216,8 +2427,6 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                             }
                             break;
                         } else {
-                            // volley it back 90% of the time when hit with bottle
-                            // at least under normal conditions...
                             if (Math_Rand_ZeroOne() < 0.9f) {
                                 this->unk_1C2 = 1;
                             } else {
@@ -2348,7 +2557,7 @@ void func_808E1034(Actor* thisx, GlobalContext* globalCtx2) {
                     func_808E0F4C(this, globalCtx, &this->actor.posRot.pos);
                 }
 
-                if (spBA == 3) { // 801F0788
+                if (spBA == 3) {
                     func_808DC66C(ganondorf, globalCtx);
                 } else if (ganondorf->actionFunc == func_808DC14C) {
                     func_808DBAF0(ganondorf, globalCtx);
