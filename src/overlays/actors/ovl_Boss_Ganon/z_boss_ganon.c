@@ -11,7 +11,6 @@ void BossGanon_Init(Actor* thisx, GlobalContext* globalCtx);
 void BossGanon_Destroy(Actor* thisx, GlobalContext* globalCtx);
 void BossGanon_Update(Actor* thisx, GlobalContext* globalCtx);
 void BossGanon_Draw(Actor* thisx, GlobalContext* globalCtx);
-
 void func_808E1EB4(Actor* thisx, GlobalContext* globalCtx); // update
 void func_808E2544(Actor* thisx, GlobalContext* globalCtx); // update
 void func_808E1034(Actor* thisx, GlobalContext* globalCtx); // update
@@ -25,14 +24,10 @@ void func_808D90F8(BossGanon* this, GlobalContext* globalCtx);
 void func_808D7918(BossGanon* this, GlobalContext* globalCtx);
 void func_808D933C(BossGanon* this, GlobalContext* globalCtx);
 void func_808DBB78(BossGanon* this, GlobalContext* globalCtx); // wait
-
 void func_808DBF30(BossGanon* this, GlobalContext* globalCtx); // spawn light ball
 void func_808DC14C(BossGanon* this, GlobalContext* globalCtx); // throw light ball
-
 void func_808DAD20(BossGanon* this, GlobalContext* globalCtx); // pound the floor
-
 void func_808DB2E8(BossGanon* this, GlobalContext* globalCtx); // charge up thing
-
 void func_808DC4DC(BossGanon* this, GlobalContext* globalCtx);
 void func_808DC75C(BossGanon* this, GlobalContext* globalCtx);
 void func_808DCB7C(BossGanon* this, GlobalContext* globalCtx);
@@ -41,10 +36,8 @@ void func_808DD14C(BossGanon* this, GlobalContext* globalCtx);
 // setup action
 void func_808DBAF0(BossGanon* this, GlobalContext* globalCtx); // wait
 void func_808DACE8(BossGanon* this, GlobalContext* globalCtx); // pound the floor
-
 void func_808DBEC4(BossGanon* this, GlobalContext* globalCtx); // spawn light ball
 void func_808DC0E8(BossGanon* this, GlobalContext* globalCtx); // throw light ball
-
 void func_808DB278(BossGanon* this, GlobalContext* globalCtx); // charge up
 
 /*
@@ -60,6 +53,7 @@ const ActorInit Boss_Ganon_InitVars = {
     (ActorFunc)BossGanon_Draw,
 };
 */
+
 // data
 extern InitChainEntry D_808E4C84[];
 extern ColliderCylinderInit D_808E4C00;
