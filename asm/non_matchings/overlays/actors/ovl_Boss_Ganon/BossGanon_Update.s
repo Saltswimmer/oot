@@ -97,7 +97,7 @@ glabel BossGanon_Update
 /* 06DB4 808DD624 25EF933C */  addiu   $t7, $t7, %lo(func_808D933C) ## $t7 = 808D933C
 /* 06DB8 808DD628 51E30006 */  beql    $t7, $v1, .L808DD644       
 /* 06DBC 808DD62C 8EB8014C */  lw      $t8, 0x014C($s5)           ## 0000014C
-/* 06DC0 808DD630 0C235C4B */  jal     func_808D712C              
+/* 06DC0 808DD630 0C235C4B */  jal     BossGanon_SetObjectDependency              
 /* 06DC4 808DD634 2406017C */  addiu   $a2, $zero, 0x017C         ## $a2 = 0000017C
 /* 06DC8 808DD638 1000000E */  beq     $zero, $zero, .L808DD674   
 /* 06DCC 808DD63C 92A4071B */  lbu     $a0, 0x071B($s5)           ## 0000071B

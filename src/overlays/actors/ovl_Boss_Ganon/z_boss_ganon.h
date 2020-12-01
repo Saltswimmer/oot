@@ -47,7 +47,12 @@ typedef struct BossGanon {
     /* 0x01E8 */ f32 unk_1E8;
     /* 0x01EC */ char unk_1EC[0x10];
     /* 0x01FC */ Vec3f unk_1FC;
-    /* 0x0208 */ char unk_208[0x4C];
+    /* 0x0208 */ Vec3f unk_208;
+    /* 0x0214 */ Vec3f unk_214;
+    /* 0x0220 */ Vec3f unk_220;
+    /* 0x022C */ Vec3f unk_22C;
+    /* 0x0238 */ Vec3f unk_238;
+    /* 0x0244 */ char unk_244[0x10];
     /* 0x0254 */ f32 unk_254;
     /* 0x0258 */ f32 unk_258;
     /* 0x025C */ u8 unk_25C;
@@ -106,7 +111,7 @@ typedef struct BossGanon {
     /* 0x0714 */ f32 unk_714;
     /* 0x0718 */ s16 organAlpha;
     /* 0x071A */ s8 unk_71A;
-    /* 0x071A */ u8 unk_71B;
+    /* 0x071B */ u8 unk_71B;
 } BossGanon; // size = 0x71C
 
 extern const ActorInit Boss_Ganon_InitVars;
