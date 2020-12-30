@@ -101,7 +101,7 @@ static ColliderJntSphInit sJntSphInit = {
 
 static CollisionCheckInfoInit2 sColChkInit = { 24, 2, 25, 25, 0xFF };
 
-static struct_80034EC0_Entry sAnimations[] = {
+static ActorAnimationEntry sAnimations[] = {
     { 0x060010B4, 1.0f, 0.0f, -1.0f, 0x03, 0.0f },   { 0x06005C64, 1.0f, 0.0f, -1.0f, 0x03, -10.0f },
     { 0x06006044, 0.0f, 0.0f, -1.0f, 0x03, -10.0f }, { 0x06006A18, 1.0f, 0.0f, -1.0f, 0x01, -10.0f },
     { 0x06006B64, 0.0f, 0.0f, -1.0f, 0x03, -10.0f },
@@ -377,7 +377,7 @@ void EnFd_Reappear(EnFd* this, GlobalContext* globalCtx) {
     this->coreActive = false;
     this->actor.scale.y = 0.0f;
     this->fadeAlpha = 255.0f;
-    func_80034EC0(&this->skelAnime, sAnimations, 0);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 0);
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_FLAME_LAUGH);
     this->actionFunc = EnFd_SpinAndGrow;
 }
@@ -389,7 +389,7 @@ void EnFd_SpinAndGrow(EnFd* this, GlobalContext* globalCtx) {
         this->actor.posRot.rot.y ^= 0x8000;
         this->actor.flags |= 1;
         this->actor.speedXZ = 8.0f;
-        func_80034EC0(&this->skelAnime, sAnimations, 1);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 1);
         this->actionFunc = EnFd_JumpToGround;
     } else {
         this->actor.scale.y = this->skelAnime.curFrame * (0.01f / this->skelAnime.animLength);
@@ -403,7 +403,7 @@ void EnFd_JumpToGround(EnFd* this, GlobalContext* globalCtx) {
         this->actor.velocity.y = 0.0f;
         this->actor.speedXZ = 0.0f;
         this->actor.posRot.rot.y = this->actor.shape.rot.y;
-        func_80034EC0(&this->skelAnime, sAnimations, 2);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 2);
         this->actionFunc = EnFd_Land;
     }
 }
@@ -417,7 +417,7 @@ void EnFd_Land(EnFd* this, GlobalContext* globalCtx) {
         this->runRadius = Math_Vec3f_DistXYZ(&this->actor.posRot.pos, &this->actor.initPosRot.pos);
         EnFd_GetPosAdjAroundCircle(&adjPos, this, this->runRadius, this->runDir);
         this->actor.posRot.rot.y = Math_FAtan2F(adjPos.x, adjPos.z) * (0x8000 / M_PI);
-        func_80034EC0(&this->skelAnime, sAnimations, 4);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 4);
         this->actionFunc = EnFd_SpinAndSpawnFire;
     }
 }
@@ -465,7 +465,7 @@ void EnFd_SpinAndSpawnFire(EnFd* this, GlobalContext* globalCtx) {
             this->curYawToInitPos = this->runDir < 0 ? 0xFFFF : 0;
             this->circlesToComplete = (globalCtx->state.frames & 7) + 2;
             this->spinTimer = Rand_S16Offset(30, 120);
-            func_80034EC0(&this->skelAnime, sAnimations, 3);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
             this->actionFunc = EnFd_Run;
         }
     }
@@ -487,7 +487,7 @@ void EnFd_Run(EnFd* this, GlobalContext* globalCtx) {
             this->actor.posRot.rot.y ^= 0x8000;
             this->actor.velocity.y = 6.0f;
             this->actor.speedXZ = 0.0f;
-            func_80034EC0(&this->skelAnime, sAnimations, 1);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 1);
             this->actionFunc = EnFd_JumpToGround;
             return;
         }

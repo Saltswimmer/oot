@@ -14,7 +14,7 @@ glabel func_80A710F8
 /* 01B78 80A71128 2484014C */  addiu   $a0, $a0, 0x014C           ## $a0 = 0000014C
 /* 01B7C 80A7112C 3C0580A7 */  lui     $a1, %hi(D_80A72050)       ## $a1 = 80A70000
 /* 01B80 80A71130 24A52050 */  addiu   $a1, $a1, %lo(D_80A72050)  ## $a1 = 80A72050
-/* 01B84 80A71134 0C00D3B0 */  jal     func_80034EC0              
+/* 01B84 80A71134 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 01B88 80A71138 2406001A */  addiu   $a2, $zero, 0x001A         ## $a2 = 0000001A
 /* 01B8C 80A7113C 1000001A */  beq     $zero, $zero, .L80A711A8   
 /* 01B90 80A71140 8FBF0014 */  lw      $ra, 0x0014($sp)           
@@ -30,7 +30,7 @@ glabel func_80A710F8
 /* 01BB4 80A71164 24E4014C */  addiu   $a0, $a3, 0x014C           ## $a0 = 0000014C
 /* 01BB8 80A71168 3C0580A7 */  lui     $a1, %hi(D_80A72050)       ## $a1 = 80A70000
 /* 01BBC 80A7116C 24A52050 */  addiu   $a1, $a1, %lo(D_80A72050)  ## $a1 = 80A72050
-/* 01BC0 80A71170 0C00D3B0 */  jal     func_80034EC0              
+/* 01BC0 80A71170 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 01BC4 80A71174 24060019 */  addiu   $a2, $zero, 0x0019         ## $a2 = 00000019
 /* 01BC8 80A71178 1000000B */  beq     $zero, $zero, .L80A711A8   
 /* 01BCC 80A7117C 8FBF0014 */  lw      $ra, 0x0014($sp)           
@@ -42,7 +42,7 @@ glabel func_80A710F8
 /* 01BE0 80A71190 24E4014C */  addiu   $a0, $a3, 0x014C           ## $a0 = 0000014C
 /* 01BE4 80A71194 3C0580A7 */  lui     $a1, %hi(D_80A72050)       ## $a1 = 80A70000
 /* 01BE8 80A71198 24A52050 */  addiu   $a1, $a1, %lo(D_80A72050)  ## $a1 = 80A72050
-/* 01BEC 80A7119C 0C00D3B0 */  jal     func_80034EC0              
+/* 01BEC 80A7119C 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 01BF0 80A711A0 24060018 */  addiu   $a2, $zero, 0x0018         ## $a2 = 00000018
 .L80A711A4:
 /* 01BF4 80A711A4 8FBF0014 */  lw      $ra, 0x0014($sp)           

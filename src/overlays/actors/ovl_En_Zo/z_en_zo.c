@@ -311,7 +311,7 @@ const ActorInit En_Zo_InitVars = {
     (ActorFunc)EnZo_Draw,
 };
 
-static struct_80034EC0_Entry sAnimations[] = {
+static ActorAnimationEntry sAnimations[] = {
     { &D_06002FE8, 1.0f, 0.0f, -1.0f, 0, -8.0f }, { &D_06002FE8, 1.0f, 0.0f, -1.0f, 0, 0.0f },
     { &D_06002F10, 0.0f, 1.0f, 1.0f, 2, 0.0f },   { &D_06002F10, 1.0f, 1.0f, -1.0f, 0, -8.0f },
     { &D_06002F10, 1.0f, 8.0f, -1.0f, 0, -8.0f }, { &D_0600219C, 1.0f, 0.0f, -1.0f, 0, -8.0f },
@@ -545,7 +545,7 @@ void EnZo_SetAnimation(EnZo* this) {
     }
 
     if (animId != 8) {
-        func_80034EC0(&this->skelAnime, sAnimations, animId);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, animId);
         if (animId == 3) {
             this->skelAnime.curFrame = this->skelAnime.endFrame;
             this->skelAnime.playSpeed = 0.0f;
@@ -567,7 +567,7 @@ void EnZo_Init(Actor* thisx, GlobalContext* globalCtx) {
         return;
     }
 
-    func_80034EC0(&this->skelAnime, sAnimations, 2);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 2);
     Actor_SetScale(&this->actor, 0.01f);
     this->actor.unk_1F = 6;
     this->dialogRadius = this->collider.dim.radius + 30.0f;
@@ -579,7 +579,7 @@ void EnZo_Init(Actor* thisx, GlobalContext* globalCtx) {
     if (this->actor.waterY < 54.0f || (this->actor.params & 0x3F) == 8) {
         this->actor.shape.shadowDrawFunc = ActorShadow_DrawFunc_Circle;
         this->actor.shape.unk_10 = 24.0f;
-        func_80034EC0(&this->skelAnime, sAnimations, 1);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 1);
         this->canSpeak = true;
         this->alpha = 255.0f;
         this->actionFunc = EnZo_Standing;
@@ -625,7 +625,7 @@ void EnZo_Surface(EnZo* this, GlobalContext* globalCtx) {
     if (this->actor.waterY < 54.0f) {
         Audio_PlayActorSound2(&this->actor, NA_SE_EV_OUT_OF_WATER);
         EnZo_SpawnSplashes(this);
-        func_80034EC0(&this->skelAnime, sAnimations, 3);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
         this->actor.flags |= 1;
         this->actionFunc = EnZo_TreadWater;
         this->actor.velocity.y = 0.0f;
@@ -660,7 +660,7 @@ void EnZo_TreadWater(EnZo* this, GlobalContext* globalCtx) {
         this->timeToDive = Rand_S16Offset(40, 40);
     } else if (DECR(this->timeToDive) == 0) {
         f32 startFrame;
-        func_80034EC0(&this->skelAnime, sAnimations, 4);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 4);
         this->canSpeak = false;
         this->unk_64C = 1;
         this->actionFunc = EnZo_Dive;
@@ -691,7 +691,7 @@ void EnZo_Dive(EnZo* this, GlobalContext* globalCtx) {
     }
 
     if ((s16)this->alpha == 0) {
-        func_80034EC0(&this->skelAnime, sAnimations, 2);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 2);
         this->actor.posRot.pos = this->actor.initPosRot.pos;
         this->alpha = 0.0f;
         this->actionFunc = EnZo_Submerged;

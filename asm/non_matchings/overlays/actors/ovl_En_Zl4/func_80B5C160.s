@@ -192,7 +192,7 @@ glabel L80B5C3C4
 /* 00C40 80B5C3F0 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 00C44 80B5C3F4 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 00C48 80B5C3F8 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 00C4C 80B5C3FC 0C00D3B0 */  jal     func_80034EC0              
+/* 00C4C 80B5C3FC 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 00C50 80B5C400 24060016 */  addiu   $a2, $zero, 0x0016         ## $a2 = 00000016
 /* 00C54 80B5C404 920D0208 */  lbu     $t5, 0x0208($s0)           ## 00000208
 /* 00C58 80B5C408 A200020E */  sb      $zero, 0x020E($s0)         ## 0000020E

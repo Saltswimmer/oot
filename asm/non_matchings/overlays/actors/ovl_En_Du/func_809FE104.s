@@ -35,7 +35,7 @@ glabel func_809FE104
 /* 00558 809FE188 10200004 */  beq     $at, $zero, .L809FE19C     
 /* 0055C 809FE18C 00025880 */  sll     $t3, $v0,  2               
 /* 00560 809FE190 03AB3021 */  addu    $a2, $sp, $t3              
-/* 00564 809FE194 0C00D3B0 */  jal     func_80034EC0              
+/* 00564 809FE194 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 00568 809FE198 8CC60020 */  lw      $a2, 0x0020($a2)           ## 00000020
 .L809FE19C:
 /* 0056C 809FE19C 8FBF0014 */  lw      $ra, 0x0014($sp)           

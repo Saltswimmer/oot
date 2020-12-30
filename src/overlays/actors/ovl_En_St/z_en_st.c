@@ -81,7 +81,7 @@ extern AnimationHeader D_06005B98;
 extern AnimationHeader D_060055A8;
 extern AnimationHeader D_060055A8;
 
-struct_80034EC0_Entry sAnimations[] = {
+ActorAnimationEntry sAnimations[] = {
     { &D_06000304, 1.0f, 0.0f, -1.0f, 0x01, 0.0f },  { &D_06005B98, 1.0f, 0.0f, -1.0f, 0x03, -8.0f },
     { &D_06000304, 4.0f, 0.0f, -1.0f, 0x03, -8.0f }, { &D_06000304, 1.0f, 0.0f, -1.0f, 0x01, -8.0f },
     { &D_060055A8, 1.0f, 0.0f, -1.0f, 0x03, -8.0f }, { &D_06000304, 8.0f, 0.0f, -1.0f, 0x01, -8.0f },
@@ -207,24 +207,24 @@ void EnSt_AddBlurSpace(EnSt* this) {
 }
 
 void EnSt_SetWaitingAnimation(EnSt* this) {
-    func_80034EC0(&this->skelAnime, sAnimations, 3);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
 }
 
 void EnSt_SetReturnToCeilingAnimation(EnSt* this) {
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_STALTU_UP);
-    func_80034EC0(&this->skelAnime, sAnimations, 2);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 2);
 }
 
 void EnSt_SetLandAnimation(EnSt* this) {
     this->actor.posRot.pos.y = this->actor.groundY + this->groundYOffset;
-    func_80034EC0(&this->skelAnime, sAnimations, 4);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 4);
     this->sfxTimer = 0;
     this->animFrames = this->skelAnime.animLength;
 }
 
 void EnSt_SetDropAnimAndVel(EnSt* this) {
     if (this->takeDamageSpinTimer == 0) {
-        func_80034EC0(&this->skelAnime, sAnimations, 4);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 4);
         this->animFrames = this->skelAnime.animLength;
     }
     this->sfxTimer = 0;
@@ -413,7 +413,7 @@ s32 EnSt_CheckHitBackside(EnSt* this, GlobalContext* globalCtx) {
 
     this->swayTimer = this->stunTimer = 0;
     this->gaveDamageSpinTimer = 1;
-    func_80034EC0(&this->skelAnime, sAnimations, 3);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
     this->takeDamageSpinTimer = this->skelAnime.animLength;
     func_8003426C(&this->actor, 0x4000, 0xC8, 0, this->takeDamageSpinTimer);
     if (Actor_ApplyDamage(&this->actor)) {
@@ -742,7 +742,7 @@ void EnSt_Init(Actor* thisx, GlobalContext* globalCtx) {
 
     ActorShape_Init(&this->actor.shape, 0.0f, ActorShadow_DrawFunc_Circle, 14.0f);
     SkelAnime_Init(globalCtx, &this->skelAnime, &D_06005298, NULL, this->jointTable, this->morphTable, 30);
-    func_80034EC0(&this->skelAnime, sAnimations, 0);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 0);
     this->blureIdx = EnSt_CreateBlureEffect(globalCtx);
     EnSt_InitColliders(this, globalCtx);
     if (thisx->params == 2) {
@@ -790,14 +790,14 @@ void EnSt_WaitOnGround(EnSt* this, GlobalContext* globalCtx) {
     if (this->takeDamageSpinTimer != 0) {
         this->takeDamageSpinTimer--;
         if (this->takeDamageSpinTimer == 0) {
-            func_80034EC0(&this->skelAnime, sAnimations, 3);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
         }
     }
 
     if (this->animFrames != 0) {
         this->animFrames--;
         if (this->animFrames == 0) {
-            func_80034EC0(&this->skelAnime, sAnimations, 3);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
         }
     }
 
@@ -822,14 +822,14 @@ void EnSt_LandOnGround(EnSt* this, GlobalContext* globalCtx) {
     if (this->animFrames != 0) {
         this->animFrames--;
         if (this->animFrames == 0) {
-            func_80034EC0(&this->skelAnime, sAnimations, 3);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
         }
     }
 
     if (this->takeDamageSpinTimer != 0) {
         this->takeDamageSpinTimer--;
         if (this->takeDamageSpinTimer == 0) {
-            func_80034EC0(&this->skelAnime, sAnimations, 3);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
         }
     }
 
@@ -852,7 +852,7 @@ void EnSt_MoveToGround(EnSt* this, GlobalContext* globalCtx) {
     if (this->takeDamageSpinTimer != 0) {
         this->takeDamageSpinTimer--;
         if (this->takeDamageSpinTimer == 0) {
-            func_80034EC0(&this->skelAnime, sAnimations, 5);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 5);
         }
     }
 

@@ -44,7 +44,7 @@ static CollisionCheckInfoInit2 sColChkInfoInit = {
     0x00, 0x0000, 0x0000, 0x0000, 0xFF,
 };
 
-static struct_80034EC0_Entry sAnimations[] = {
+static ActorAnimationEntry sAnimations[] = {
     { 0x060002C8, 0.0f, 0.0f, -1.0f, 0x00, 0.0f },  { 0x060002C8, 0.0f, 0.0f, -1.0f, 0x00, -10.0f },
     { 0x0600917C, 1.0f, 0.0f, -1.0f, 0x02, -1.0f }, { 0x06009E68, 1.0f, 0.0f, -1.0f, 0x00, -1.0f },
     { 0x06009B1C, 1.0f, 0.0f, -1.0f, 0x02, -1.0f }, { 0x06008E84, 1.0f, 0.0f, -1.0f, 0x00, -1.0f },
@@ -70,11 +70,11 @@ void func_80AAA250(EnMd* this) {
 void func_80AAA274(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 2);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 2);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 3);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
                 this->unk_20A++;
             }
     }
@@ -83,11 +83,11 @@ void func_80AAA274(EnMd* this) {
 void func_80AAA308(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 4);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 4);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 5);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 5);
                 this->unk_20A++;
             }
     }
@@ -96,19 +96,19 @@ void func_80AAA308(EnMd* this) {
 void func_80AAA39C(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 2);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 2);
             func_80AAA250(this);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 7);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 7);
                 this->unk_20A++;
             } else {
                 break;
             }
         case 2:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 8);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 8);
                 this->unk_20A++;
             }
     }
@@ -117,11 +117,11 @@ void func_80AAA39C(EnMd* this) {
 void func_80AAA474(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 7);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 7);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 10);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 10);
                 this->unk_20A++;
             }
     }
@@ -130,12 +130,12 @@ void func_80AAA474(EnMd* this) {
 void func_80AAA508(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 2);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 2);
             func_80AAA250(this);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 10);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 10);
                 this->unk_20A++;
             }
     }
@@ -144,11 +144,11 @@ void func_80AAA508(EnMd* this) {
 void func_80AAA5A4(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 9);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 9);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 6);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 6);
                 this->unk_20A++;
             }
     }
@@ -157,12 +157,12 @@ void func_80AAA5A4(EnMd* this) {
 void func_80AAA638(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 9);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 9);
             func_80AAA250(this);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 10);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 10);
                 this->unk_20A++;
             }
     }
@@ -171,11 +171,11 @@ void func_80AAA638(EnMd* this) {
 void func_80AAA6D4(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 11);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 11);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 6);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 6);
                 this->unk_20A++;
             }
     }
@@ -184,11 +184,11 @@ void func_80AAA6D4(EnMd* this) {
 void func_80AAA768(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 12);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 12);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 3);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 3);
                 this->unk_20A++;
             }
     }
@@ -197,11 +197,11 @@ void func_80AAA768(EnMd* this) {
 void func_80AAA7FC(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 13);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 13);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 6);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 6);
                 this->unk_20A++;
             }
     }
@@ -210,12 +210,12 @@ void func_80AAA7FC(EnMd* this) {
 void func_80AAA890(EnMd* this) {
     switch (this->unk_20A) {
         case 0:
-            func_80034EC0(&this->skelAnime, sAnimations, 7);
+            Actor_ChangeAnimation(&this->skelAnime, sAnimations, 7);
             func_80AAA250(this);
             this->unk_20A++;
         case 1:
             if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-                func_80034EC0(&this->skelAnime, sAnimations, 10);
+                Actor_ChangeAnimation(&this->skelAnime, sAnimations, 10);
                 this->unk_20A++;
             }
     }
@@ -308,7 +308,7 @@ void func_80AAAA24(EnMd* this) {
                 break;
         }
     } else if (this->skelAnime.animation != &D_060002C8) {
-        func_80034EC0(&this->skelAnime, sAnimations, 10);
+        Actor_ChangeAnimation(&this->skelAnime, sAnimations, 10);
         func_80AAA92C(this, 0);
     }
 
@@ -603,7 +603,7 @@ void EnMd_Init(Actor* thisx, GlobalContext* globalCtx) {
         return;
     }
 
-    func_80034EC0(&this->skelAnime, sAnimations, 0);
+    Actor_ChangeAnimation(&this->skelAnime, sAnimations, 0);
     Actor_SetScale(&this->actor, 0.01f);
     this->actor.unk_1F = 6;
     this->alpha = 255;

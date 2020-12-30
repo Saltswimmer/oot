@@ -30,7 +30,7 @@ glabel L80B5DB14
 /* 02364 80B5DB14 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 02368 80B5DB18 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 0236C 80B5DB1C 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 02370 80B5DB20 0C00D3B0 */  jal     func_80034EC0
+/* 02370 80B5DB20 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 02374 80B5DB24 24060012 */  addiu   $a2, $zero, 0x0012         ## $a2 = 00000012
 /* 02378 80B5DB28 240F0002 */  addiu   $t7, $zero, 0x0002         ## $t7 = 00000002
 /* 0237C 80B5DB2C A6000210 */  sh      $zero, 0x0210($s0)         ## 00000210
@@ -76,7 +76,7 @@ glabel L80B5DB94
 /* 02410 80B5DBC0 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 02414 80B5DBC4 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 02418 80B5DBC8 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 0241C 80B5DBCC 0C00D3B0 */  jal     func_80034EC0
+/* 0241C 80B5DBCC 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 02420 80B5DBD0 24060013 */  addiu   $a2, $zero, 0x0013         ## $a2 = 00000013
 /* 02424 80B5DBD4 240D0003 */  addiu   $t5, $zero, 0x0003         ## $t5 = 00000003
 /* 02428 80B5DBD8 A6000210 */  sh      $zero, 0x0210($s0)         ## 00000210
@@ -118,7 +118,7 @@ glabel L80B5DC28
 /* 024A8 80B5DC58 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 024AC 80B5DC5C 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 024B0 80B5DC60 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 024B4 80B5DC64 0C00D3B0 */  jal     func_80034EC0
+/* 024B4 80B5DC64 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 024B8 80B5DC68 24060007 */  addiu   $a2, $zero, 0x0007         ## $a2 = 00000007
 /* 024BC 80B5DC6C A6000216 */  sh      $zero, 0x0216($s0)         ## 00000216
 /* 024C0 80B5DC70 86090216 */  lh      $t1, 0x0216($s0)           ## 00000216
@@ -202,7 +202,7 @@ glabel L80B5DD7C
 /* 025DC 80B5DD8C 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
 /* 025E0 80B5DD90 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 025E4 80B5DD94 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
-/* 025E8 80B5DD98 0C00D3B0 */  jal     func_80034EC0
+/* 025E8 80B5DD98 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 025EC 80B5DD9C 00003025 */  or      $a2, $zero, $zero          ## $a2 = 00000000
 /* 025F0 80B5DDA0 92090208 */  lbu     $t1, 0x0208($s0)           ## 00000208
 /* 025F4 80B5DDA4 252A0001 */  addiu   $t2, $t1, 0x0001           ## $t2 = 00000001

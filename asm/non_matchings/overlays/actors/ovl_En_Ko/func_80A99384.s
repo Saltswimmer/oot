@@ -17,7 +17,7 @@ glabel func_80A99384
 /* 02610 80A993C0 24060007 */  addiu   $a2, $zero, 0x0007         ## $a2 = 00000007
 /* 02614 80A993C4 3C0580AA */  lui     $a1, %hi(D_80A9A18C)       ## $a1 = 80AA0000
 /* 02618 80A993C8 24A5A18C */  addiu   $a1, $a1, %lo(D_80A9A18C)  ## $a1 = 80A9A18C
-/* 0261C 80A993CC 0C00D3B0 */  jal     func_80034EC0              
+/* 0261C 80A993CC 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 02620 80A993D0 AFA70018 */  sw      $a3, 0x0018($sp)           
 /* 02624 80A993D4 8FA70018 */  lw      $a3, 0x0018($sp)           
 /* 02628 80A993D8 3C1880AA */  lui     $t8, %hi(func_80A99438)    ## $t8 = 80AA0000

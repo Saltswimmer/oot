@@ -45,7 +45,7 @@ static CollisionCheckInfoInit2 sColChkInfoInit = {
     0x00, 0x0000, 0x0000, 0x0000, 0xFF,
 };
 
-static struct_80034EC0_Entry sAnimations[] = {
+static ActorAnimationEntry sAnimations[] = {
     { 0x0600075C, 1.0f, 0.0f, -1.0f, 0x00, 0.0f },
     { 0x0600075C, 1.0f, 0.0f, -1.0f, 0x00, -10.0f },
     { 0x0600046C, 1.0f, 0.0f, -1.0f, 0x00, -10.0f },
@@ -312,7 +312,7 @@ void EnKz_Init(Actor* thisx, GlobalContext* globalCtx) {
     Actor_SetScale(&this->actor, 0.01);
     this->actor.unk_1F = 3;
     this->unk_1E0.unk_00 = 0;
-    func_80034EC0(&this->skelanime, sAnimations, 0);
+    Actor_ChangeAnimation(&this->skelanime, sAnimations, 0);
 
     if (gSaveContext.eventChkInf[3] & 8) {
         EnKz_SetMovedPos(this, globalCtx);
@@ -338,7 +338,7 @@ void EnKz_Destroy(Actor* thisx, GlobalContext* globalCtx) {
 
 void EnKz_PreMweepWait(EnKz* this, GlobalContext* globalCtx) {
     if (this->unk_1E0.unk_00 == 2) {
-        func_80034EC0(&this->skelanime, sAnimations, 2);
+        Actor_ChangeAnimation(&this->skelanime, sAnimations, 2);
         this->unk_1E0.unk_00 = 0;
         this->actionFunc = EnKz_SetupMweep;
     } else {
@@ -378,7 +378,7 @@ void EnKz_Mweep(EnKz* this, GlobalContext* globalCtx) {
     initPos.z += 260.0f;
     Gameplay_CameraSetAtEye(globalCtx, this->cutsceneCamera, &pos, &initPos);
     if ((EnKz_FollowPath(this, globalCtx) == 1) && (this->waypoint == 0)) {
-        func_80034EC0(&this->skelanime, sAnimations, 1);
+        Actor_ChangeAnimation(&this->skelanime, sAnimations, 1);
         Inventory_ReplaceItem(globalCtx, ITEM_LETTER_RUTO, ITEM_BOTTLE);
         EnKz_SetMovedPos(this, globalCtx);
         gSaveContext.eventChkInf[3] |= 8;

@@ -54,7 +54,7 @@ glabel EnDu_Init
 .L809FE268:
 /* 00638 809FE268 3C0580A0 */  lui     $a1, %hi(D_809FF268)       ## $a1 = 80A00000
 /* 0063C 809FE26C 24A5F268 */  addiu   $a1, $a1, %lo(D_809FF268)  ## $a1 = 809FF268
-/* 00640 809FE270 0C00D3B0 */  jal     func_80034EC0
+/* 00640 809FE270 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 00644 809FE274 00003025 */  or      $a2, $zero, $zero          ## $a2 = 00000000
 /* 00648 809FE278 3C053C23 */  lui     $a1, 0x3C23                ## $a1 = 3C230000
 /* 0064C 809FE27C 34A5D70A */  ori     $a1, $a1, 0xD70A           ## $a1 = 3C23D70A

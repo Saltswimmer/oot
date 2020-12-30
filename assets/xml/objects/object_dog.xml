@@ -1,0 +1,21 @@
+<Root>
+    <File Name="object_dog" Segment="6">
+        <Hierarchy Name="gDogSkel" Type="Flex" LimbType="Standard" Offset="0x7290"/>
+        <Animation Name="gDogWalkAnim" Offset="0x1368"/>
+        <Animation Name="gDogRunAnim" Offset="0xD78"/>
+        <Animation Name="gDogBarkAnim" Offset="0x278"/>
+        <Animation Name="gDogSitAnim" Offset="0x1150"/>
+        <Animation Name="gDogBowStartAnim" Offset="0x928"/>
+        <Animation Name="gDogBowHoldAnim" Offset="0xC28"/>
+        <DList Name="gDogLimb1" Offset="0x6B00"/>
+        <DList Name="gDogLimb2" Offset="0x6588"/>
+        <DList Name="gDogLimb3" Offset="0x60E0"/>
+        <DList Name="gDogLimb4" Offset="0x6448"/>
+        <DList Name="gDogLimb5" Offset="0x64E8"/>
+        <DList Name="gDogLimb6" Offset="0x67A0"/>
+        <DList Name="gDogLimb7" Offset="0x6950"/>
+        <DList Name="gDogLimb8" Offset="0x6CA0"/>
+        <DList Name="gDogLimb9" Offset="0x6E50"/>
+        <DList Name="gDogLimb10" Offset="0x7000"/>
+    </File>
+</Root>

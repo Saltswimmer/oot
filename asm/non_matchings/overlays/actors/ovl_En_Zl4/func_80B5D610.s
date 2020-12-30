@@ -150,7 +150,7 @@ glabel L80B5D7C8
 /* 02044 80B5D7F4 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 02048 80B5D7F8 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 0204C 80B5D7FC 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 02050 80B5D800 0C00D3B0 */  jal     func_80034EC0              
+/* 02050 80B5D800 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 02054 80B5D804 24060017 */  addiu   $a2, $zero, 0x0017         ## $a2 = 00000017
 /* 02058 80B5D808 240D0003 */  addiu   $t5, $zero, 0x0003         ## $t5 = 00000003
 /* 0205C 80B5D80C 3C010001 */  lui     $at, 0x0001                ## $at = 00010000
@@ -223,7 +223,7 @@ glabel L80B5D8B4
 /* 02148 80B5D8F8 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 0214C 80B5D8FC 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 02150 80B5D900 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 02154 80B5D904 0C00D3B0 */  jal     func_80034EC0              
+/* 02154 80B5D904 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 02158 80B5D908 2406001F */  addiu   $a2, $zero, 0x001F         ## $a2 = 0000001F
 /* 0215C 80B5D90C 240C000B */  addiu   $t4, $zero, 0x000B         ## $t4 = 0000000B
 /* 02160 80B5D910 240D0005 */  addiu   $t5, $zero, 0x0005         ## $t5 = 00000005
@@ -239,7 +239,7 @@ glabel L80B5D8B4
 /* 02188 80B5D938 1000000F */  beq     $zero, $zero, .L80B5D978   
 /* 0218C 80B5D93C A20F0208 */  sb      $t7, 0x0208($s0)           ## 00000208
 .L80B5D940:
-/* 02190 80B5D940 0C00D3B0 */  jal     func_80034EC0              
+/* 02190 80B5D940 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 02194 80B5D944 2406000D */  addiu   $a2, $zero, 0x000D         ## $a2 = 0000000D
 /* 02198 80B5D948 24020002 */  addiu   $v0, $zero, 0x0002         ## $v0 = 00000002
 /* 0219C 80B5D94C 2418000B */  addiu   $t8, $zero, 0x000B         ## $t8 = 0000000B
@@ -288,7 +288,7 @@ glabel L80B5D9C8
 /* 02238 80B5D9E8 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
 /* 0223C 80B5D9EC 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 02240 80B5D9F0 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
-/* 02244 80B5D9F4 0C00D3B0 */  jal     func_80034EC0              
+/* 02244 80B5D9F4 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 02248 80B5D9F8 2406000E */  addiu   $a2, $zero, 0x000E         ## $a2 = 0000000E
 /* 0224C 80B5D9FC 3C010001 */  lui     $at, 0x0001                ## $at = 00010000
 /* 02250 80B5DA00 00310821 */  addu    $at, $at, $s1              

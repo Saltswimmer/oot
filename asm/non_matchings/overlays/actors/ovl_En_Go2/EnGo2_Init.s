@@ -105,7 +105,7 @@ glabel L80A46594
 /* 03890 80A465C0 3C0580A5 */  lui     $a1, %hi(D_80A48348)       ## $a1 = 80A50000
 /* 03894 80A465C4 24A58348 */  addiu   $a1, $a1, %lo(D_80A48348)  ## $a1 = 80A48348
 /* 03898 80A465C8 8FA40034 */  lw      $a0, 0x0034($sp)
-/* 0389C 80A465CC 0C00D3B0 */  jal     func_80034EC0
+/* 0389C 80A465CC 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 038A0 80A465D0 00003025 */  or      $a2, $zero, $zero          ## $a2 = 00000000
 /* 038A4 80A465D4 3C01BF80 */  lui     $at, 0xBF80                ## $at = BF800000
 /* 038A8 80A465D8 300E00FF */  andi    $t6, $zero, 0x00FF         ## $t6 = 00000000

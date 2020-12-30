@@ -121,7 +121,7 @@ glabel func_80A70E34
 /* 019F0 80A70FA0 00CF3021 */  addu    $a2, $a2, $t7
 /* 019F4 80A70FA4 90C622E3 */  lbu     $a2, %lo(D_80A722E3)($a2)
 /* 019F8 80A70FA8 24A52050 */  addiu   $a1, $a1, %lo(D_80A72050)  ## $a1 = 80A72050
-/* 019FC 80A70FAC 0C00D3B0 */  jal     func_80034EC0
+/* 019FC 80A70FAC 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 01A00 80A70FB0 8FA40034 */  lw      $a0, 0x0034($sp)
 /* 01A04 80A70FB4 8FB8003C */  lw      $t8, 0x003C($sp)
 /* 01A08 80A70FB8 2401001E */  addiu   $at, $zero, 0x001E         ## $at = 0000001E

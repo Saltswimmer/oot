@@ -28,7 +28,7 @@ glabel EnZl4_Init
 /* 00660 80B5BE10 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 00664 80B5BE14 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 00668 80B5BE18 02202025 */  or      $a0, $s1, $zero            ## $a0 = 0000014C
-/* 0066C 80B5BE1C 0C00D3B0 */  jal     func_80034EC0
+/* 0066C 80B5BE1C 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 00670 80B5BE20 24060015 */  addiu   $a2, $zero, 0x0015         ## $a2 = 00000015
 /* 00674 80B5BE24 26050194 */  addiu   $a1, $s0, 0x0194           ## $a1 = 00000194
 /* 00678 80B5BE28 AFA50030 */  sw      $a1, 0x0030($sp)
@@ -66,7 +66,7 @@ glabel EnZl4_Init
 /* 006EC 80B5BE9C 29410004 */  slti    $at, $t2, 0x0004
 /* 006F0 80B5BEA0 14200007 */  bne     $at, $zero, .L80B5BEC0
 /* 006F4 80B5BEA4 02202025 */  or      $a0, $s1, $zero            ## $a0 = 0000014C
-/* 006F8 80B5BEA8 0C00D3B0 */  jal     func_80034EC0
+/* 006F8 80B5BEA8 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 006FC 80B5BEAC 00003025 */  or      $a2, $zero, $zero          ## $a2 = 00000000
 /* 00700 80B5BEB0 3C0B80B6 */  lui     $t3, %hi(func_80B5E108)    ## $t3 = 80B60000
 /* 00704 80B5BEB4 256BE108 */  addiu   $t3, $t3, %lo(func_80B5E108) ## $t3 = 80B5E108
@@ -79,7 +79,7 @@ glabel EnZl4_Init
 /* 0071C 80B5BECC 318D0001 */  andi    $t5, $t4, 0x0001           ## $t5 = 00000000
 /* 00720 80B5BED0 11A00007 */  beq     $t5, $zero, .L80B5BEF0
 /* 00724 80B5BED4 02202025 */  or      $a0, $s1, $zero            ## $a0 = 0000014C
-/* 00728 80B5BED8 0C00D3B0 */  jal     func_80034EC0
+/* 00728 80B5BED8 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 0072C 80B5BEDC 00003025 */  or      $a2, $zero, $zero          ## $a2 = 00000000
 /* 00730 80B5BEE0 3C0E80B6 */  lui     $t6, %hi(func_80B5E090)    ## $t6 = 80B60000
 /* 00734 80B5BEE4 25CEE090 */  addiu   $t6, $t6, %lo(func_80B5E090) ## $t6 = 80B5E090
@@ -93,7 +93,7 @@ glabel EnZl4_Init
 /* 00750 80B5BF00 02002025 */  or      $a0, $s0, $zero            ## $a0 = 00000000
 /* 00754 80B5BF04 02202025 */  or      $a0, $s1, $zero            ## $a0 = 0000014C
 /* 00758 80B5BF08 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
-/* 0075C 80B5BF0C 0C00D3B0 */  jal     func_80034EC0
+/* 0075C 80B5BF0C 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 00760 80B5BF10 24060015 */  addiu   $a2, $zero, 0x0015         ## $a2 = 00000015
 /* 00764 80B5BF14 A2000209 */  sb      $zero, 0x0209($s0)         ## 00000209
 /* 00768 80B5BF18 1000000B */  beq     $zero, $zero, .L80B5BF48
@@ -104,7 +104,7 @@ glabel EnZl4_Init
 /* 00778 80B5BF28 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 0077C 80B5BF2C 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 00780 80B5BF30 02202025 */  or      $a0, $s1, $zero            ## $a0 = 0000014C
-/* 00784 80B5BF34 0C00D3B0 */  jal     func_80034EC0
+/* 00784 80B5BF34 0C00D3B0 */  jal     Actor_ChangeAnimation
 /* 00788 80B5BF38 00003025 */  or      $a2, $zero, $zero          ## $a2 = 00000000
 /* 0078C 80B5BF3C 24180005 */  addiu   $t8, $zero, 0x0005         ## $t8 = 00000005
 /* 00790 80B5BF40 A2180209 */  sb      $t8, 0x0209($s0)           ## 00000209

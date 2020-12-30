@@ -1073,16 +1073,6 @@ typedef enum {
     DPM_UNK3 = 3
 } DynaPolyMoveFlag;
 
-// Some animation related structure
-typedef struct {
-    /* 0x00 */ AnimationHeader* animation;
-    /* 0x04 */ f32              playbackSpeed;
-    /* 0x08 */ f32              unk_08;
-    /* 0x0C */ f32              frameCount;
-    /* 0x10 */ u8               unk_10;
-    /* 0x14 */ f32              transitionRate;
-} struct_80034EC0_Entry; // size = 0x18
-
 // Another animation related structure
 typedef struct {
     /* 0x00 */ AnimationHeader* animation;

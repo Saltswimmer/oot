@@ -43,7 +43,7 @@ glabel L80B5DE84
 /* 026D4 80B5DE84 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 026D8 80B5DE88 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
 /* 026DC 80B5DE8C 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 026E0 80B5DE90 0C00D3B0 */  jal     func_80034EC0              
+/* 026E0 80B5DE90 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 026E4 80B5DE94 24060003 */  addiu   $a2, $zero, 0x0003         ## $a2 = 00000003
 /* 026E8 80B5DE98 24090003 */  addiu   $t1, $zero, 0x0003         ## $t1 = 00000003
 /* 026EC 80B5DE9C A6000210 */  sh      $zero, 0x0210($s0)         ## 00000210

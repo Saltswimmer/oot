@@ -87,7 +87,7 @@ glabel EnSw_Init
 /* 0087C 80B0C62C 3C0580B1 */  lui     $a1, %hi(D_80B0F080)       ## $a1 = 80B10000
 /* 00880 80B0C630 24A5F080 */  addiu   $a1, $a1, %lo(D_80B0F080)  ## $a1 = 80B0F080
 /* 00884 80B0C634 8FA40040 */  lw      $a0, 0x0040($sp)           
-/* 00888 80B0C638 0C00D3B0 */  jal     func_80034EC0              
+/* 00888 80B0C638 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 0088C 80B0C63C 00003025 */  or      $a2, $zero, $zero          ## $a2 = 00000000
 /* 00890 80B0C640 44800000 */  mtc1    $zero, $f0                 ## $f0 = 0.00
 /* 00894 80B0C644 260400B4 */  addiu   $a0, $s0, 0x00B4           ## $a0 = 000000B4

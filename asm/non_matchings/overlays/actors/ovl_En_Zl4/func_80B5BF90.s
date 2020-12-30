@@ -14,7 +14,7 @@ glabel func_80B5BF90
 .L80B5BFC0:
 /* 00810 80B5BFC0 3C0580B6 */  lui     $a1, %hi(D_80B5E7B8)       ## $a1 = 80B60000
 /* 00814 80B5BFC4 24A5E7B8 */  addiu   $a1, $a1, %lo(D_80B5E7B8)  ## $a1 = 80B5E7B8
-/* 00818 80B5BFC8 0C00D3B0 */  jal     func_80034EC0              
+/* 00818 80B5BFC8 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 0081C 80B5BFCC 8FA60024 */  lw      $a2, 0x0024($sp)           
 /* 00820 80B5BFD0 24020001 */  addiu   $v0, $zero, 0x0001         ## $v0 = 00000001
 .L80B5BFD4:

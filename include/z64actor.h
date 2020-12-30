@@ -201,6 +201,15 @@ typedef struct {
     /* 0x14 */ s32 unk_14;
 } struct_80032E24;
 
+typedef struct {
+    /* 0x00 */ AnimationHeader* animation;
+    /* 0x04 */ f32 playSpeed;
+    /* 0x08 */ f32 startFrame;
+    /* 0x0C */ f32 endFrame;
+    /* 0x10 */ u8 mode;
+    /* 0x14 */ f32 morphFrames;
+} ActorAnimationEntry; // size = 0x18
+
 typedef enum {
     /* 0x00 */ ITEM00_RUPEE_GREEN,
     /* 0x01 */ ITEM00_RUPEE_BLUE,

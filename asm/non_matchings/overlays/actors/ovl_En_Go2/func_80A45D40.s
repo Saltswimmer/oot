@@ -7,7 +7,7 @@ glabel func_80A45D40
 /* 03024 80A45D54 24A58348 */  addiu   $a1, $a1, %lo(D_80A48348)  ## $a1 = 80A48348
 /* 03028 80A45D58 AFA70018 */  sw      $a3, 0x0018($sp)           
 /* 0302C 80A45D5C 2484014C */  addiu   $a0, $a0, 0x014C           ## $a0 = 0000014C
-/* 03030 80A45D60 0C00D3B0 */  jal     func_80034EC0              
+/* 03030 80A45D60 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 03034 80A45D64 24060001 */  addiu   $a2, $zero, 0x0001         ## $a2 = 00000001
 /* 03038 80A45D68 8FA70018 */  lw      $a3, 0x0018($sp)           
 /* 0303C 80A45D6C 44800000 */  mtc1    $zero, $f0                 ## $f0 = 0.00

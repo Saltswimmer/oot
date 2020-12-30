@@ -19,7 +19,7 @@ glabel func_809FEB08
 /* 00F1C 809FEB4C 3C0580A0 */  lui     $a1, %hi(D_809FF268)       ## $a1 = 80A00000
 /* 00F20 809FEB50 24A5F268 */  addiu   $a1, $a1, %lo(D_809FF268)  ## $a1 = 809FF268
 /* 00F24 809FEB54 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 00F28 809FEB58 0C00D3B0 */  jal     func_80034EC0              
+/* 00F28 809FEB58 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 00F2C 809FEB5C 24060001 */  addiu   $a2, $zero, 0x0001         ## $a2 = 00000001
 /* 00F30 809FEB60 3C0580A0 */  lui     $a1, %hi(func_809FE3C0)    ## $a1 = 80A00000
 /* 00F34 809FEB64 24A5E3C0 */  addiu   $a1, $a1, %lo(func_809FE3C0) ## $a1 = 809FE3C0
@@ -60,7 +60,7 @@ glabel func_809FEB08
 /* 00FB4 809FEBE4 3C0580A0 */  lui     $a1, %hi(D_809FF268)       ## $a1 = 80A00000
 /* 00FB8 809FEBE8 24A5F268 */  addiu   $a1, $a1, %lo(D_809FF268)  ## $a1 = 809FF268
 /* 00FBC 809FEBEC 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
-/* 00FC0 809FEBF0 0C00D3B0 */  jal     func_80034EC0              
+/* 00FC0 809FEBF0 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 00FC4 809FEBF4 2406000E */  addiu   $a2, $zero, 0x000E         ## $a2 = 0000000E
 /* 00FC8 809FEBF8 240D0001 */  addiu   $t5, $zero, 0x0001         ## $t5 = 00000001
 /* 00FCC 809FEBFC A60D01F4 */  sh      $t5, 0x01F4($s0)           ## 000001F4

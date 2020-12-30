@@ -21,7 +21,7 @@ glabel func_80A712C0
 /* 01D48 80A712F8 24A52050 */  addiu   $a1, $a1, %lo(D_80A72050)  ## $a1 = 80A72050
 /* 01D4C 80A712FC 11C00009 */  beq     $t6, $zero, .L80A71324     
 /* 01D50 80A71300 2484014C */  addiu   $a0, $a0, 0x014C           ## $a0 = 0000014C
-/* 01D54 80A71304 0C00D3B0 */  jal     func_80034EC0              
+/* 01D54 80A71304 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 01D58 80A71308 24060007 */  addiu   $a2, $zero, 0x0007         ## $a2 = 00000007
 /* 01D5C 80A7130C 3C0180A7 */  lui     $at, %hi(D_80A72A88)       ## $at = 80A70000
 /* 01D60 80A71310 C4282A88 */  lwc1    $f8, %lo(D_80A72A88)($at)  

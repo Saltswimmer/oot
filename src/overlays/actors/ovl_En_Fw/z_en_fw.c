@@ -45,7 +45,7 @@ static ColliderJntSphInit sJntSphInit = {
 
 static CollisionCheckInfoInit2 D_80A1FB94 = { 8, 2, 25, 25, 0xFF };
 
-static struct_80034EC0_Entry D_80A1FBA0[] = {
+static ActorAnimationEntry D_80A1FBA0[] = {
     { 0x06006CF8, 0.0f, 0.0f, -1.0f, 0x03, 0.0f },
     { 0x06007CD0, 1.0f, 0.0f, -1.0f, 0x03, -8.0f },
     { 0x06007DC8, 1.0f, 0.0f, -1.0f, 0x01, -8.0f },
@@ -170,7 +170,7 @@ void EnFw_Init(Actor* thisx, GlobalContext* globalCtx) {
     EnFw* this = THIS;
 
     SkelAnime_InitFlex(globalCtx, &this->skelAnime, &D_06007C30, NULL, this->jointTable, this->morphTable, 11);
-    func_80034EC0(&this->skelAnime, D_80A1FBA0, 0);
+    Actor_ChangeAnimation(&this->skelAnime, D_80A1FBA0, 0);
     ActorShape_Init(&this->actor.shape, 0.0f, ActorShadow_DrawFunc_Circle, 20.0f);
     Collider_InitJntSph(globalCtx, &this->collider);
     Collider_SetJntSph(globalCtx, &this->collider, &this->actor, &sJntSphInit, this->sphs);
@@ -204,7 +204,7 @@ void EnFw_Run(EnFw* this, GlobalContext* globalCtx) {
     if (this->skelAnime.animation == &D_06006CF8) {
         if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame) == 0) {
             this->runRadius = Math_Vec3f_DistXYZ(&this->actor.posRot.pos, &this->actor.parent->posRot.pos);
-            func_80034EC0(&this->skelAnime, D_80A1FBA0, 2);
+            Actor_ChangeAnimation(&this->skelAnime, D_80A1FBA0, 2);
         }
         return;
     }
@@ -320,7 +320,7 @@ void EnFw_TurnToParentInitPos(EnFw* this, GlobalContext* globalCtx) {
         this->actor.velocity.y = 14.0f;
         this->actor.initPosRot.pos = this->actor.posRot.pos;
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_STAL_JUMP);
-        func_80034EC0(&this->skelAnime, D_80A1FBA0, 1);
+        Actor_ChangeAnimation(&this->skelAnime, D_80A1FBA0, 1);
         this->actionFunc = EnFw_JumpToParentInitPos;
     }
 }

@@ -16,7 +16,7 @@ glabel func_80A45B9C
 /* 02EA4 80A45BD4 AC990004 */  sw      $t9, 0x0004($a0)           ## 00000004
 /* 02EA8 80A45BD8 24A58348 */  addiu   $a1, $a1, %lo(D_80A48348)  ## $a1 = 80A48348
 /* 02EAC 80A45BDC 2484014C */  addiu   $a0, $a0, 0x014C           ## $a0 = 0000014C
-/* 02EB0 80A45BE0 0C00D3B0 */  jal     func_80034EC0              
+/* 02EB0 80A45BE0 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 02EB4 80A45BE4 2406000A */  addiu   $a2, $zero, 0x000A         ## $a2 = 0000000A
 /* 02EB8 80A45BE8 3C01BF00 */  lui     $at, 0xBF00                ## $at = BF000000
 /* 02EBC 80A45BEC 44812000 */  mtc1    $at, $f4                   ## $f4 = -0.50
@@ -25,7 +25,7 @@ glabel func_80A45B9C
 .L80A45BF8:
 /* 02EC8 80A45BF8 2604014C */  addiu   $a0, $s0, 0x014C           ## $a0 = 0000014C
 /* 02ECC 80A45BFC 24A58348 */  addiu   $a1, $a1, %lo(D_80A48348)  ## $a1 = FFFF8348
-/* 02ED0 80A45C00 0C00D3B0 */  jal     func_80034EC0              
+/* 02ED0 80A45C00 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 02ED4 80A45C04 24060001 */  addiu   $a2, $zero, 0x0001         ## $a2 = 00000001
 /* 02ED8 80A45C08 3C01BF80 */  lui     $at, 0xBF80                ## $at = BF800000
 /* 02EDC 80A45C0C 44813000 */  mtc1    $at, $f6                   ## $f6 = -1.00

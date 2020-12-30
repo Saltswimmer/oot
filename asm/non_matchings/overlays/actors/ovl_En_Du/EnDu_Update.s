@@ -29,7 +29,7 @@ glabel EnDu_Update
 /* 01150 809FED80 8FA4002C */  lw      $a0, 0x002C($sp)           
 /* 01154 809FED84 3C0580A0 */  lui     $a1, %hi(D_809FF268)       ## $a1 = 80A00000
 /* 01158 809FED88 24A5F268 */  addiu   $a1, $a1, %lo(D_809FF268)  ## $a1 = 809FF268
-/* 0115C 809FED8C 0C00D3B0 */  jal     func_80034EC0              
+/* 0115C 809FED8C 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 01160 809FED90 24060001 */  addiu   $a2, $zero, 0x0001         ## $a2 = 00000001
 .L809FED94:
 /* 01164 809FED94 0C02927F */  jal     SkelAnime_Update

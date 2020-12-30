@@ -43,7 +43,7 @@ glabel func_809FE040
 /* 004B4 809FE0E4 00025080 */  sll     $t2, $v0,  2               
 .L809FE0E8:
 /* 004B8 809FE0E8 03AA3021 */  addu    $a2, $sp, $t2              
-/* 004BC 809FE0EC 0C00D3B0 */  jal     func_80034EC0              
+/* 004BC 809FE0EC 0C00D3B0 */  jal     Actor_ChangeAnimation              
 /* 004C0 809FE0F0 8CC60020 */  lw      $a2, 0x0020($a2)           ## 00000020
 .L809FE0F4:
 /* 004C4 809FE0F4 8FBF0014 */  lw      $ra, 0x0014($sp)           
