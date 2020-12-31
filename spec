@@ -4961,7 +4961,8 @@ endseg
 beginseg
     name "object_kz"
     romalign 0x1000
-    include "build/baserom/object_kz.o"
+    include "build/assets/objects/object_kz/object_kz.o"
+    number 6
 endseg
 
 beginseg

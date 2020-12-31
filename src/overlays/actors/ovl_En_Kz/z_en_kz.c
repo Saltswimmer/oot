@@ -5,6 +5,7 @@
  */
 
 #include "z_en_kz.h"
+#include "objects/object_kz/object_kz.h"
 
 #define FLAGS 0x00000009
 
@@ -41,17 +42,19 @@ static ColliderCylinderInit sCylinderInit = {
     { 80, 120, 0, { 0, 0, 0 } },
 };
 
-static CollisionCheckInfoInit2 sColChkInfoInit = {
-    0x00, 0x0000, 0x0000, 0x0000, 0xFF,
-};
+static CollisionCheckInfoInit2 sColChkInfoInit = { 0, 0, 0, 0, 0xFF };
 
-static ActorAnimationEntry sAnimations[] = {
-    { 0x0600075C, 1.0f, 0.0f, -1.0f, 0x00, 0.0f },
-    { 0x0600075C, 1.0f, 0.0f, -1.0f, 0x00, -10.0f },
-    { 0x0600046C, 1.0f, 0.0f, -1.0f, 0x00, -10.0f },
-};
+typedef enum {
+    /* 0 */ KZ_ANIM_IDLE_INSTANT,
+    /* 1 */ KZ_ANIM_IDLE_MORPH,
+    /* 2 */ KZ_ANIM_MWEEP
+} KzAnimEntry;
 
-extern FlexSkeletonHeader D_060086D0;
+static ActorAnimationEntry sAnimationEntries[] = {
+    { &gKzIdleAnim, 1.0f, 0.0f, -1.0f, ANIMMODE_LOOP, 0.0f },
+    { &gKzIdleAnim, 1.0f, 0.0f, -1.0f, ANIMMODE_LOOP, -10.0f },
+    { &gKzMweepAnim, 1.0f, 0.0f, -1.0f, ANIMMODE_LOOP, -10.0f },
+};
 
 u16 EnKz_GetTextNoMaskChild(GlobalContext* globalCtx, EnKz* this) {
     Player* player = PLAYER;
@@ -304,7 +307,7 @@ void EnKz_Init(Actor* thisx, GlobalContext* globalCtx) {
     EnKz* this = THIS;
     s32 pad;
 
-    SkelAnime_InitFlex(globalCtx, &this->skelanime, &D_060086D0, NULL, this->jointTable, this->morphTable, 12);
+    SkelAnime_InitFlex(globalCtx, &this->skelanime, &gKzSkel, NULL, this->jointTable, this->morphTable, 12);
     ActorShape_Init(&this->actor.shape, 0.0, NULL, 0.0);
     Collider_InitCylinder(globalCtx, &this->collider);
     Collider_SetCylinder(globalCtx, &this->collider, &this->actor, &sCylinderInit);
@@ -312,7 +315,7 @@ void EnKz_Init(Actor* thisx, GlobalContext* globalCtx) {
     Actor_SetScale(&this->actor, 0.01);
     this->actor.unk_1F = 3;
     this->unk_1E0.unk_00 = 0;
-    Actor_ChangeAnimation(&this->skelanime, sAnimations, 0);
+    Actor_ChangeAnimation(&this->skelanime, sAnimationEntries, KZ_ANIM_IDLE_INSTANT);
 
     if (gSaveContext.eventChkInf[3] & 8) {
         EnKz_SetMovedPos(this, globalCtx);
@@ -338,11 +341,11 @@ void EnKz_Destroy(Actor* thisx, GlobalContext* globalCtx) {
 
 void EnKz_PreMweepWait(EnKz* this, GlobalContext* globalCtx) {
     if (this->unk_1E0.unk_00 == 2) {
-        Actor_ChangeAnimation(&this->skelanime, sAnimations, 2);
+        Actor_ChangeAnimation(&this->skelanime, sAnimationEntries, KZ_ANIM_MWEEP);
         this->unk_1E0.unk_00 = 0;
         this->actionFunc = EnKz_SetupMweep;
     } else {
-        func_80034F54(globalCtx, &this->unk_2A6, &this->unk_2BE, 12);
+        func_80034F54(globalCtx, this->unk_2A6, this->unk_2BE, 12);
     }
 }
 
@@ -378,7 +381,7 @@ void EnKz_Mweep(EnKz* this, GlobalContext* globalCtx) {
     initPos.z += 260.0f;
     Gameplay_CameraSetAtEye(globalCtx, this->cutsceneCamera, &pos, &initPos);
     if ((EnKz_FollowPath(this, globalCtx) == 1) && (this->waypoint == 0)) {
-        Actor_ChangeAnimation(&this->skelanime, sAnimations, 1);
+        Actor_ChangeAnimation(&this->skelanime, sAnimationEntries, KZ_ANIM_IDLE_MORPH);
         Inventory_ReplaceItem(globalCtx, ITEM_LETTER_RUTO, ITEM_BOTTLE);
         EnKz_SetMovedPos(this, globalCtx);
         gSaveContext.eventChkInf[3] |= 8;
@@ -402,7 +405,7 @@ void EnKz_Wait(EnKz* this, GlobalContext* globalCtx) {
         this->actionFunc = EnKz_SetupGetItem;
         EnKz_SetupGetItem(this, globalCtx);
     } else {
-        func_80034F54(globalCtx, &this->unk_2A6, &this->unk_2BE, 12);
+        func_80034F54(globalCtx, this->unk_2A6, this->unk_2BE, 12);
     }
 }
 
@@ -411,7 +414,7 @@ void EnKz_SetupGetItem(EnKz* this, GlobalContext* globalCtx) {
     f32 xzRange;
     f32 yRange;
 
-    if (Actor_HasParent(this, globalCtx)) {
+    if (Actor_HasParent(&this->actor, globalCtx)) {
         this->actor.parent = NULL;
         this->unk_1E0.unk_00 = 1;
         this->actionFunc = EnKz_StartTimer;
@@ -442,13 +445,14 @@ void EnKz_Update(Actor* thisx, GlobalContext* globalCtx) {
         gSaveContext.infTable[19] |= 0x100;
     }
     Collider_CylinderUpdate(&this->actor, &this->collider);
-    CollisionCheck_SetOC(globalCtx, &globalCtx->colChkCtx, &this->collider);
+    CollisionCheck_SetOC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
     SkelAnime_Update(&this->skelanime);
     EnKz_UpdateEyes(this);
     Actor_MoveForward(&this->actor);
     if (this->actionFunc != EnKz_StartTimer) {
         func_80A9CB18(this, globalCtx);
     }
+
     this->actionFunc(this, globalCtx);
 }
 
@@ -459,7 +463,9 @@ s32 EnKz_OverrideLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, 
         rot->y += Math_SinS(this->unk_2A6[limbIndex]) * 200.0f;
         rot->z += Math_CosS(this->unk_2BE[limbIndex]) * 200.0f;
     }
+
     if (limbIndex) {}
+
     return false;
 }
 
@@ -473,16 +479,12 @@ void EnKz_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList, Vec
 }
 
 void EnKz_Draw(Actor* thisx, GlobalContext* globalCtx) {
-    static UNK_PTR sEyeSegments[] = {
-        0x06001470,
-        0x06001870,
-        0x06001C70,
-    };
+    static u64* eyeTextures[] = { gKzEyeOpenTex, gKzEyeHalfTex, gKzEyeClosedTex };
     EnKz* this = THIS;
 
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_en_kz.c", 1259);
 
-    gSPSegment(POLY_OPA_DISP++, 0x08, SEGMENTED_TO_VIRTUAL(sEyeSegments[this->eyeIdx]));
+    gSPSegment(POLY_OPA_DISP++, 0x08, SEGMENTED_TO_VIRTUAL(eyeTextures[this->eyeIdx]));
     func_800943C8(globalCtx->state.gfxCtx);
     SkelAnime_DrawFlexOpa(globalCtx, this->skelanime.skeleton, this->skelanime.jointTable, this->skelanime.dListCount,
                           EnKz_OverrideLimbDraw, EnKz_PostLimbDraw, this);

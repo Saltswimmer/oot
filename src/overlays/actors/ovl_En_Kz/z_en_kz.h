@@ -26,6 +26,7 @@ typedef struct EnKz {
     /* 0x025E */ Vec3s morphTable[12];
     /* 0x02A6 */ s16 unk_2A6[12];
     /* 0x02BE */ s16 unk_2BE[12];
+    u8 isTalking;
 } EnKz; // size = 0x02D8
 
 extern const ActorInit En_Kz_InitVars;
