@@ -1,6 +1,6 @@
 <Root>
     <File Name="object_dog" Segment="6">
-        <Hierarchy Name="gDogSkel" Type="Flex" LimbType="Standard" Offset="0x7290"/>
+        <Skeleton Name="gDogSkel" Type="Flex" LimbType="Standard" Offset="0x7290"/>
         <Animation Name="gDogWalkAnim" Offset="0x1368"/>
         <Animation Name="gDogRunAnim" Offset="0xD78"/>
         <Animation Name="gDogBarkAnim" Offset="0x278"/>
