@@ -3838,7 +3838,8 @@ endseg
 beginseg
     name "object_oE2"
     romalign 0x1000
-    include "build/baserom/object_oE2.o"
+    include "build/assets/objects/object_oE2/object_oE2.o"
+    number 06
 endseg
 
 beginseg

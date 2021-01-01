@@ -5,6 +5,7 @@
  */
 
 #include "z_en_oe2.h"
+#include "objects/object_oE2/object_oE2.h"
 
 #define FLAGS 0x00000009
 
@@ -35,7 +36,6 @@ void EnOE2_SetupAction(EnOE2* this, EnOE2ActionFunc actionFunc) {
 
 void EnOE2_Init(Actor* thisx, GlobalContext* globalCtx) {
     EnOE2* this = THIS;
-
     EnOE2_SetupAction(this, EnOE2_DoNothing);
 }
 
