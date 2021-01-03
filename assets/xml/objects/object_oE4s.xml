@@ -1,0 +1,6 @@
+<Root>
+    <File Name="object_oE4s" Segment="6">
+        <Skeleton Name="gOE4sSkel" Type="Flex" LimbType="Standard" Offset="0x190"/>
+        <!-- Theres something at 3A8, think its a CI pallete? -->
+    </File>
+</Root>

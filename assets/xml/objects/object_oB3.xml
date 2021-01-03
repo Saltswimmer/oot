@@ -1,0 +1,5 @@
+<Root>
+    <File Name="object_oB3" Segment="6">
+        <Skeleton Name="gOB3Skel" Type="Normal" LimbType="Standard" Offset="0x260"/>
+    </File>
+</Root>

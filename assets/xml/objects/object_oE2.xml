@@ -1,7 +1,7 @@
 <Root>
     <File Name="object_oE2" Segment="6">
-        <Skeleton Name="gOe22Skel" Type="Normal" LimbType="Standard" Offset="0x260"/>
-        <Texture Name="gOe2EyeOpenTex" Format="i8" Width="32" Height="32" Offset="0x4270"/>
-        <Texture Name="gOe2EyeClosedTex" Format="i8" Width="32" Height="32" Offset="0x4670"/>
+        <Skeleton Name="gOE2Skel" Type="Normal" LimbType="Standard" Offset="0x260"/>
+        <Texture Name="gOE2EyeOpenTex" Format="ci8" Width="32" Height="32" Offset="0x4270"/>
+        <Texture Name="gOE2EyeClosedTex" Format="ci8" Width="32" Height="32" Offset="0x4670"/>
     </File>
 </Root>

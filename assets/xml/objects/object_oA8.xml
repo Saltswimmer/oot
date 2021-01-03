@@ -1,0 +1,5 @@
+<Root>
+    <File Name="object_oA8" Segment="6">
+        <Skeleton Name="gOA8Skel" Type="Normal" LimbType="Standard" Offset="0x260"/>
+    </File>
+</Root>

@@ -1,0 +1,7 @@
+<Root>
+    <File Name="object_oE12" Segment="6">
+        <DList Name="gOE12HeadDL" Offset="0x1020"/>
+        <Texture Name="gOE12EyeOpenTex" Format="ci8" Width="32" Height="32" Offset="0x1C00"/>
+        <Texture Name="gOE12EyeClosedTex" Format="ci8" Width="32" Height="32" Offset="0x2000"/>
+    </File>
+</Root>

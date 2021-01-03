@@ -1,0 +1,7 @@
+<Root>
+    <File Name="object_oE1s" Segment="6">
+        <Skeleton Name="gOE1sSkel" Type="Flex" LimbType="Standard" Offset="0x190"/>
+        <Texture Name="gOE1sEyeOpenTex" Format="ci8" Width="32" Height="32" Offset="0x15F8"/>
+        <Texture Name="gOE1sEyeClosedTex" Format="ci8" Width="32" Height="32" Offset="0x1C78"/>
+    </File>
+</Root>
