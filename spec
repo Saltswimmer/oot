@@ -3828,14 +3828,15 @@ endseg
 beginseg
     name "object_oE_anime"
     romalign 0x1000
-    include "build/baserom/object_oE_anime.o"
+    include "build/assets/objects/object_oE_anime/object_oE_anime.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE2"
     romalign 0x1000
     include "build/assets/objects/object_oE2/object_oE2.o"
-    number 06
+    number 6
 endseg
 
 beginseg
