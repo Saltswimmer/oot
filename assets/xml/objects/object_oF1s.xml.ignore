@@ -1,0 +1,8 @@
+<Root>
+    <File Name="object_oF1s" Segment="6">
+        <Skeleton Name="gOF1sSkel" Type="Flex" LimbType="Standard" Offset="0x110"/>
+        <Texture Name="gOF1sEyeOpenTex" Format="ci8" Width="32" Height="32" Offset="0x217C"/>
+        <Texture Name="gOF1sEyeClosedTex" Format="ci8" Width="32" Height="32" Offset="0x29BC"/>
+        <DList Name="gOF1sUnkDL" Offset="0x84E0"/>
+    </File>
+</Root>

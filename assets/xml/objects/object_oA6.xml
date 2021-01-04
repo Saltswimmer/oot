@@ -1,5 +1,5 @@
 <Root>
     <File Name="object_oA6" Segment="6">
-        <Skeleton Name="gOA5Skel" Type="Normal" LimbType="Standard" Offset="0x260"/>
+        <Skeleton Name="gOA6Skel" Type="Normal" LimbType="Standard" Offset="0x260"/>
     </File>
 </Root>

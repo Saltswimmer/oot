@@ -1,5 +1,12 @@
 <Root>
     <File Name="object_oE_anime" Segment="6">
-        <Animation Name="gUnkAnim" Offset="0x5044"/>
+        <Animation Name="gOEAnimUnkAnim" Offset="0x5044"/>
+        <Animation Name="gOEAnimUnk1Anim" Offset="0x47D4"/>
+        <Animation Name="gOEAnimUnk2Anim" Offset="0x1034"/>
+        <Animation Name="gOEAnimUnk3Anim" Offset="0x19BC"/>
+        <Animation Name="gOEAnimUnk4Anim" Offset="0x242C"/>
+        <Animation Name="gOEAnimUnk5Anim" Offset="0x2DC8"/>
+        <Animation Name="gOEAnimUnk6Anim" Offset="0x47D4"/>
+        <Animation Name="gOEAnimUnk7Anim" Offset="0x5044"/>
     </File>
 </Root>

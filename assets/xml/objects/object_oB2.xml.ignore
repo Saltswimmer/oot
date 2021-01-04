@@ -1,5 +1,6 @@
 <Root>
     <File Name="object_oB2" Segment="6">
+    <!-- weird issue where zap is printing many pipesyncs -->
         <Skeleton Name="gOB2Skel" Type="Normal" LimbType="Standard" Offset="0x260"/>
     </File>
 </Root>

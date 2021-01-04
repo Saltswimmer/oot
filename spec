@@ -3725,7 +3725,8 @@ endseg
 beginseg
     name "object_oA1"
     romalign 0x1000
-    include "build/baserom/object_oA1.o"
+    include "build/assets/objects/object_oA1/object_oA1.o"
+    number 6
 endseg
 
 beginseg
@@ -3791,7 +3792,8 @@ endseg
 beginseg
     name "object_oA2"
     romalign 0x1000
-    include "build/baserom/object_oA2.o"
+    include "build/assets/objects/object_oA2/object_oA2.o"
+    number 6
 endseg
 
 beginseg
@@ -3822,20 +3824,22 @@ endseg
 beginseg
     name "object_oE1"
     romalign 0x1000
-    include "build/baserom/object_oE1.o"
+    include "build/assets/objects/object_oE1/object_oE1.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE_anime"
     romalign 0x1000
-    include "build/baserom/object_oE_anime.o"
+    include "build/assets/objects/object_oE_anime/object_oE_anime.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE2"
     romalign 0x1000
     include "build/assets/objects/object_oE2/object_oE2.o"
-    number 06
+    number 6
 endseg
 
 beginseg
@@ -3865,31 +3869,36 @@ endseg
 beginseg
     name "object_oA3"
     romalign 0x1000
-    include "build/baserom/object_oA3.o"
+    include "build/assets/objects/object_oA3/object_oA3.o"
+    number 6
 endseg
 
 beginseg
     name "object_oA4"
     romalign 0x1000
-    include "build/baserom/object_oA4.o"
+    include "build/assets/objects/object_oA4/object_oA4.o"
+    number 6
 endseg
 
 beginseg
     name "object_oA5"
     romalign 0x1000
-    include "build/baserom/object_oA5.o"
+    include "build/assets/objects/object_oA5/object_oA5.o"
+    number 6
 endseg
 
 beginseg
     name "object_oA6"
     romalign 0x1000
-    include "build/baserom/object_oA6.o"
+    include "build/assets/objects/object_oA6/object_oA6.o"
+    number 6
 endseg
 
 beginseg
     name "object_oA7"
     romalign 0x1000
-    include "build/baserom/object_oA7.o"
+    include "build/assets/objects/object_oA7/object_oA7.o"
+    number 6
 endseg
 
 beginseg
@@ -3901,13 +3910,15 @@ endseg
 beginseg
     name "object_oA8"
     romalign 0x1000
-    include "build/baserom/object_oA8.o"
+    include "build/assets/objects/object_oA8/object_oA8.o"
+    number 6
 endseg
 
 beginseg
     name "object_oA9"
     romalign 0x1000
-    include "build/baserom/object_oA9.o"
+    include "build/assets/objects/object_oA9/object_oA9.o"
+    number 6
 endseg
 
 beginseg
@@ -3919,13 +3930,15 @@ endseg
 beginseg
     name "object_oB3"
     romalign 0x1000
-    include "build/baserom/object_oB3.o"
+    include "build/assets/objects/object_oB3/object_oB3.o"
+    number 6
 endseg
 
 beginseg
     name "object_oB4"
     romalign 0x1000
-    include "build/baserom/object_oB4.o"
+    include "build/assets/objects/object_oB4/object_oB4.o"
+    number 6
 endseg
 
 beginseg
@@ -3961,13 +3974,15 @@ endseg
 beginseg
     name "object_oE3"
     romalign 0x1000
-    include "build/baserom/object_oE3.o"
+    include "build/assets/objects/object_oE3/object_oE3.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE4"
     romalign 0x1000
-    include "build/baserom/object_oE4.o"
+    include "build/assets/objects/object_oE4/object_oE4.o"
+    number 6
 endseg
 
 beginseg
@@ -3985,43 +4000,50 @@ endseg
 beginseg
     name "object_oE6"
     romalign 0x1000
-    include "build/baserom/object_oE6.o"
+    include "build/assets/objects/object_oE6/object_oE6.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE7"
     romalign 0x1000
-    include "build/baserom/object_oE7.o"
+    include "build/assets/objects/object_oE7/object_oE7.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE8"
     romalign 0x1000
-    include "build/baserom/object_oE8.o"
+    include "build/assets/objects/object_oE8/object_oE8.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE9"
     romalign 0x1000
-    include "build/baserom/object_oE9.o"
+    include "build/assets/objects/object_oE9/object_oE9.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE10"
     romalign 0x1000
-    include "build/baserom/object_oE10.o"
+    include "build/assets/objects/object_oE10/object_oE10.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE11"
     romalign 0x1000
-    include "build/baserom/object_oE11.o"
+    include "build/assets/objects/object_oE11/object_oE11.o"
+    number 6
 endseg
 
 beginseg
     name "object_oE12"
     romalign 0x1000
-    include "build/baserom/object_oE12.o"
+    include "build/assets/objects/object_oE12/object_oE12.o"
+    number 6
 endseg
 
 beginseg
