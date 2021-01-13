@@ -4,15 +4,19 @@
 #include "ultra64.h"
 #include "global.h"
 
-struct EnOE2;
+struct Santa;
 
-typedef void (*EnOE2ActionFunc)(struct EnOE2*, GlobalContext*);
+typedef void (*SantaActionFunc)(struct Santa*, GlobalContext*);
 
-typedef struct EnOE2 {
+typedef struct Santa {
     /* 0x0000 */ Actor actor;
-    /* 0x014C */ char unk_14C[0x44];
-    /* 0x0190 */ EnOE2ActionFunc actionFunc;
-} EnOE2; // size = 0x0194
+    /* 0x014C */ SkelAnime skelAnime;
+    /* 0x0190 */ SantaActionFunc actionFunc;
+    Vec3s jointTable[18];
+    Vec3s morphTable[18];
+    ColliderCylinder collider;
+    struct_80034A14_arg1 limbAngle;
+} Santa; // size = 0x0194
 
 extern const ActorInit En_OE2_InitVars;
 

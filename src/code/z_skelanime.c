@@ -1473,6 +1473,7 @@ s32 SkelAnime_InitFlex(GlobalContext* globalCtx, SkelAnime* skelAnime, FlexSkele
             ZeldaArena_MallocDebug(skelAnime->limbCount * sizeof(*skelAnime->morphTable), "../z_skelanime.c", 3048);
     } else {
         if (limbCount != skelAnime->limbCount) {
+            osSyncPrintf("limbCount: %d skelAnime->limbCount: %d", limbCount, skelAnime->limbCount);
             __assert("joint_buff_num == this->joint_num", "../z_skelanime.c", 3052);
         }
         skelAnime->jointTable = jointTable;

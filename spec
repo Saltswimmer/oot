@@ -3824,7 +3824,8 @@ endseg
 beginseg
     name "object_oE2"
     romalign 0x1000
-    include "build/baserom/object_oE2.o"
+    include "build/assets/objects/Santa/Santa.o"
+    number 6
 endseg
 
 beginseg
