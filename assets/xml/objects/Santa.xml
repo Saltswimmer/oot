@@ -1,0 +1,6 @@
+<Root>
+    <File Name="Santa" Segment="6">
+        <Skeleton Name="gSantaSkel" Type="Flex" LimbType="Standard" Offset="0xB9E8"/>
+        <Animation Name="gSantaIdle" Offset="0xD034"/>
+    </File>
+</Root>
