@@ -28,6 +28,7 @@ typedef struct EnAm {
     /* 0x0274 */ ColliderCylinder cylinder1;
     /* 0x02C0 */ ColliderCylinder cylinder2;
     /* 0x030C */ ColliderQuad hitCollider;
+    u8 noBounce;
 } EnAm; // size = 0x038C
 
 typedef enum {

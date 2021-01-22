@@ -29,6 +29,7 @@ void EnAm_Cooldown(EnAm* this, GlobalContext* globalCtx);
 void EnAm_Ricochet(EnAm* this, GlobalContext* globalCtx);
 void EnAm_Stunned(EnAm* this, GlobalContext* globalCtx);
 void EnAm_RecoilFromDamage(EnAm* this, GlobalContext* globalCtx);
+void EnAm_TakeDamage(EnAm* this, GlobalContext* globalCtx);
 
 typedef enum {
     /* 00 */ AM_BEHAVIOR_NONE,
@@ -85,7 +86,7 @@ static ColliderCylinderInit D_809AFFAC = {
     {
         ELEMTYPE_UNK0,
         { 0x00000000, 0x00, 0x00 },
-        { 0x00400106, 0x00, 0x00 },
+        { 0x00000000, 0x00, 0x00 },
         TOUCH_NONE,
         BUMP_ON,
         OCELEM_NONE,
@@ -131,7 +132,7 @@ static DamageTable D_809B0028 = {
     /* Normal arrow  */ DMG_ENTRY(2, AM_DMGEFF_KILL),
     /* Hammer swing  */ DMG_ENTRY(2, AM_DMGEFF_KILL),
     /* Hookshot      */ DMG_ENTRY(0, AM_DMGEFF_STUN),
-    /* Kokiri sword  */ DMG_ENTRY(1, AM_DMGEFF_NONE),
+    /* Kokiri sword  */ DMG_ENTRY(1, AM_DMGEFF_KILL),
     /* Master sword  */ DMG_ENTRY(2, AM_DMGEFF_KILL),
     /* Giant's Knife */ DMG_ENTRY(4, AM_DMGEFF_KILL),
     /* Fire arrow    */ DMG_ENTRY(2, AM_DMGEFF_KILL),
@@ -145,10 +146,10 @@ static DamageTable D_809B0028 = {
     /* Light magic   */ DMG_ENTRY(0, AM_DMGEFF_MAGIC_FIRE_LIGHT),
     /* Shield        */ DMG_ENTRY(0, AM_DMGEFF_NONE),
     /* Mirror Ray    */ DMG_ENTRY(0, AM_DMGEFF_NONE),
-    /* Kokiri spin   */ DMG_ENTRY(1, AM_DMGEFF_NONE),
+    /* Kokiri spin   */ DMG_ENTRY(1, AM_DMGEFF_KILL),
     /* Giant spin    */ DMG_ENTRY(4, AM_DMGEFF_KILL),
     /* Master spin   */ DMG_ENTRY(2, AM_DMGEFF_KILL),
-    /* Kokiri jump   */ DMG_ENTRY(2, AM_DMGEFF_NONE),
+    /* Kokiri jump   */ DMG_ENTRY(2, AM_DMGEFF_KILL),
     /* Giant jump    */ DMG_ENTRY(8, AM_DMGEFF_KILL),
     /* Master jump   */ DMG_ENTRY(4, AM_DMGEFF_KILL),
     /* Unknown 1     */ DMG_ENTRY(0, AM_DMGEFF_NONE),
@@ -236,7 +237,7 @@ void EnAm_Init(Actor* thisx, GlobalContext* globalCtx) {
         Collider_SetCylinder(globalCtx, &this->cylinder2, &this->dyna.actor, &D_809AFFAC);
         Collider_InitQuad(globalCtx, &this->hitCollider);
         Collider_SetQuad(globalCtx, &this->hitCollider, &this->dyna.actor, &D_809AFFD8);
-        this->dyna.actor.colChkInfo.health = 1;
+        this->dyna.actor.colChkInfo.health = 3;
         this->dyna.actor.colChkInfo.damageTable = &D_809B0028;
         EnAm_SetupSleep(this);
         this->unk_258 = 0;
@@ -361,6 +362,20 @@ void EnAm_SetupRecoilFromDamage(EnAm* this, GlobalContext* globalCtx) {
     EnAm_SetupAction(this, EnAm_RecoilFromDamage);
 }
 
+void EnAm_SetupTakeDamage(EnAm* this, GlobalContext* globalCtx) {
+    this->behavior = AM_BEHAVIOR_DAMAGED;
+    this->dyna.actor.world.rot.y = this->dyna.actor.yawTowardsPlayer;
+    Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EN_AMOS_DAMAGE);
+
+    if (EnAm_CanMove(this, globalCtx, -8.0f, this->dyna.actor.world.rot.y)) {
+        this->dyna.actor.speedXZ = -8.0f;
+    }
+
+    this->dyna.actor.colorFilterTimer = 2;
+    this->dyna.actor.colorFilterParams = (0x4000 | true | ((255 & 0xF8) << 5));
+    EnAm_SetupAction(this, EnAm_TakeDamage);
+}
+
 void EnAm_SetupRicochet(EnAm* this, GlobalContext* globalCtx) {
     Animation_Change(&this->skelAnime, &gArmosRicochetAnim, 1.0f, 0.0f, 8.0f, ANIMMODE_ONCE, 0.0f);
     this->dyna.actor.world.rot.y = this->dyna.actor.yawTowardsPlayer;
@@ -395,7 +410,7 @@ void EnAm_Sleep(EnAm* this, GlobalContext* globalCtx) {
         }
 
         if (this->textureBlend >= 240) {
-            this->attackTimer = 200;
+            this->attackTimer = 300;
             this->textureBlend = 255;
             this->dyna.actor.flags |= 1;
             this->dyna.actor.shape.yOffset = 0.0f;
@@ -568,6 +583,25 @@ void EnAm_RecoilFromDamage(EnAm* this, GlobalContext* globalCtx) {
     }
 }
 
+void EnAm_TakeDamage(EnAm* this, GlobalContext* globalCtx) {
+    this->dyna.actor.colorFilterTimer++;
+
+    if (this->dyna.actor.speedXZ < 0.0f) {
+        this->dyna.actor.speedXZ += 0.8f;
+    }
+
+    if ((this->dyna.actor.velocity.y <= 0.0f) && !EnAm_CanMove(this, globalCtx, -8.0f, this->dyna.actor.world.rot.y)) {
+        this->dyna.actor.speedXZ = 0.0f;
+    }
+
+    if (Math_SmoothStepToS(&this->dyna.actor.shape.rot.y, this->dyna.actor.world.rot.y, 1, 0x1300, 0) == 0) {
+        this->dyna.actor.colorFilterTimer = 0;
+        this->cooldownTimer = 5;
+        this->actionFunc = EnAm_Cooldown;
+        this->noBounce = true;
+    }
+}
+
 /**
  * After doing 3 lunges, wait for 2 seconds before attacking again.
  * Turn toward the player before lunging again.
@@ -582,27 +616,36 @@ void EnAm_Cooldown(EnAm* this, GlobalContext* globalCtx) {
     if (this->cooldownTimer != 0) {
         this->cooldownTimer--;
     } else {
-        if (this->skelAnime.curFrame == 8.0f) {
-            Math_SmoothStepToS(&this->dyna.actor.world.rot.y, this->dyna.actor.yawTowardsPlayer, 1, 0x1F40, 0);
-            this->dyna.actor.velocity.y = 12.0f;
-        } else if (this->skelAnime.curFrame > 11.0f) {
-            if (!(this->dyna.actor.bgCheckFlags & 1)) {
-                this->skelAnime.curFrame = 11;
-            } else {
-                if (yawDiff < 3500) {
-                    this->unk_258 = 0;
+        if (!this->noBounce) {
+            if (this->skelAnime.curFrame == 8.0f) {
+                Math_SmoothStepToS(&this->dyna.actor.world.rot.y, this->dyna.actor.yawTowardsPlayer, 1, 0x1F40, 0);
+                this->dyna.actor.velocity.y = 12.0f;
+            } else if (this->skelAnime.curFrame > 11.0f) {
+                if (!(this->dyna.actor.bgCheckFlags & 1)) {
+                    this->skelAnime.curFrame = 11;
+                } else {
+                    if (yawDiff < 3500) {
+                        this->unk_258 = 0;
+                    }
+                    this->dyna.actor.velocity.y = 0.0f;
+                    this->dyna.actor.world.pos.y = this->dyna.actor.floorHeight;
+                    EnAm_SpawnEffects(this, globalCtx);
                 }
-                this->dyna.actor.velocity.y = 0.0f;
-                this->dyna.actor.world.pos.y = this->dyna.actor.floorHeight;
-                EnAm_SpawnEffects(this, globalCtx);
             }
+        } else {
+            this->unk_258 = 0;
         }
 
         SkelAnime_Update(&this->skelAnime);
 
         if (this->unk_258 == 0) {
-            EnAm_SetupLunge(this);
-            Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EN_AMOS_VOICE);
+            if (this->noBounce) {
+                EnAm_SetupLunge(this);
+            } else {
+                this->noBounce = false;
+                EnAm_SetupLunge(this);
+                Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EN_AMOS_VOICE);
+            }
         }
 
         this->dyna.actor.shape.rot.y = this->dyna.actor.world.rot.y;
@@ -619,7 +662,7 @@ void EnAm_Lunge(EnAm* this, GlobalContext* globalCtx) {
             this->dyna.actor.velocity.y = 12.0f;
 
             if (EnAm_CanMove(this, globalCtx, 80.0f, this->dyna.actor.world.rot.y)) {
-                this->dyna.actor.speedXZ = 6.0f;
+                this->dyna.actor.speedXZ = (this->deathTimer == 0) ? 8.0f : 6.0f;
             } else {
                 this->dyna.actor.speedXZ = 0.0f;
             }
@@ -642,7 +685,7 @@ void EnAm_Lunge(EnAm* this, GlobalContext* globalCtx) {
                 this->dyna.actor.world.pos.y = this->dyna.actor.floorHeight;
                 EnAm_SpawnEffects(this, globalCtx);
 
-                if (((Actor_WorldDistXZToPoint(&this->dyna.actor, &this->dyna.actor.home.pos) > 240.0f) ||
+                if (((Actor_WorldDistXZToPoint(&this->dyna.actor, &this->dyna.actor.home.pos) > 500.0f) ||
                      (this->attackTimer == 0)) &&
                     (this->deathTimer == 0)) {
                     EnAm_SetupRotateToHome(this);
@@ -832,9 +875,14 @@ void EnAm_UpdateDamage(EnAm* this, GlobalContext* globalCtx) {
                     } else {
                         if ((this->dyna.actor.colChkInfo.damageEffect == AM_DMGEFF_KILL) ||
                             (this->behavior == AM_BEHAVIOR_STUNNED)) {
-                            this->dyna.actor.colChkInfo.health = 0;
+                            this->dyna.actor.colChkInfo.health -= this->dyna.actor.colChkInfo.damage;
 
-                            EnAm_SetupRecoilFromDamage(this, globalCtx);
+                            if (this->dyna.actor.colChkInfo.health == 0) {
+                                EnAm_SetupRecoilFromDamage(this, globalCtx);
+                            } else {
+                                EnAm_SetupTakeDamage(this, globalCtx);
+                            }
+
                         } else {
                             EnAm_SetupRicochet(this, globalCtx);
                         }
@@ -898,7 +946,7 @@ void EnAm_Update(Actor* thisx, GlobalContext* globalCtx) {
                 return;
             }
 
-            if ((this->deathTimer & 3) == 0) {
+            if (((this->deathTimer & 3) == 0) && (this->actionFunc != EnAm_TakeDamage)) {
                 Actor_SetColorFilter(&this->dyna.actor, 0x4000, 255, 0, 4);
             }
         }
