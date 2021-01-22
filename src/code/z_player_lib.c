@@ -610,7 +610,7 @@ u8* sMouthTextures[] = {
 };
 
 Color_RGB8 sTunicColors[] = {
-    { 30, 105, 27 },
+    { 0, 226, 8 },
     { 100, 20, 0 },
     { 0, 60, 100 },
 };

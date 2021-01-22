@@ -160,17 +160,17 @@ void func_801109B0(GlobalContext* globalCtx) {
 
     interfaceCtx->unk_23C = interfaceCtx->unk_242 = 0;
 
-    R_ITEM_BTN_X(0) = 160;
-    R_B_BTN_COLOR(0) = 255;
-    R_B_BTN_COLOR(1) = 30;
-    R_B_BTN_COLOR(2) = 30;
-    R_ITEM_ICON_X(0) = 160;
+    R_ITEM_BTN_X(0) = 198; // 160
+    R_B_BTN_COLOR(0) = 38;
+    R_B_BTN_COLOR(1) = 55;
+    R_B_BTN_COLOR(2) = 193;
+    R_ITEM_ICON_X(0) = 198; // 160
     R_ITEM_AMMO_X(0) = 162;
-    R_A_BTN_X = 186;
-    R_A_ICON_X = 186;
+    R_A_BTN_X = 163; //
+    R_A_ICON_X = 163;
     R_A_BTN_COLOR(0) = 0;
-    R_A_BTN_COLOR(1) = 200;
-    R_A_BTN_COLOR(2) = 50;
+    R_A_BTN_COLOR(1) = 215;
+    R_A_BTN_COLOR(2) = 5;
 }
 
 void func_80110F68(GlobalContext* globalCtx) {

@@ -187,14 +187,14 @@ SavePlayerData sDebugSavePlayerData = {
     0,                                                  // deaths
     { 0x15, 0x12, 0x17, 0x14, 0x3E, 0x3E, 0x3E, 0x3E }, // playerName ( "LINK" )
     0,                                                  // n64ddFlag
-    0xE0,                                               // healthCapacity
-    0xE0,                                               // health
+    0x40,                                               // healthCapacity
+    0x40,                                               // health
     0,                                                  // magicLevel
     0x30,                                               // magic
-    150,                                                // rupees
+    1,                                                // rupees
     8,                                                  // swordHealth
     0,                                                  // naviTimer
-    1,                                                  // magicAcquired
+    0,                                                  // magicAcquired
     0,                                                  // unk_1F
     0,                                                  // doubleMagic
     0,                                                  // doubleDefense
@@ -216,7 +216,7 @@ SavePlayerData sDebugSavePlayerData = {
 };
 
 ItemEquips sDebugSaveEquips = {
-    { ITEM_SWORD_MASTER, ITEM_BOW, ITEM_BOMB, ITEM_OCARINA_FAIRY }, // buttonItems
+    { ITEM_SWORD_KOKIRI, ITEM_SLINGSHOT, ITEM_STICK, ITEM_NUT }, // buttonItems
     { SLOT_BOW, SLOT_BOMB, SLOT_OCARINA },                          // cButtonSlots
     0x1122,                                                         // equipment
 };
@@ -230,10 +230,10 @@ Inventory sDebugSaveInventory = {
     },                                                              // items
     { 50, 50, 10, 30, 1, 1, 30, 1, 50, 1, 1, 1, 1, 1, 1, 1 },       // ammo
     0x7777,                                                         // equipment
-    0x125249,                                                       // upgrades
+    0x124249,                                                       // upgrades
     0x1E3FFFF,                                                      // questItems
-    { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // dungeonItems
-    { 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 },    // dungeonKeys
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // dungeonItems
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },    // dungeonKeys
     0,                                                              // defenseHearts
     0,                                                              // gsTokens
 };
@@ -273,7 +273,7 @@ void Sram_InitDebugSave(void) {
 
     if (LINK_AGE_IN_YEARS == YEARS_CHILD) {
         gSaveContext.equips.buttonItems[0] = ITEM_SWORD_KOKIRI;
-        Inventory_ChangeEquipment(EQUIP_SWORD, 1);
+        Inventory_ChangeEquipment(EQUIP_SWORD, 0);
         if (gSaveContext.fileNum == 0xFF) {
             gSaveContext.equips.buttonItems[1] = ITEM_SLINGSHOT;
             gSaveContext.equips.cButtonSlots[0] = SLOT_SLINGSHOT;

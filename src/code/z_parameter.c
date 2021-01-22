@@ -2191,7 +2191,7 @@ void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
     osSyncPrintf("アイテム = (%d)    数 = (%d + %d)  ", item, AMMO(item), ammoChange);
 
     if (item == ITEM_STICK) {
-        AMMO(ITEM_STICK) += ammoChange;
+        //AMMO(ITEM_STICK) += ammoChange;
 
         if (AMMO(ITEM_STICK) >= CUR_CAPACITY(UPG_STICKS)) {
             AMMO(ITEM_STICK) = CUR_CAPACITY(UPG_STICKS);
@@ -2223,7 +2223,7 @@ void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
             AMMO(ITEM_BOW) = 0;
         }
     } else if ((item == ITEM_SLINGSHOT) || (item == ITEM_SEEDS)) {
-        AMMO(ITEM_SLINGSHOT) += ammoChange;
+        //AMMO(ITEM_SLINGSHOT) += ammoChange;
 
         if (AMMO(ITEM_SLINGSHOT) >= CUR_CAPACITY(UPG_BULLET_BAG)) {
             AMMO(ITEM_SLINGSHOT) = CUR_CAPACITY(UPG_BULLET_BAG);
@@ -2816,8 +2816,8 @@ void Interface_DrawAmmoCount(GlobalContext* globalCtx, s16 button, s16 alpha) {
 
     i = gSaveContext.equips.buttonItems[button];
 
-    if ((i == ITEM_STICK) || (i == ITEM_NUT) || (i == ITEM_BOMB) || (i == ITEM_BOW) ||
-        ((i >= ITEM_BOW_ARROW_FIRE) && (i <= ITEM_BOW_ARROW_LIGHT)) || (i == ITEM_SLINGSHOT) || (i == ITEM_BOMBCHU) ||
+    if ((i == ITEM_NUT) || (i == ITEM_BOMB) || (i == ITEM_BOW) ||
+        ((i >= ITEM_BOW_ARROW_FIRE) && (i <= ITEM_BOW_ARROW_LIGHT)) ||  (i == ITEM_BOMBCHU) ||
         (i == ITEM_BEAN)) {
 
         if ((i >= ITEM_BOW_ARROW_FIRE) && (i <= ITEM_BOW_ARROW_LIGHT)) {
@@ -2839,8 +2839,6 @@ void Interface_DrawAmmoCount(GlobalContext* globalCtx, s16 button, s16 alpha) {
             }
         } else if (((i == ITEM_BOW) && (AMMO(i) == CUR_CAPACITY(UPG_QUIVER))) ||
                    ((i == ITEM_BOMB) && (AMMO(i) == CUR_CAPACITY(UPG_BOMB_BAG))) ||
-                   ((i == ITEM_SLINGSHOT) && (AMMO(i) == CUR_CAPACITY(UPG_BULLET_BAG))) ||
-                   ((i == ITEM_STICK) && (AMMO(i) == CUR_CAPACITY(UPG_STICKS))) ||
                    ((i == ITEM_NUT) && (AMMO(i) == CUR_CAPACITY(UPG_NUTS))) || ((i == ITEM_BOMBCHU) && (ammo == 50)) ||
                    ((i == ITEM_BEAN) && (ammo == 15))) {
             gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 120, 255, 0, alpha);
@@ -3026,7 +3024,7 @@ s8 sBssDummy1;
 s8 sBssDummy2;
 s8 sBssDummy3;
 
-#ifdef NON_MATCHING
+// #ifdef NON_MATCHING
 // mostly regalloc, minor ordering and stack usage differences
 void Interface_Draw(GlobalContext* globalCtx) {
     static s16 D_8015FFE0;
@@ -3065,6 +3063,7 @@ void Interface_Draw(GlobalContext* globalCtx) {
         OVERLAY_DISP = Gfx_TextureIA8(OVERLAY_DISP, D_02001F00, 16, 16, 26, 206, 16, 16, 1024, 1024);
 
         switch (globalCtx->sceneNum) {
+            case SCENE_DDAN:
             case SCENE_BMORI1:
             case SCENE_HIDAN:
             case SCENE_MIZUSIN:
@@ -3092,7 +3091,7 @@ void Interface_Draw(GlobalContext* globalCtx) {
                     gDPSetCombineLERP(OVERLAY_DISP++, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE,
                                       TEXEL0, 0, PRIMITIVE, 0);
 
-                    interfaceCtx->counterDigits[2] = 0;
+                    interfaceCtx->counterDigits[2] = 1;
                     interfaceCtx->counterDigits[3] = gSaveContext.inventory.dungeonKeys[gSaveContext.mapIndex];
 
                     while (interfaceCtx->counterDigits[3] >= 10) {
@@ -3102,7 +3101,7 @@ void Interface_Draw(GlobalContext* globalCtx) {
 
                     phi_s2 = 42;
                     if (interfaceCtx->counterDigits[2] != 0) {
-                        OVERLAY_DISP = Gfx_TextureI8(OVERLAY_DISP, &D_02003040[interfaceCtx->counterDigits[2]], 8, 16,
+                        OVERLAY_DISP = Gfx_TextureI8(OVERLAY_DISP, &D_02003040[0], 8, 16,
                                                      phi_s2, 190, 8, 16, 1024, 1024);
                         phi_s2 = 50;
                     }
@@ -3809,14 +3808,14 @@ void Interface_Draw(GlobalContext* globalCtx) {
 
     CLOSE_DISPS(globalCtx->state.gfxCtx, "../z_parameter.c", 4269);
 }
-#else
-s16 D_8015FFE0;
-s16 D_8015FFE2;
-s16 D_8015FFE4;
-s16 D_8015FFE6;
-s16 sTimerDigits[5];
-#pragma GLOBAL_ASM("asm/non_matchings/code/z_parameter/Interface_Draw.s")
-#endif
+// #else
+// s16 D_8015FFE0;
+// s16 D_8015FFE2;
+// s16 D_8015FFE4;
+// s16 D_8015FFE6;
+// s16 sTimerDigits[5];
+// #pragma GLOBAL_ASM("asm/non_matchings/code/z_parameter/Interface_Draw.s")
+// #endif
 
 void Interface_Update(GlobalContext* globalCtx) {
     static u8 D_80125B60 = 0;
